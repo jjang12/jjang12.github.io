@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>할인율 계산기 · 퍼센트 계산기 - 할인가, 할인율, 중복 할인, % 계산</title>
+<meta name="description" content="정가와 할인율로 할인가를, 정가와 판매가로 할인율을 바로 계산합니다. 쿠폰 중복 할인(연속 할인)과 「A의 B%」「A는 B의 몇 %」「증가율·감소율」 퍼센트 계산도 함께 됩니다.">
+<meta name="keywords" content="할인율 계산기, 할인율계산기, 할인가 계산, 퍼센트 계산기, %계산기, 중복 할인 계산, 증감률 계산">
+<meta property="og:title" content="할인율 계산기 · 퍼센트 계산기 - 할인가, 할인율, 중복 할인, % 계산">
+<meta property="og:description" content="정가와 할인율로 할인가를, 정가와 판매가로 할인율을 바로 계산합니다. 쿠폰 중복 할인(연속 할인)과 「A의 B%」「A는 B의 몇 %」「증가율·감소율」 퍼센트 계산도 함께 됩니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjang12.github.io/discount/">
+<link rel="canonical" href="https://jjang12.github.io/discount/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.pc{display:grid; grid-template-columns:1fr auto 1fr auto; gap:8px; align-items:center; margin:8px 0}
+.pc span{color:var(--muted); font-size:14px; white-space:nowrap}
+.pc output{grid-column:1 / -1; font-size:20px; font-weight:800}
+.card2{border:1px solid var(--line); border-radius:var(--r); padding:16px; background:var(--card); margin-bottom:12px}
+.card2 h3{margin:0 0 6px; font-size:15px}
+</style>
+</head>
+<body data-blog="aicoinlab">
+<main>
+<h1>할인율 · 퍼센트 계산기</h1>
+<p class="lead">할인가, 할인율, 쿠폰 중복 할인, 그리고 자주 쓰는 퍼센트 계산을 한 곳에서 합니다. 숫자에 쉼표를 넣어도 됩니다.</p>
+<div class="seg" role="group" aria-label="계산 종류" id="mode">
+  <button type="button" data-v="price" aria-pressed="true">할인가 구하기</button>
+  <button type="button" data-v="rate" aria-pressed="false">할인율 구하기</button>
+  <button type="button" data-v="multi" aria-pressed="false">중복 할인</button>
+</div>
+<div class="row">
+  <div class="field"><label for="orig">정가 (원)</label><input id="orig" type="text" inputmode="numeric" value="59,000"></div>
+  <div class="field" id="fRate"><label for="rate">할인율 (%)</label><input id="rate" type="number" step="0.1" inputmode="decimal" value="30"></div>
+  <div class="field" id="fSale" hidden><label for="sale">판매가 (원)</label><input id="sale" type="text" inputmode="numeric" value="41,300"></div>
+  <div class="field" id="fMulti" hidden><label for="rates">할인율들 (%, 쉼표로)</label><input id="rates" type="text" value="20, 10, 5"></div>
+</div>
+<div class="panel"><div class="big" id="main"></div><div class="note" id="sub" style="margin-top:6px"></div></div>
+<table class="kv" id="kv"></table>
+<h2 id="tblTitle">할인율별 가격</h2>
+<div class="tbl-wrap"><table class="list" id="list"><thead><tr><th>할인율</th><th>할인 금액</th><th>판매가</th></tr></thead><tbody></tbody></table></div>
+
+<h2>퍼센트 계산기</h2>
+<div class="card2"><h3>A의 B%는?</h3>
+  <div class="pc"><input id="p1a" type="text" inputmode="decimal" value="200,000"><span>의</span><input id="p1b" type="text" inputmode="decimal" value="15"><span>%</span><output id="p1o"></output></div></div>
+<div class="card2"><h3>A는 B의 몇 %?</h3>
+  <div class="pc"><input id="p2a" type="text" inputmode="decimal" value="30"><span>은(는)</span><input id="p2b" type="text" inputmode="decimal" value="120"><span>의</span><output id="p2o"></output></div></div>
+<div class="card2"><h3>A에서 B로 바뀌면 몇 % 증가·감소?</h3>
+  <div class="pc"><input id="p3a" type="text" inputmode="decimal" value="50,000"><span>→</span><input id="p3b" type="text" inputmode="decimal" value="65,000"><span></span><output id="p3o"></output></div></div>
+<div class="card2"><h3>A를 B% 늘리거나 줄이면?</h3>
+  <div class="pc"><input id="p4a" type="text" inputmode="decimal" value="1,000,000"><span>을(를)</span><input id="p4b" type="text" inputmode="decimal" value="-12"><span>%</span><output id="p4o"></output></div></div>
+
+<h2>계산 기준 안내</h2>
+<div class="note">
+  <p>할인가 = 정가 × (1 − 할인율), 할인율 = (정가 − 판매가) ÷ 정가 × 100. 원 단위 미만은 반올림했습니다.</p>
+  <p><b>중복 할인</b>은 할인율을 더하지 않고 차례로 곱합니다. 20%와 10%를 연달아 받으면 30%가 아니라 1 − 0.8 × 0.9 = <b>28%</b> 할인입니다. 쇼핑몰 쿠폰은 적용 순서(정가 기준 / 할인가 기준)에 따라 금액이 달라질 수 있으니 결제 화면에서 확인하세요.</p>
+  <p>증감률 = (바뀐 값 − 처음 값) ÷ 처음 값 × 100. 같은 비율이라도 올랐다 내리면 원래 값으로 돌아오지 않습니다(예: 50% 오른 뒤 50% 내리면 처음의 75%).</p>
+</div>
+</main>
+<script src="/assets/site.js"></script>
+<script>
+let mode = 'price';
+const num = s => { const v = parseFloat(String(s).replace(/[^\d.\-]/g, '')); return isNaN(v) ? 0 : v; };
+const won = n => fmt(n) + '원';
+const pf = n => (Math.round(n * 100) / 100).toLocaleString('ko-KR', {maximumFractionDigits: 2});
+function calc(){
+  const o = num($('orig').value);
+  let sale, rate, lines = [];
+  if (mode === 'price'){
+    rate = num($('rate').value); sale = Math.round(o * (1 - rate / 100));
+    $('main').innerHTML = `${won(sale)}<small>${pf(rate)}% 할인가</small>`;
+    $('sub').textContent = `${won(o - sale)} 아낌`;
+  } else if (mode === 'rate'){
+    sale = num($('sale').value); rate = o ? (o - sale) / o * 100 : 0;
+    $('main').innerHTML = `${pf(rate)}%<small>${rate >= 0 ? '할인' : '인상'}</small>`;
+    $('sub').textContent = `정가 ${won(o)} → 판매가 ${won(sale)} (${won(Math.abs(o - sale))} ${rate >= 0 ? '할인' : '비쌈'})`;
+  } else {
+    const rs = $('rates').value.split(/[,\s]+/).map(num).filter(x => x);
+    let p = o;
+    lines = rs.map((r, i) => { const before = p; p = Math.round(p * (1 - r / 100)); return [`${i + 1}번째 ${pf(r)}% 할인`, `${won(before)} → ${won(p)}`]; });
+    sale = p; rate = o ? (o - sale) / o * 100 : 0;
+    $('main').innerHTML = `${won(sale)}<small>실제 할인율 ${pf(rate)}%</small>`;
+    $('sub').textContent = rs.length > 1 ? `할인율을 그냥 더하면 ${pf(rs.reduce((a, b) => a + b, 0))}%지만, 차례로 적용하면 ${pf(rate)}%입니다.` : '';
+  }
+  $('kv').innerHTML = [['정가', won(o)], ...lines, ['할인 금액', won(o - sale)], ['판매가', won(sale)]].map(([k, v]) => `<tr><th>${k}</th><td>${v}</td></tr>`).join('');
+  $('list').querySelector('tbody').innerHTML = [5, 10, 15, 20, 25, 30, 40, 50, 60, 70].map(r => { const s = Math.round(o * (1 - r / 100));
+    return `<tr><td>${r}%</td><td>${fmt(o - s)}</td><td><b>${fmt(s)}</b></td></tr>`; }).join('');
+  $('tblTitle').textContent = `정가 ${won(o)}의 할인율별 가격`;
+}
+function pcts(){
+  const v = id => num($(id).value);
+  $('p1o').textContent = `= ${pf(v('p1a') * v('p1b') / 100)}`;
+  $('p2o').textContent = v('p2b') ? `= ${pf(v('p2a') / v('p2b') * 100)}%` : '= -';
+  const d = v('p3a') ? (v('p3b') - v('p3a')) / Math.abs(v('p3a')) * 100 : 0;
+  $('p3o').textContent = v('p3a') ? `= ${d >= 0 ? '+' : ''}${pf(d)}% (${d >= 0 ? '증가' : '감소'}, 차이 ${pf(v('p3b') - v('p3a'))})` : '= -';
+  $('p4o').textContent = `= ${pf(v('p4a') * (1 + v('p4b') / 100))}`;
+}
+const commaInput = el => el.addEventListener('input', () => {   // 금액 칸에 쉼표 자동
+  const raw = el.value.replace(/[^\d]/g, ''); el.value = raw ? Number(raw).toLocaleString('ko-KR') : '';
+});
+['orig', 'sale'].forEach(id => commaInput($(id)));
+['orig', 'rate', 'sale', 'rates'].forEach(id => $(id).addEventListener('input', calc));
+['p1a', 'p1b', 'p2a', 'p2b', 'p3a', 'p3b', 'p4a', 'p4b'].forEach(id => $(id).addEventListener('input', pcts));
+document.querySelectorAll('#mode button').forEach(b => b.onclick = () => {
+  mode = b.dataset.v; document.querySelectorAll('#mode button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  $('fRate').hidden = mode !== 'price'; $('fSale').hidden = mode !== 'rate'; $('fMulti').hidden = mode !== 'multi';
+  calc();
+});
+calc(); pcts();
+</script>
+</body>
+</html>

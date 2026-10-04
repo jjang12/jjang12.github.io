@@ -19,11 +19,12 @@ const SITE = {
       {p: '/pdf-merge/', t: 'PDF 합치기', i: 'files'},
       {p: '/qr/', t: 'QR 코드', i: 'qr-code'},
     ]},
-    {name: '날짜', icon: 'calendar', tone: 'amber', items: [
+    {name: '날짜·시간', icon: 'calendar', tone: 'amber', items: [
       {p: '/age/', t: '만 나이', i: 'cake'},
       {p: '/dday/', t: '날짜·D-day', i: 'calendar-days'},
       {p: '/lunar/', t: '음력 양력 변환', i: 'moon'},
       {p: '/holidays/', t: '공휴일 달력', i: 'calendar-heart'},
+      {p: '/timer/', t: '타이머·스톱워치', i: 'timer'},
     ]},
     {name: '월급·세금', icon: 'receipt', tone: 'green', items: [
       {p: '/salary/', t: '연봉 실수령액', i: 'wallet'},
@@ -47,6 +48,7 @@ const SITE = {
       {p: '/power/', t: '전기요금', i: 'plug-zap'},
       {p: '/parcel/', t: '택배 조회', i: 'package'},
       {p: '/ladder/', t: '사다리게임', i: 'shuffle'},
+      {p: '/discount/', t: '할인율·퍼센트', i: 'tag'},
     ]},
   ],
   blogs: {
@@ -116,8 +118,10 @@ const ICONS = {
   'shuffle': '<path d="m18 14 4 4-4 4"/><path d="m18 2 4 4-4 4"/><path d="M2 18h1.973a4 4 0 0 0 3.3-1.7l5.454-8.6a4 4 0 0 1 3.3-1.7H22"/><path d="M2 6h1.972a4 4 0 0 1 3.6 2.2"/><path d="M22 18h-6.041a4 4 0 0 1-3.3-1.8l-.359-.45"/>',
   'sparkles': '<path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/><path d="M20 2v4"/><path d="M22 4h-4"/><circle cx="4" cy="20" r="2"/>',
   'swords': '<path d="m13 19 6-6"/><path d="M14.5 17.5 3.586 6.586A2 2 0 013 5.172V3h2.172a2 2 0 011.414.586L17.5 14.5"/><path d="m14.828 6.172 2.586-2.586A2 2 0 0118.828 3H21v2.172a2 2 0 01-.586 1.414l-2.586 2.586"/><path d="m16 16 4 4"/><path d="m19 21 2-2"/><path d="m5 14 4 4"/><path d="m5 21-2-2"/><path d="M7.5 16.5 4 20"/>',
+  'tag': '<path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/>',
   'target': '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
   'truck': '<path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/>',
+  'timer': '<line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/>',
   'type': '<path d="M12 4v16"/><path d="M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2"/><path d="M9 20h6"/>',
   'wallet': '<path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>',
   'x': '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',

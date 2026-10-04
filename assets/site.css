@@ -17,6 +17,7 @@
   }
 }
 *,*::before,*::after{box-sizing:inherit}
+[hidden]{display:none !important}   /* .field·.row 처럼 display 를 정한 요소도 hidden 이면 숨김 */
 html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + var(--head-h) + 8px)}
 body{margin:0; background:var(--paper); color:var(--ink);
   font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif; font-size:16px; line-height:1.6;

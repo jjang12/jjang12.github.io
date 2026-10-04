@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>타이머 · 스톱워치 - 온라인 알람 타이머, 3분·5분·10분, 랩 기록</title>
+<meta name="description" content="설치 없이 바로 쓰는 온라인 타이머와 스톱워치입니다. 1분·3분·5분·10분 빠른 설정, 끝나면 알람 소리, 전체 화면, 스톱워치 랩 기록을 지원합니다.">
+<meta name="keywords" content="타이머, 온라인 타이머, 스톱워치, 알람 타이머, 3분 타이머, 5분 타이머, 10분 타이머, 공부 타이머">
+<meta property="og:title" content="타이머 · 스톱워치 - 온라인 알람 타이머, 3분·5분·10분, 랩 기록">
+<meta property="og:description" content="설치 없이 바로 쓰는 온라인 타이머와 스톱워치입니다. 1분·3분·5분·10분 빠른 설정, 끝나면 알람 소리, 전체 화면, 스톱워치 랩 기록을 지원합니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjang12.github.io/timer/">
+<link rel="canonical" href="https://jjang12.github.io/timer/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.clock{position:relative; text-align:center; padding:28px 16px 22px; border-radius:20px; background:var(--card); border:1px solid var(--line); box-shadow:var(--shadow); margin:14px 0}
+.clock:fullscreen{display:flex; flex-direction:column; justify-content:center; border-radius:0; border:0}
+.digits{font-size:clamp(56px,14vw,120px); font-weight:800; letter-spacing:-0.02em; font-variant-numeric:tabular-nums; line-height:1.05}
+.clock:fullscreen .digits{font-size:22vw}
+.clock .ring{height:6px; border-radius:999px; background:var(--soft); overflow:hidden; margin:16px auto 0; max-width:520px}
+.clock .ring i{display:block; height:100%; width:100%; background:var(--blue); transition:width .25s linear}
+.clock.done{animation:flash .6s ease-in-out 6 alternate}
+@keyframes flash{to{background:color-mix(in srgb,var(--stamp) 22%,var(--card))}}
+.presets{display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin:6px 0 4px}
+.presets button{font:inherit; font-size:14px; font-weight:600; padding:7px 13px; border-radius:999px; border:1px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer}
+.presets button:hover{border-color:var(--blue); color:var(--blue)}
+.set{display:flex; gap:8px; justify-content:center; align-items:flex-end; flex-wrap:wrap; margin:10px 0}
+.set .field{margin:0; width:92px}
+.set input{text-align:center; font-size:20px; font-weight:700}
+.ctrl{display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:14px}
+.ctrl .btn{min-width:96px}
+#laps tr td:first-child{color:var(--muted)}
+@media (prefers-reduced-motion:reduce){ .clock.done{animation:none; background:color-mix(in srgb,var(--stamp) 18%,var(--card))} .clock .ring i{transition:none} }
+</style>
+</head>
+<body data-blog="jisik_plus">
+<main>
+<h1>타이머 · 스톱워치</h1>
+<p class="lead">시간을 고르고 시작을 누르세요. 끝나면 알람이 울립니다. 다른 탭으로 옮겨도 시간은 정확하게 흐릅니다.</p>
+<div class="seg" role="group" aria-label="모드" id="mode">
+  <button type="button" data-v="timer" aria-pressed="true">타이머</button>
+  <button type="button" data-v="stop" aria-pressed="false">스톱워치</button>
+</div>
+<div class="clock" id="clock">
+  <div class="digits" id="digits" role="timer" aria-live="off">05:00</div>
+  <div class="ring" id="ringBox"><i id="ring"></i></div>
+  <div id="timerSet">
+    <div class="set">
+      <div class="field"><label for="hh">시간</label><input id="hh" type="number" inputmode="numeric" min="0" max="23" value="0"></div>
+      <div class="field"><label for="mm">분</label><input id="mm" type="number" inputmode="numeric" min="0" max="59" value="5"></div>
+      <div class="field"><label for="ss">초</label><input id="ss" type="number" inputmode="numeric" min="0" max="59" value="0"></div>
+    </div>
+    <div class="presets" id="presets"></div>
+  </div>
+  <div class="ctrl">
+    <button type="button" class="btn" id="start">시작</button>
+    <button type="button" class="btn sub" id="lap" hidden>랩</button>
+    <button type="button" class="btn sub" id="reset">초기화</button>
+    <button type="button" class="btn sub" id="full">전체 화면</button>
+  </div>
+  <label class="note" style="display:block; margin-top:10px"><input type="checkbox" id="sound" checked> 끝나면 알람 소리</label>
+</div>
+<div class="tbl-wrap"><table class="list" id="laps" hidden><thead><tr><th>랩</th><th>구간</th><th>누적</th></tr></thead><tbody></tbody></table></div>
+<h2>안내</h2>
+<div class="note">
+  <p>시간은 시작한 시각을 기준으로 계산해서, 화면을 내리거나 다른 탭으로 옮겨도 늦어지지 않습니다. 알람 소리는 휴대폰 무음·방해 금지 모드에서는 나지 않을 수 있고, 타이머가 도는 동안에는 화면이 꺼지지 않게 요청합니다(지원하는 브라우저만).</p>
+  <p>키보드: <b>스페이스</b> 시작·멈춤, <b>R</b> 초기화, <b>L</b> 랩(스톱워치), <b>F</b> 전체 화면.</p>
+</div>
+</main>
+<script src="/assets/site.js"></script>
+<script>
+const PRESETS = [[60, '1분'], [180, '3분 (컵라면)'], [300, '5분'], [600, '10분'], [900, '15분'], [1500, '25분 (뽀모도로)'], [1800, '30분'], [3600, '1시간']];
+let mode = 'timer', running = false, startAt = 0, acc = 0, total = 300, iv = 0, laps = [], lastLap = 0, wake = null, actx = null;
+const two = n => String(n).padStart(2, '0');
+function show(ms){
+  if (mode === 'timer'){
+    const left = Math.max(Math.ceil(ms / 1000), 0), h = Math.floor(left / 3600), m = Math.floor(left % 3600 / 60), s = left % 60;
+    $('digits').textContent = (h ? h + ':' + two(m) : two(m)) + ':' + two(s);
+    $('ring').style.width = (total ? Math.max(ms, 0) / (total * 1000) * 100 : 0) + '%';
+    document.title = running ? `${$('digits').textContent} 남음 - 타이머` : '타이머 · 스톱워치 - 짱툴';
+  } else {
+    const cs = Math.floor(ms / 10), m = Math.floor(cs / 6000), s = Math.floor(cs % 6000 / 100), c = cs % 100;
+    $('digits').textContent = `${two(m)}:${two(s)}.${two(c)}`;
+  }
+}
+const elapsed = () => acc + (running ? Date.now() - startAt : 0);
+function tick(){
+  const e = elapsed();
+  if (mode === 'timer'){
+    const left = total * 1000 - e;
+    show(left);
+    if (left <= 0) finish();
+  } else show(e);
+}
+/* requestAnimationFrame 은 다른 탭으로 가면 멈춰서 알람이 안 울린다 → setInterval(배경에서도 1초 단위로는 돈다) */
+const loop = on => { clearInterval(iv); if (on) { iv = setInterval(tick, mode === 'stop' ? 47 : 200); tick(); } };
+function beep(){
+  if (!$('sound').checked) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    for (let i = 0; i < 6; i++){
+      const o = actx.createOscillator(), g = actx.createGain(), t = actx.currentTime + i * 0.5;
+      o.frequency.value = i % 2 ? 660 : 880; o.type = 'sine';
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.3, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.4);
+      o.connect(g).connect(actx.destination); o.start(t); o.stop(t + 0.42);
+    }
+  } catch {}
+  if (navigator.vibrate) navigator.vibrate([300, 150, 300, 150, 300]);
+}
+async function keepAwake(on){
+  try { if (on && 'wakeLock' in navigator) wake = await navigator.wakeLock.request('screen'); else if (!on && wake) { await wake.release(); wake = null; } } catch {}
+}
+function finish(){
+  running = false; acc = total * 1000; loop(false);
+  $('start').textContent = '시작'; show(0); keepAwake(false);
+  $('clock').classList.remove('done'); void $('clock').offsetWidth; $('clock').classList.add('done');
+  document.title = '⏰ 시간 끝! - 타이머'; beep(); toast('시간이 다 됐습니다');
+}
+function readSet(){
+  const h = +$('hh').value || 0, m = +$('mm').value || 0, s = +$('ss').value || 0;
+  total = Math.min(Math.max(h * 3600 + m * 60 + s, 0), 86399);
+}
+function toggle(){
+  if (actx && actx.state === 'suspended') actx.resume();
+  if (!actx) try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch {}   // 첫 클릭 때 소리 권한 열기(아이폰)
+  if (running){ acc = elapsed(); running = false; loop(false); $('start').textContent = '계속'; keepAwake(false); return; }
+  if (mode === 'timer'){
+    if (acc === 0 || acc >= total * 1000) { readSet(); acc = 0; }
+    if (!total) { toast('시간을 정해 주세요'); return; }
+  }
+  $('clock').classList.remove('done');
+  running = true; startAt = Date.now(); $('start').textContent = '멈춤'; keepAwake(true); loop(true);
+}
+function reset(){
+  running = false; acc = 0; loop(false); keepAwake(false); $('clock').classList.remove('done');
+  $('start').textContent = '시작'; laps = []; lastLap = 0; drawLaps();
+  if (mode === 'timer') { readSet(); show(total * 1000); } else show(0);
+  document.title = '타이머 · 스톱워치 - 짱툴';
+}
+function lap(){
+  if (mode !== 'stop' || !running) return;
+  const e = elapsed(); laps.unshift([laps.length + 1, e - lastLap, e]); lastLap = e; drawLaps();
+}
+function drawLaps(){
+  const f = ms => { const cs = Math.floor(ms / 10); return `${two(Math.floor(cs / 6000))}:${two(Math.floor(cs % 6000 / 100))}.${two(cs % 100)}`; };
+  $('laps').hidden = mode !== 'stop' || !laps.length;
+  $('laps').querySelector('tbody').innerHTML = laps.map(([n, d, t]) => `<tr><td>${n}</td><td>${f(d)}</td><td>${f(t)}</td></tr>`).join('');
+}
+$('presets').innerHTML = PRESETS.map(([s, t]) => `<button type="button" data-s="${s}">${t}</button>`).join('');
+$('presets').onclick = e => { const b = e.target.closest('button'); if (!b) return; const s = +b.dataset.s;
+  $('hh').value = Math.floor(s / 3600); $('mm').value = Math.floor(s % 3600 / 60); $('ss').value = s % 60; reset(); toggle(); };
+['hh', 'mm', 'ss'].forEach(id => $(id).addEventListener('input', () => { if (!running) { acc = 0; readSet(); show(total * 1000); } }));
+document.querySelectorAll('#mode button').forEach(b => b.onclick = () => {
+  mode = b.dataset.v; document.querySelectorAll('#mode button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  $('timerSet').hidden = mode !== 'timer'; $('ringBox').hidden = mode !== 'timer'; $('lap').hidden = mode !== 'stop'; $('sound').parentElement.hidden = mode !== 'timer';
+  reset();
+});
+$('start').onclick = toggle; $('reset').onclick = reset; $('lap').onclick = lap;
+$('full').onclick = () => { const c = $('clock'); if (document.fullscreenElement) document.exitFullscreen(); else if (c.requestFullscreen) c.requestFullscreen().catch(() => {}); };
+document.addEventListener('keydown', e => {
+  if (e.target.matches('input, textarea, select')) return;
+  if (e.code === 'Space') { e.preventDefault(); toggle(); }
+  else if (e.key === 'r' || e.key === 'R') reset();
+  else if (e.key === 'l' || e.key === 'L') lap();
+  else if (e.key === 'f' || e.key === 'F') $('full').click();
+});
+document.addEventListener('visibilitychange', () => { if (!document.hidden && running) keepAwake(true); });
+reset();
+</script>
+</body>
+</html>
