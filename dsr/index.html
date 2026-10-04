@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DSR·LTV 계산기 2026 - 주택담보대출 한도, 스트레스 DSR 반영</title>
+<meta name="description" content="연소득, 집값, 지역(규제지역·수도권·지방), 주택 보유 상황을 넣으면 LTV·스트레스 DSR·주담대 한도 규제를 함께 따져 받을 수 있는 최대 주택담보대출을 계산합니다.">
+<meta name="keywords" content="DSR 계산기, DSR계산기, LTV 계산기, 주택담보대출 한도 계산, 스트레스 DSR, 주담대 한도, LTV DSR 계산">
+<meta property="og:title" content="DSR·LTV 계산기 2026 - 주택담보대출 한도, 스트레스 DSR 반영">
+<meta property="og:description" content="연소득, 집값, 지역(규제지역·수도권·지방), 주택 보유 상황을 넣으면 LTV·스트레스 DSR·주담대 한도 규제를 함께 따져 받을 수 있는 최대 주택담보대출을 계산합니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjang12.github.io/dsr/">
+<link rel="canonical" href="https://jjang12.github.io/dsr/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+#lim tr.bind th,#lim tr.bind td{color:var(--stamp); font-weight:800}
+.warn{color:var(--warn); font-weight:600}
+.asof{display:inline-block; font-size:12px; font-weight:700; color:var(--warn); background:color-mix(in srgb,var(--warn) 12%,transparent); padding:2px 8px; border-radius:999px; margin-bottom:10px}
+</style>
+</head>
+<body data-blog="aicoinlab">
+<main>
+<h1>DSR·LTV 계산기</h1>
+<p class="lead">연소득과 집값, 지역, 주택 보유 상황을 넣으면 LTV·스트레스 DSR·주담대 한도 세 가지 중 가장 낮은 금액으로 받을 수 있는 최대 주택담보대출을 계산합니다.</p>
+<span class="asof">2026년 10월 기준 규제 · 바뀌면 다시 확인하세요</span>
+<div class="row">
+  <div class="field"><label for="inc">연소득 (세전, 만원)</label><input id="inc" type="number" inputmode="numeric" value="7000"></div>
+  <div class="field"><label for="price">집값 (매매가·KB시세, 만원)</label><input id="price" type="number" inputmode="numeric" value="80000"></div>
+</div>
+<div class="row">
+  <div class="field"><label for="region">집이 있는 지역</label><select id="region">
+    <option value="reg">규제지역 (서울 전역·경기 12곳)</option>
+    <option value="metro">수도권 비규제지역 (그 밖의 경기·인천)</option>
+    <option value="local">지방 (수도권 밖)</option>
+  </select></div>
+  <div class="field"><label for="owner">주택 보유 상황</label><select id="owner">
+    <option value="none">무주택</option>
+    <option value="first">생애최초 구입</option>
+    <option value="one">1주택 (기존 집 처분 조건)</option>
+    <option value="multi">2주택 이상</option>
+  </select></div>
+</div>
+<div class="row">
+  <div class="field"><label for="rate">주담대 금리 (%)</label><input id="rate" type="number" step="0.01" inputmode="decimal" value="4.0"></div>
+  <div class="field"><label for="yrs">대출 기간 (년)</label><select id="yrs"><option>10</option><option>20</option><option selected>30</option><option>40</option></select></div>
+  <div class="field"><label for="stress">스트레스 금리 (%p, 자동)</label><input id="stress" type="number" step="0.01" inputmode="decimal"></div>
+</div>
+<div class="row">
+  <div class="field"><label for="bank">대출받는 곳</label><select id="bank"><option value="40">은행 (DSR 40%)</option><option value="50">2금융권 (DSR 50%)</option></select></div>
+  <div class="field"><label for="debt">기존 대출 1년 원리금 (만원)</label><input id="debt" type="number" inputmode="numeric" value="0"></div>
+  <div class="field"><label for="credit">신용대출 잔액 (만원, 위와 따로)</label><input id="credit" type="number" inputmode="numeric" value="0"></div>
+</div>
+<div class="panel"><div class="big" id="main"></div><div class="note" id="sub" style="margin-top:6px"></div></div>
+<h2>세 가지 한도 비교</h2>
+<table class="kv" id="lim"></table>
+<h2>지역·보유 상황별 LTV (주택 구입 목적)</h2>
+<div class="tbl-wrap"><table class="list"><thead><tr><th>구분</th><th>규제지역</th><th>수도권 비규제</th><th>지방</th></tr></thead><tbody>
+  <tr><td>무주택</td><td>40%</td><td>70%</td><td>70%</td></tr>
+  <tr><td>생애최초</td><td>70%</td><td>70%</td><td>80%</td></tr>
+  <tr><td>1주택 (처분 조건)</td><td>40%</td><td>70%</td><td>60%</td></tr>
+  <tr><td>2주택 이상</td><td>대출 불가</td><td>대출 불가</td><td>60%</td></tr>
+</tbody></table></div>
+<h2>계산 기준 안내</h2>
+<div class="note">
+  <p><b>LTV</b>는 집값 대비 대출 비율, <b>DSR</b>은 연소득 대비 모든 대출의 한 해 원리금 비율입니다. 새 주담대의 원리금은 실제 금리에 <b>스트레스 금리</b>를 더한 금리로 원리금균등 상환을 가정해 계산하고, 신용대출은 잔액을 5년에 나눠 갚는다고 보고(산정만기 5년) 실제 금리 대신 5%를 가정했습니다.</p>
+  <p>스트레스 금리(2026년 10월): 수도권·규제지역 주담대 3.0%p(2025년 10·15 대책으로 1.5%p에서 상향), 지방 주담대 0.75%p(3단계 1.5%p 적용을 2026년 말까지 유예). 변동금리 기준이며, 혼합형·주기형은 고정 기간에 따라 20~100%만 반영되니 은행 안내 값으로 바꿔 넣으세요.</p>
+  <p><b>주담대 한도</b>: 수도권·규제지역에서 집을 살 때는 집값 15억 원 이하 최대 6억, 15억~25억 4억, 25억 초과 2억 원입니다. 규제지역은 서울 25개 구 전역과 경기 과천·광명·성남(분당·수정·중원)·수원(영통·장안·팔달)·안양 동안·용인 수지·의왕·하남 12곳입니다. 수도권에서 1주택자는 기존 집을 정해진 기간 안에 팔아야 하고, 다주택자는 주택 구입용 주담대를 받을 수 없습니다.</p>
+  <p>규제는 자주 바뀌고 은행마다 소득 인정 방식·만기·금리가 달라 실제 한도와 차이가 납니다. 디딤돌·보금자리론 같은 정책대출은 별도 기준이 적용됩니다. 대출 상담 전 참고용으로만 쓰세요.</p>
+</div>
+</main>
+<script src="/assets/site.js"></script>
+<script>
+const LTV = {reg: {none: .4, first: .7, one: .4, multi: 0}, metro: {none: .7, first: .7, one: .7, multi: 0}, local: {none: .7, first: .8, one: .6, multi: .6}};
+const STRESS = {reg: 3.0, metro: 3.0, local: 0.75};
+const MAN = 1e4;
+const annuity = (P, r, n) => r ? P * r / (1 - Math.pow(1 + r, -n)) : P / n;      // 월 상환액
+const principalOf = (M, r, n) => r ? M * (1 - Math.pow(1 + r, -n)) / r : M * n;  // 월 상환액 → 원금
+function capOf(region, owner, price){
+  if (region === 'local') return Infinity;
+  if (owner === 'multi') return 0;
+  const c = price <= 15e8 ? 6e8 : price <= 25e8 ? 4e8 : 2e8;
+  return owner === 'first' ? Math.min(c, 6e8) : c;
+}
+let stressTouched = false;
+function calc(){
+  const region = $('region').value, owner = $('owner').value;
+  if (!stressTouched) $('stress').value = STRESS[region];
+  const inc = (parseFloat($('inc').value) || 0) * MAN, price = (parseFloat($('price').value) || 0) * MAN;
+  const rate = (parseFloat($('rate').value) || 0) / 100, stress = (parseFloat($('stress').value) || 0) / 100;
+  const n = +$('yrs').value * 12, dsrLim = +$('bank').value / 100;
+  const existing = (parseFloat($('debt').value) || 0) * MAN + (parseFloat($('credit').value) || 0) * MAN * (1 / 5 + 0.05);
+  const ltvR = LTV[region][owner];
+  const byLtv = price * ltvR;
+  const cap = capOf(region, owner, price);
+  const room = Math.max(inc * dsrLim - existing, 0);                    // 새 주담대에 쓸 수 있는 1년 원리금
+  const byDsr = principalOf(room / 12, (rate + stress) / 12, n);
+  const lims = [['LTV ' + Math.round(ltvR * 100) + '%', byLtv], ['스트레스 DSR ' + Math.round(dsrLim * 100) + '%', byDsr], ['주담대 한도 규제', cap]];
+  const best = Math.max(Math.floor(Math.min(byLtv, byDsr, cap) / 1e6 + 1e-9) * 1e6, 0);   // 100만 원 단위 내림 (1e-9: 0.7 × 7억 소수 오차)
+  const bindI = lims.reduce((bi, x, i) => x[1] < lims[bi][1] ? i : bi, 0);
+  const monthly = annuity(best, rate / 12, n);
+  const dsrNow = inc ? (existing + annuity(best, (rate + stress) / 12, n) * 12) / inc * 100 : 0;
+  if (!ltvR) {
+    $('main').innerHTML = '<span class="warn">주택 구입용 주담대 불가</span>';
+    $('sub').textContent = '수도권·규제지역에서 2주택 이상이면 집을 사기 위한 주택담보대출을 받을 수 없습니다.';
+  } else {
+    $('main').innerHTML = `최대 약 ${fmt(best / MAN)}만원<small>${lims[bindI][0]}에서 막힘</small>`;
+    $('sub').textContent = `월 상환액 약 ${fmt(monthly)}원 (금리 ${(rate * 100).toFixed(2)}%, ${n / 12}년 원리금균등) · 스트레스 DSR ${dsrNow.toFixed(1)}% · 집값의 ${price ? (best / price * 100).toFixed(1) : 0}%`;
+  }
+  $('lim').innerHTML = lims.map(([k, v], i) => `<tr${i === bindI && ltvR ? ' class="bind"' : ''}><th>${k}</th><td>${v === Infinity ? '해당 없음' : `${fmt(Math.max(v, 0) / MAN)}만원`}</td></tr>`).join('') +
+    `<tr><th>DSR 계산 금리 (금리 + 스트레스)</th><td>${((rate + stress) * 100).toFixed(2)}%</td></tr>` +
+    `<tr><th>기존 대출 1년 원리금 (신용대출 포함)</th><td>${fmt(existing / MAN)}만원</td></tr>`;
+}
+$('stress').addEventListener('input', () => { stressTouched = true; calc(); });
+$('region').addEventListener('input', () => { stressTouched = false; calc(); });
+['inc', 'price', 'owner', 'rate', 'yrs', 'bank', 'debt', 'credit'].forEach(id => $(id).addEventListener('input', calc));
+calc();
+</script>
+</body>
+</html>
