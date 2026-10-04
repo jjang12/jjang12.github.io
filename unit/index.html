@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>단위 변환기 - 인치 센치, 파운드 kg, 화씨 섭씨, 온스·근·돈 변환</title>
+<meta name="description" content="길이(인치·센치·피트·자), 무게(파운드·kg·온스·근·돈), 넓이, 부피, 온도(화씨·섭씨), 속도, 데이터 단위를 한 번에 변환합니다. TV·모니터 인치별 센치 표도 있습니다.">
+<meta name="keywords" content="단위 변환, 단위변환기, 인치 센치 변환, 인치 cm, 파운드 kg 변환, 화씨 섭씨 변환, 온스 그램">
+<meta property="og:title" content="단위 변환기 - 인치 센치, 파운드 kg, 화씨 섭씨, 온스·근·돈 변환">
+<meta property="og:description" content="길이(인치·센치·피트·자), 무게(파운드·kg·온스·근·돈), 넓이, 부피, 온도(화씨·섭씨), 속도, 데이터 단위를 한 번에 변환합니다. TV·모니터 인치별 센치 표도 있습니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjang12.github.io/unit/">
+<link rel="canonical" href="https://jjang12.github.io/unit/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.cats{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:16px}
+.cats button{font:inherit; font-size:14px; font-weight:600; padding:7px 14px; border-radius:999px; border:1px solid var(--line); background:var(--paper); color:var(--muted); cursor:pointer}
+.cats button[aria-pressed="true"]{background:var(--ink); color:var(--paper); border-color:var(--ink)}
+#out tr{cursor:pointer}
+#out tr.on td{background:var(--blue-soft); font-weight:700}
+#out td:last-child{font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body data-blog="jisik_plus">
+<main>
+<h1>단위 변환기</h1>
+<p class="lead">숫자와 단위를 고르면 같은 종류의 모든 단위로 한 번에 바꿔 보여 줍니다. 표의 줄을 누르면 그 단위로 다시 계산합니다.</p>
+<div class="cats" id="cats" role="group" aria-label="단위 종류"></div>
+<div class="row">
+  <div class="field"><label for="val">값</label><input id="val" type="number" step="any" inputmode="decimal" value="1"></div>
+  <div class="field"><label for="from">단위</label><select id="from"></select></div>
+</div>
+<div class="panel"><div class="big" id="main"></div></div>
+<div class="tbl-wrap"><table class="list" id="out"><thead><tr><th>단위</th><th>값</th></tr></thead><tbody></tbody></table></div>
+<h2>TV·모니터 인치별 크기</h2>
+<div class="tbl-wrap"><table class="list" id="tv"><thead><tr><th>화면 (대각선)</th><th>대각선 cm</th><th>가로 × 세로 (16:9)</th></tr></thead><tbody></tbody></table></div>
+<h2>계산 기준 안내</h2>
+<div class="note">
+  <p>1인치 = 2.54cm, 1피트 = 30.48cm, 1마일 = 1.609344km, 1파운드 = 453.59237g, 1온스 = 28.349523g으로 국제 표준값을 씁니다. 부피의 갤런·컵·액량 온스는 미국 단위입니다.</p>
+  <p>한국 전통 단위: 1자(척) = 30.303cm, 1근 = 600g(채소·과일은 375g으로 쓰기도 함), 1돈 = 3.75g, 1냥 = 37.5g, 1평 = 3.3058㎡, 1되 = 1.8L입니다.</p>
+  <p>데이터 단위는 1KB = 1,024B로 계산합니다(저장장치 제조사는 1KB = 1,000B를 써서 표시 용량이 다르게 보일 수 있습니다).</p>
+</div>
+</main>
+<script src="/assets/site.js"></script>
+<script>
+/* 종류별 단위: [이름, 기준 단위로 바꾸는 배수]. 온도는 따로 계산 */
+const CATS = {
+  '길이': {base: 'm', def: 'in', u: [['mm', '밀리미터 (mm)', 1e-3], ['cm', '센티미터 (cm)', 1e-2], ['m', '미터 (m)', 1], ['km', '킬로미터 (km)', 1e3], ['in', '인치 (in)', 0.0254], ['ft', '피트 (ft)', 0.3048], ['yd', '야드 (yd)', 0.9144], ['mi', '마일 (mi)', 1609.344], ['ja', '자 (척)', 10 / 33]]},
+  '무게': {base: 'g', def: 'lb', u: [['mg', '밀리그램 (mg)', 1e-3], ['g', '그램 (g)', 1], ['kg', '킬로그램 (kg)', 1e3], ['t', '톤 (t)', 1e6], ['oz', '온스 (oz)', 28.349523125], ['lb', '파운드 (lb)', 453.59237], ['don', '돈', 3.75], ['nyang', '냥', 37.5], ['geun', '근 (600g)', 600]]},
+  '넓이': {base: 'm2', def: 'py', u: [['cm2', '제곱센티미터 (㎠)', 1e-4], ['m2', '제곱미터 (㎡)', 1], ['py', '평', 400 / 121], ['ft2', '제곱피트 (ft²)', 0.09290304], ['a', '아르 (a)', 100], ['ha', '헥타르 (ha)', 1e4], ['ac', '에이커 (ac)', 4046.8564224], ['km2', '제곱킬로미터 (㎢)', 1e6]]},
+  '부피': {base: 'l', def: 'gal', u: [['ml', '밀리리터 (mL)', 1e-3], ['l', '리터 (L)', 1], ['m3', '세제곱미터 (㎥)', 1e3], ['floz', '액량 온스 (fl oz)', 0.0295735295625], ['cup', '컵 (US)', 0.2365882365], ['gal', '갤런 (US gal)', 3.785411784], ['doe', '되', 1.8]]},
+  '온도': {temp: true, def: 'f', u: [['c', '섭씨 (℃)'], ['f', '화씨 (℉)'], ['k', '켈빈 (K)']]},
+  '속도': {base: 'mps', def: 'kmh', u: [['mps', '초속 (m/s)', 1], ['kmh', '시속 (km/h)', 1 / 3.6], ['mph', '마일 시속 (mph)', 0.44704], ['kn', '노트 (kn)', 1852 / 3600]]},
+  '데이터': {base: 'b', def: 'gb', u: [['b', '바이트 (B)', 1], ['kb', '킬로바이트 (KB)', 1024], ['mb', '메가바이트 (MB)', 1024 ** 2], ['gb', '기가바이트 (GB)', 1024 ** 3], ['tb', '테라바이트 (TB)', 1024 ** 4]]},
+};
+let cat = '길이';
+const nf = n => { if (!isFinite(n)) return '-'; const a = Math.abs(n);
+  if (a !== 0 && (a < 1e-4 || a >= 1e12)) return n.toExponential(4);
+  return n.toLocaleString('ko-KR', {maximumFractionDigits: a < 1 ? 6 : a < 100 ? 4 : 2}); };
+const toC = (v, u) => u === 'c' ? v : u === 'f' ? (v - 32) * 5 / 9 : v - 273.15;
+const fromC = (c, u) => u === 'c' ? c : u === 'f' ? c * 9 / 5 + 32 : c + 273.15;
+function fillUnits(sel){
+  const C = CATS[cat];
+  $('from').innerHTML = C.u.map(([k, name]) => `<option value="${k}">${name}</option>`).join('');
+  $('from').value = sel || C.def;
+}
+function calc(){
+  const C = CATS[cat], v = parseFloat($('val').value), from = $('from').value;
+  const name = k => C.u.find(x => x[0] === k)[1];
+  if (isNaN(v)) { $('main').textContent = '숫자를 넣어 주세요'; return; }
+  const conv = C.temp ? k => fromC(toC(v, from), k) : k => v * C.u.find(x => x[0] === from)[2] / C.u.find(x => x[0] === k)[2];
+  const pairs = {in: 'cm', cm: 'in', lb: 'kg', kg: 'lb', f: 'c', c: 'f', py: 'm2', m2: 'py', oz: 'g', g: 'oz', ft: 'cm', mi: 'km', km: 'mi', gal: 'l', l: 'gal', kmh: 'mph', mph: 'kmh', gb: 'mb', ja: 'cm', geun: 'kg', don: 'g'};
+  const to = pairs[from] || C.u.find(x => x[0] !== from)[0];
+  $('main').innerHTML = `${nf(v)} ${name(from).replace(/ \(.*\)/, '')} = ${nf(conv(to))}<small>${name(to)}</small>`;
+  $('out').querySelector('tbody').innerHTML = C.u.map(([k, nm]) => `<tr data-k="${k}" data-v="${conv(k)}"${k === from ? ' class="on"' : ''}><td>${nm}</td><td>${nf(conv(k))}</td></tr>`).join('');
+}
+$('cats').innerHTML = Object.keys(CATS).map(c => `<button type="button" data-c="${c}" aria-pressed="${c === cat}">${c}</button>`).join('');
+$('cats').onclick = e => { const b = e.target.closest('button'); if (!b) return; cat = b.dataset.c;
+  $('cats').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); fillUnits(); calc(); };
+$('out').onclick = e => { const tr = e.target.closest('tr[data-k]'); if (!tr) return;
+  $('val').value = +(+tr.dataset.v).toPrecision(12); $('from').value = tr.dataset.k; calc(); };  // 화면의 반올림 값이 아니라 원래 값으로
+['val', 'from'].forEach(id => $(id).addEventListener('input', calc));
+fillUnits(); calc();
+$('tv').querySelector('tbody').innerHTML = [24, 27, 32, 43, 50, 55, 65, 75, 85, 98].map(i => {
+  const d = i * 2.54, w = d * 16 / Math.hypot(16, 9), h = d * 9 / Math.hypot(16, 9);
+  return `<tr><td>${i}인치</td><td>${d.toFixed(1)}cm</td><td>${w.toFixed(1)} × ${h.toFixed(1)}cm</td></tr>`;
+}).join('');
+</script>
+</body>
+</html>

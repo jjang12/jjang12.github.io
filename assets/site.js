@@ -25,6 +25,7 @@ const SITE = {
     {name: '월급·세금', icon: 'receipt', tone: 'green', items: [
       {p: '/salary/', t: '연봉 실수령액', i: 'wallet'},
       {p: '/severance/', t: '퇴직금', i: 'briefcase'},
+      {p: '/hourly/', t: '시급·주휴수당', i: 'clock'},
     ]},
     {name: '대출·금융', icon: 'landmark', tone: 'teal', items: [
       {p: '/loan/', t: '대출 이자', i: 'percent'},
@@ -35,6 +36,7 @@ const SITE = {
     {name: '생활', icon: 'house', tone: 'rose', items: [
       {p: '/bmi/', t: 'BMI·비만도', i: 'heart-pulse'},
       {p: '/pyeong/', t: '평수 변환', i: 'ruler'},
+      {p: '/unit/', t: '단위 변환', i: 'arrow-left-right'},
     ]},
   ],
   blogs: {
