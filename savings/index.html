@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>예금·적금 이자 계산기 - 단리·월복리, 세후 이자와 만기 수령액</title>
+<meta name="description" content="적금 월 납입액이나 예금 예치금, 기간, 금리를 넣으면 단리·월복리 이자와 이자소득세(15.4%·저율과세 1.4%·비과세)를 뺀 세후 이자, 만기 수령액을 계산합니다.">
+<meta name="keywords" content="적금 이자 계산기, 적금계산기, 예금 이자 계산기, 예금이자계산기, 이자계산기, 적금 만기 금액">
+<meta property="og:title" content="예금·적금 이자 계산기 - 단리·월복리, 세후 이자와 만기 수령액">
+<meta property="og:description" content="적금 월 납입액이나 예금 예치금, 기간, 금리를 넣으면 단리·월복리 이자와 이자소득세(15.4%·저율과세 1.4%·비과세)를 뺀 세후 이자, 만기 수령액을 계산합니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjang12.github.io/savings/">
+<link rel="canonical" href="https://jjang12.github.io/savings/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+<style>#list tr.on td{background:var(--blue-soft); font-weight:700}</style>
+</head>
+<body data-blog="aicoinlab">
+<main>
+<h1>예금·적금 이자 계산기</h1>
+<p class="lead">적금은 매달 넣는 금액, 예금은 한 번에 맡기는 금액을 넣으면 세후 이자와 만기에 받는 돈을 계산합니다.</p>
+<div class="seg" role="group" aria-label="상품 종류" id="kind">
+  <button type="button" data-v="saving" aria-pressed="true">적금</button>
+  <button type="button" data-v="deposit" aria-pressed="false">예금</button>
+</div>
+<div class="row">
+  <div class="field"><label for="amt" id="amtLabel">월 납입액 (만원)</label><input id="amt" type="number" inputmode="numeric" value="50"></div>
+  <div class="field"><label for="months">기간 (개월)</label><input id="months" type="number" inputmode="numeric" value="12"></div>
+  <div class="field"><label for="rate">연 금리 (%)</label><input id="rate" type="number" step="0.01" inputmode="decimal" value="3.5"></div>
+</div>
+<div class="row">
+  <div class="field"><label for="way">이자 계산 방식</label><select id="way"><option value="simple">단리</option><option value="compound">월복리</option></select></div>
+  <div class="field"><label for="tax">이자 과세</label><select id="tax"><option value="0.154">일반과세 (15.4%)</option><option value="0.014">조합 예탁금 저율과세 (1.4%)</option><option value="0">비과세</option></select></div>
+</div>
+<div class="panel"><div class="big" id="main"></div><div class="note" id="sub" style="margin-top:6px"></div></div>
+<table class="kv" id="kv"></table>
+<h2>금리별 만기 수령액 (같은 금액·기간·과세)</h2>
+<div class="tbl-wrap"><table class="list" id="list"><thead><tr><th>연 금리</th><th>세전 이자</th><th>세후 이자</th><th>만기 수령액</th></tr></thead><tbody></tbody></table></div>
+<h2>계산 기준 안내</h2>
+<div class="note">
+  <p><b>적금 단리</b>: 첫 달에 넣은 돈은 기간 전체, 마지막 달에 넣은 돈은 한 달치 이자만 붙습니다. 그래서 「연 3.5%」 적금 1년의 실제 이자는 원금 합계의 약 1.9% 수준입니다. 이자 = 월 납입액 × 연 금리 ÷ 12 × n(n+1)/2.</p>
+  <p><b>월복리</b>는 매달 붙은 이자에도 다시 이자가 붙는 방식입니다. <b>예금 단리</b> 이자 = 예치금 × 연 금리 × 개월 ÷ 12.</p>
+  <p>이자소득세는 일반 15.4%(소득세 14% + 지방소득세 1.4%)입니다. 농협·수협·신협·새마을금고 조합원(준조합원) 예탁금은 1인 3천만 원까지 농어촌특별세 1.4%만 내고, 비과세종합저축(65세 이상·장애인 등, 5천만 원 한도)은 이자 세금이 없습니다. 은행은 원 단위 절사·일할 계산 방식이 달라 몇 원~몇십 원 차이가 날 수 있습니다.</p>
+</div>
+</main>
+<script src="/assets/site.js"></script>
+<script>
+let kind = 'saving';
+function interest(kind, A, n, annual, way){
+  const r = annual / 100 / 12;
+  if (kind === 'saving'){
+    if (way === 'simple') return A * r * n * (n + 1) / 2;
+    let s = 0; for (let k = 1; k <= n; k++) s += A * (Math.pow(1 + r, k) - 1);
+    return s;
+  }
+  return way === 'simple' ? A * r * n : A * (Math.pow(1 + r, n) - 1);
+}
+function result(A, n, annual, way, tax){
+  const principal = kind === 'saving' ? A * n : A;
+  const pre = Math.floor(interest(kind, A, n, annual, way));
+  const t = floor10(pre * tax);
+  return {principal, pre, t, post: pre - t, total: principal + pre - t};
+}
+function calc(){
+  const A = (parseFloat($('amt').value) || 0) * 1e4;
+  const n = Math.min(Math.max(parseInt($('months').value, 10) || 1, 1), 600);
+  const annual = Math.max(parseFloat($('rate').value) || 0, 0);
+  const way = $('way').value, tax = parseFloat($('tax').value);
+  const r = result(A, n, annual, way, tax);
+  $('main').innerHTML = `만기 ${fmt(r.total)}원<small>세후 수령액</small>`;
+  $('sub').textContent = `원금 ${fmt(r.principal)}원 + 세후 이자 ${fmt(r.post)}원 (원금 대비 ${r.principal ? (r.post / r.principal * 100).toFixed(2) : 0}%)`;
+  $('kv').innerHTML = [['원금 합계', r.principal], ['세전 이자', r.pre], ['이자 과세', r.t], ['세후 이자', r.post]]
+    .map(([k, v]) => `<tr><th>${k}</th><td>${fmt(v)}원</td></tr>`).join('') + `<tr class="total"><th>만기 수령액</th><td>${fmt(r.total)}원</td></tr>`;
+  const rates = [2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 6.0, 7.0];
+  if (!rates.includes(annual) && annual > 0) { rates.push(annual); rates.sort((a, b) => a - b); }
+  $('list').querySelector('tbody').innerHTML = rates.map(x => { const q = result(A, n, x, way, tax);
+    return `<tr${x === annual ? ' class="on"' : ''}><td>${x}%</td><td>${fmt(q.pre)}</td><td>${fmt(q.post)}</td><td><b>${fmt(q.total)}</b></td></tr>`; }).join('');
+}
+document.querySelectorAll('#kind button').forEach(b => b.onclick = () => {
+  kind = b.dataset.v;
+  document.querySelectorAll('#kind button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  $('amtLabel').textContent = kind === 'saving' ? '월 납입액 (만원)' : '예치금 (만원)';
+  $('amt').value = kind === 'saving' ? 50 : 1000;
+  calc();
+});
+['amt', 'months', 'rate', 'way', 'tax'].forEach(id => $(id).addEventListener('input', calc));
+calc();
+</script>
+</body>
+</html>

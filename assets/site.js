@@ -28,10 +28,12 @@ const SITE = {
     ]},
     {name: '대출·금융', icon: 'landmark', tone: 'teal', items: [
       {p: '/loan/', t: '대출 이자', i: 'percent'},
+      {p: '/savings/', t: '예금·적금 이자', i: 'piggy-bank'},
       {p: '/money/', t: '금액 한글', i: 'banknote'},
       {p: '/liquidation/', t: '청산가·펀딩비', i: 'chart-candlestick'},
     ]},
     {name: '생활', icon: 'house', tone: 'rose', items: [
+      {p: '/bmi/', t: 'BMI·비만도', i: 'heart-pulse'},
       {p: '/pyeong/', t: '평수 변환', i: 'ruler'},
     ]},
   ],
