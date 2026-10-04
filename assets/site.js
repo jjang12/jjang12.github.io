@@ -100,9 +100,9 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
     <a class="side-home" href="/"${path === '/' ? ' aria-current="page"' : ''}>${icon('sparkles')}<span>전체 도구</span></a>
     ${SITE.groups.map(g => `<div class="side-group tone-${g.tone}">
       <p class="side-label">${icon(g.icon)}${g.name}</p>
-      ${g.items.map(it => `<a href="${it.p}"${it === curItem ? ' aria-current="page"' : ''}>${icon(it.i)}<span>${it.t}</span></a>`).join('')}
+      <div class="side-items">${g.items.map(it => `<a href="${it.p}"${it === curItem ? ' aria-current="page"' : ''}>${icon(it.i)}<span>${it.t}</span></a>`).join('')}</div>
     </div>`).join('')}
-    <div class="side-blogs"><p class="side-label">운영 블로그</p>${Object.entries(SITE.blogs).map(([k, b]) =>
+    <div class="side-blogs"><p class="side-label">추천 블로그</p>${Object.entries(SITE.blogs).map(([k, b]) =>
       `<a href="${b.url}" target="_blank" rel="noopener"><img src="/assets/img/profile-${k}.png" alt="" width="28" height="28"><span>${b.name}</span></a>`).join('')}</div>`;
   const dim = document.createElement('div');
   dim.className = 'nav-dim';
@@ -161,7 +161,7 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
   blogs.className = 'blogs';
   blogs.setAttribute('aria-labelledby', 'blogs-title');
   blogs.innerHTML = `<div class="blogs-in">
-    <p class="eyebrow">짱툴 운영자의 네이버 블로그</p>
+    <p class="eyebrow">짱툴 추천 블로그</p>
     <h2 id="blogs-title">도구만큼 쓸모 있는 정보, 블로그에서 이어집니다</h2>
     <div class="blog-cards">${order.map(k => { const b = SITE.blogs[k], on = k === blogKey && curItem; return `
       <a class="blog-card${on ? ' is-rel' : ''}" href="${b.url}" target="_blank" rel="noopener">
@@ -200,11 +200,11 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
       box.hidden = false;
     }
     if (bRight) {
-      const latest = order.flatMap(k => posts.filter(p => p.b === k).slice(0, 2));
+      const latest = order.flatMap(k => posts.filter(p => p.b === k).slice(0, 4));
       bRight.innerHTML = `<p class="rail-title">블로그 최신 글</p>${latest.map(p => card(p, 'post mini')).join('')}`;
     }
     if (home) {
-      home.innerHTML = Object.keys(SITE.blogs).flatMap(k => posts.filter(p => p.b === k).slice(0, 2)).map(p => card(p)).join('');
+      home.innerHTML = Object.keys(SITE.blogs).flatMap(k => posts.filter(p => p.b === k).slice(0, 4)).map(p => card(p)).join('');
       home.closest('section').hidden = false;
     }
   }).catch(() => {});
