@@ -57,8 +57,8 @@ const CATS = {
 };
 let cat = '길이';
 const nf = n => { if (!isFinite(n)) return '-'; const a = Math.abs(n);
-  if (a !== 0 && (a < 1e-4 || a >= 1e12)) return n.toExponential(4);
-  return n.toLocaleString('ko-KR', {maximumFractionDigits: a < 1 ? 6 : a < 100 ? 4 : 2}); };
+  if (a !== 0 && (a < 1e-8 || a >= 1e15)) return n.toExponential(4);
+  return n.toLocaleString('ko-KR', {maximumFractionDigits: a < 1e-3 ? 10 : a < 1 ? 6 : a < 100 ? 4 : 2}); };
 const toC = (v, u) => u === 'c' ? v : u === 'f' ? (v - 32) * 5 / 9 : v - 273.15;
 const fromC = (c, u) => u === 'c' ? c : u === 'f' ? c * 9 / 5 + 32 : c + 273.15;
 function fillUnits(sel){

@@ -55,6 +55,7 @@ const SITE = {
     right: 'POSTS',
   },
   coupang: false,
+  contact: ['kchi1114', 'naver.com'],  // 문의하기 메일 (아이디, 도메인)
 };
 
 /* 아이콘: Lucide (ISC License, https://lucide.dev) */
@@ -86,6 +87,7 @@ const ICONS = {
   'languages': '<path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/>',
   'layers': '<path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/>',
   'letter-text': '<path d="M15 5h6"/><path d="M15 12h6"/><path d="M3 19h18"/><path d="m3 12 3.553-7.724a.5.5 0 0 1 .894 0L11 12"/><path d="M3.92 10h6.16"/>',
+  'mail': '<path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/>',
   'menu': '<path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/>',
   'moon': '<path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/>',
   'omega': '<path d="M3 20h4.5a.5.5 0 0 0 .5-.5v-.282a.52.52 0 0 0-.247-.437 8 8 0 1 1 8.494-.001.52.52 0 0 0-.247.438v.282a.5.5 0 0 0 .5.5H21"/>',
@@ -133,7 +135,9 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
       <div class="side-items" id="sg${gi}">${g.items.map(it => `<a href="${it.p}"${it === curItem ? ' aria-current="page"' : ''}>${icon(it.i)}<span>${it.t}</span></a>`).join('')}</div>
     </div>`).join('')}
     <div class="side-blogs"><p class="side-label">추천 블로그</p>${Object.entries(SITE.blogs).map(([k, b]) =>
-      `<a href="${b.url}" target="_blank" rel="noopener"><img src="/assets/img/profile-${k}.png" alt="" width="28" height="28"><span>${b.name}</span></a>`).join('')}</div>`;
+      `<a href="${b.url}" target="_blank" rel="noopener"><img src="/assets/img/profile-${k}.png" alt="" width="28" height="28"><span>${b.name}</span></a>`).join('')}</div>
+    <div class="side-contact"><p class="side-label">문의하기</p><a href="mailto:${SITE.contact.join('@')}?subject=${encodeURIComponent('[짱툴] 문의')}">${icon('mail')}<span>${SITE.contact.join('@')}</span></a>
+      <p class="side-note">도구 오류 제보·기능 제안·제휴 문의</p></div>`;
   const dim = document.createElement('div');
   dim.className = 'nav-dim';
   document.body.prepend(head, nav, dim);
