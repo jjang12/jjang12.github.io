@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>2026·2027 공휴일 달력 - 대체공휴일, 연휴, 연차 쓰기 좋은 날</title>
+<meta name="description" content="2026년·2027년 공휴일과 대체공휴일, 설·추석 연휴를 달력으로 보여 주고 다음 공휴일까지 남은 날, 연휴 길이, 하루 연차로 길게 쉬는 날을 정리합니다. 2026년 제헌절 공휴일 반영.">
+<meta name="keywords" content="2026 공휴일, 2027 공휴일, 공휴일 달력, 대체공휴일, 빨간날 달력, 연휴 달력, 연차 쓰기 좋은 날">
+<meta property="og:title" content="2026·2027 공휴일 달력 - 대체공휴일, 연휴, 연차 쓰기 좋은 날">
+<meta property="og:description" content="2026년·2027년 공휴일과 대체공휴일, 설·추석 연휴를 달력으로 보여 주고 다음 공휴일까지 남은 날, 연휴 길이, 하루 연차로 길게 쉬는 날을 정리합니다. 2026년 제헌절 공휴일 반영.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjang12.github.io/holidays/">
+<link rel="canonical" href="https://jjang12.github.io/holidays/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.months{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px; margin-top:10px}
+.mon{border:1px solid var(--line); border-radius:12px; padding:12px; background:var(--card)}
+.mon h3{margin:0 0 8px; font-size:15px}
+.mon table{width:100%; border-collapse:collapse; table-layout:fixed; font-size:13px; text-align:center; font-variant-numeric:tabular-nums}
+.mon th{font-weight:600; color:var(--muted); padding:2px 0}
+.mon td{padding:3px 0; border-radius:6px}
+.mon .sun,.mon .hol{color:var(--stamp); font-weight:700}
+.mon .sat{color:var(--blue)}
+.mon .hol{background:color-mix(in srgb,var(--stamp) 12%,transparent)}
+.mon .today{outline:2px solid var(--ink); outline-offset:-2px}
+#list tr.past td{color:var(--muted)}
+#list tr.sub td:nth-child(3){color:var(--stamp)}
+</style>
+</head>
+<body data-blog="kkultiplab">
+<main>
+<h1>공휴일 달력</h1>
+<p class="lead">공휴일과 대체공휴일, 연휴를 한눈에 봅니다. 다음 공휴일까지 남은 날과 하루 연차로 길게 쉴 수 있는 날도 함께 정리했습니다.</p>
+<div class="seg" role="group" aria-label="연도" id="years"></div>
+<div class="panel"><div class="big" id="main"></div><div class="note" id="sub" style="margin-top:6px"></div></div>
+<h2 id="listTitle">공휴일 목록</h2>
+<div class="tbl-wrap"><table class="list" id="list"><thead><tr><th>날짜</th><th>요일</th><th>공휴일</th><th>남은 날</th></tr></thead><tbody></tbody></table></div>
+<h2>연휴 (주말 포함 3일 이상)</h2>
+<div class="tbl-wrap"><table class="list" id="long"><thead><tr><th>기간</th><th>쉬는 날</th><th>포함 공휴일</th></tr></thead><tbody></tbody></table></div>
+<h2>연차 하루로 길게 쉬는 날</h2>
+<p class="note" style="margin-top:-6px">평일 하루만 연차를 내면 공휴일·주말과 이어져 4일 이상 쉬는 날입니다.</p>
+<div class="tbl-wrap"><table class="list" id="bridge"><thead><tr><th>연차 낼 날</th><th>이어지는 휴일</th><th>쉬는 날</th></tr></thead><tbody></tbody></table></div>
+<h2 id="calTitle">달력</h2>
+<div class="months" id="months"></div>
+<h2>계산 기준 안내</h2>
+<div class="note">
+  <p>「공휴일에 관한 법률」과 「관공서의 공휴일에 관한 규정」 기준입니다. 설날·추석은 전날·당일·다음 날 3일이고, 일요일이나 다른 공휴일과 겹치면 대체공휴일이 생깁니다. 3·1절, 어린이날, 부처님오신날, 제헌절, 광복절, 개천절, 한글날, 성탄절은 토요일·일요일과 겹치면 다음 평일이 대체공휴일입니다. 신정과 현충일은 대체공휴일이 없습니다.</p>
+  <p>제헌절은 2026년부터 다시 공휴일이 되었습니다. 2026년 6월 3일 지방선거일, 2028년 4월 12일 국회의원 선거일을 넣었고, 정부가 따로 정하는 임시공휴일은 발표되면 반영합니다. 근로자의 날(5월 1일)은 공휴일이 아니라 근로자 유급휴일이라 목록에서 뺐습니다.</p>
+  <p>음력 날짜(설날·추석·부처님오신날)는 한국천문연구원 자료 기반 라이브러리 korean-lunar-calendar(MIT)로 계산합니다.</p>
+</div>
+</main>
+<script src="/assets/site.js"></script>
+<script src="/assets/vendor/korean-lunar-calendar.min.js"></script>
+<script>
+const cal = new KoreanLunarCalendar();
+const WEEK = '일월화수목금토', DAY = 864e5;
+/* 선거일·임시공휴일처럼 규칙으로 못 구하는 날 */
+const EXTRA = {'2026-06-03': '전국동시지방선거', '2028-04-12': '국회의원 선거'};
+const YEARS = [2026, 2027, 2028];
+const key = t => new Date(t).toISOString().slice(0, 10);
+const utc = (y, m, d) => Date.UTC(y, m - 1, d);
+const dow = t => new Date(t).getUTCDay();
+const lunar = (y, m, d) => { cal.setLunarDate(y, m, d, false); const s = cal.getSolarCalendar(); return utc(s.year, s.month, s.day); };
+function holidays(y){
+  const map = new Map(); // key -> {name, sub}
+  const add = (t, name, sub = false) => { const k = key(t); map.set(k, map.has(k) ? {name: map.get(k).name + ' · ' + name, sub: map.get(k).sub && sub} : {name, sub}); };
+  const fixed = [[1, 1, '신정', 0], [3, 1, '3·1절', 1], [5, 5, '어린이날', 1], [6, 6, '현충일', 0], [7, 17, '제헌절', y >= 2026 ? 1 : -1], [8, 15, '광복절', 1], [10, 3, '개천절', 1], [10, 9, '한글날', 1], [12, 25, '성탄절', 1]];
+  const subRule = []; // [날짜들, 이름, 'weekend'|'sunday']
+  for (const [m, d, name, s] of fixed) { if (s < 0) continue; add(utc(y, m, d), name); if (s) subRule.push([[utc(y, m, d)], name, 'weekend']); }
+  const seol = lunar(y, 1, 1), chu = lunar(y, 8, 15), budda = lunar(y, 4, 8);
+  const seolDays = [seol - DAY, seol, seol + DAY], chuDays = [chu - DAY, chu, chu + DAY];
+  seolDays.forEach((t, i) => add(t, i === 1 ? '설날' : '설날 연휴'));
+  chuDays.forEach((t, i) => add(t, i === 1 ? '추석' : '추석 연휴'));
+  add(budda, '부처님오신날');
+  subRule.push([seolDays, '설날', 'sunday'], [chuDays, '추석', 'sunday'], [[budda], '부처님오신날', 'weekend']);
+  for (const [k, name] of Object.entries(EXTRA)) if (k.startsWith(y)) add(Date.parse(k), name);
+  // 대체공휴일: 겹치는 공휴일 수만큼 다음 평일(공휴일 아닌 날)
+  const base = new Map(map);
+  for (const [days, name, rule] of subRule){
+    let need = 0;
+    for (const t of days){
+      const w = dow(t), overlapped = base.get(key(t)).name.includes(' · ');
+      if ((rule === 'weekend' && (w === 0 || w === 6)) || (rule === 'sunday' && w === 0) || overlapped) need = 1;
+    }
+    if (!need) continue;
+    let t = days[days.length - 1] + DAY;
+    while (dow(t) === 0 || dow(t) === 6 || map.has(key(t))) t += DAY;
+    map.set(key(t), {name: `대체공휴일 (${name})`, sub: true});
+  }
+  return [...map.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([k, v]) => ({k, t: Date.parse(k), ...v}));
+}
+const off = (set, t) => dow(t) === 0 || dow(t) === 6 || set.has(key(t));
+const fmtD = t => { const d = new Date(t); return `${d.getUTCMonth() + 1}월 ${d.getUTCDate()}일(${WEEK[d.getUTCDay()]})`; };
+function runs(set, y){ // 쉬는 날 묶음
+  const out = []; let s = null;
+  for (let t = utc(y, 1, 1) - 3 * DAY; t <= utc(y, 12, 31) + 3 * DAY; t += DAY){
+    if (off(set, t)) { if (s === null) s = t; }
+    else if (s !== null) { out.push([s, t - DAY]); s = null; }
+  }
+  return out;
+}
+let year;
+const todayT = (() => { const n = new Date(); return utc(n.getFullYear(), n.getMonth() + 1, n.getDate()); })();
+function render(){
+  const list = holidays(year), set = new Set(list.map(h => h.k));
+  const next = [...holidays(year), ...holidays(year + 1)].find(h => h.t >= todayT);
+  if (next) {
+    const dd = Math.round((next.t - todayT) / DAY);
+    $('main').innerHTML = dd === 0 ? `오늘은 ${next.name}<small>${fmtD(next.t)}</small>` : `${next.name}까지 D-${dd}<small>${fmtD(next.t)}</small>`;
+  }
+  const weekdayHol = list.filter(h => dow(h.t) !== 0 && dow(h.t) !== 6).length;
+  $('sub').textContent = `${year}년 공휴일 ${list.length}일 (평일에 쉬는 날 ${weekdayHol}일, 대체공휴일 ${list.filter(h => h.sub).length}일)`;
+  $('listTitle').textContent = `${year}년 공휴일 목록`;
+  $('list').querySelector('tbody').innerHTML = list.map(h => { const dd = Math.round((h.t - todayT) / DAY);
+    return `<tr class="${h.t < todayT ? 'past' : ''}${h.sub ? ' sub' : ''}"><td>${fmtD(h.t).replace(/\(.\)/, '')}</td><td>${WEEK[dow(h.t)]}</td><td>${h.name}</td><td>${dd < 0 ? '지남' : dd === 0 ? '오늘' : `D-${dd}`}</td></tr>`; }).join('');
+  // 다음 해 초까지 이어지는 연휴도 보이게, 이 해에 걸친 것만
+  const allSet = new Set([...holidays(year - 1), ...list, ...holidays(year + 1)].map(h => h.k));
+  const longs = runs(allSet, year).filter(([a, b]) => (b - a) / DAY + 1 >= 3 && list.some(h => h.t >= a && h.t <= b));
+  $('long').querySelector('tbody').innerHTML = longs.map(([a, b]) => `<tr><td>${fmtD(a)} ~ ${fmtD(b)}</td><td><b>${(b - a) / DAY + 1}일</b></td><td style="white-space:normal">${[...new Set(list.filter(h => h.t >= a && h.t <= b).map(h => h.name.replace(/ 연휴$/, '')))].join(', ')}</td></tr>`).join('');
+  // 연차 하루: 평일 하루를 쉬는 날로 바꾸면 4일 이상 이어지는 경우
+  const bridges = [];
+  for (let t = utc(year, 1, 1); t <= utc(year, 12, 31); t += DAY){
+    if (off(allSet, t)) continue;
+    let a = t, b = t;
+    while (off(allSet, a - DAY)) a -= DAY;
+    while (off(allSet, b + DAY)) b += DAY;
+    const len = (b - a) / DAY + 1;
+    const hasHol = list.some(h => h.t >= a && h.t <= b);
+    if (len >= 4 && hasHol) bridges.push([t, a, b, len]);
+  }
+  // 같은 공휴일에 붙는 앞날·뒷날 중 더 길게 쉬는 날 하나만(같으면 앞날)
+  const best = new Map();
+  for (const x of bridges){
+    const id = list.filter(h => h.t >= x[1] && h.t <= x[2]).map(h => h.k).join();
+    if (!best.has(id) || x[3] > best.get(id)[3]) best.set(id, x);
+  }
+  bridges.splice(0, bridges.length, ...best.values());
+  $('bridge').querySelector('tbody').innerHTML = bridges.length ? bridges.map(([t, a, b, len]) =>
+    `<tr><td><b>${fmtD(t)}</b></td><td style="white-space:normal">${[...new Set(list.filter(h => h.t >= a && h.t <= b).map(h => h.name.replace(/ 연휴$/, '')))].join(', ')}</td><td>${fmtD(a)} ~ ${fmtD(b)} <b>${len}일</b></td></tr>`).join('') : '<tr><td colspan="3">없습니다</td></tr>';
+  $('calTitle').textContent = `${year}년 달력`;
+  const names = new Map(list.map(h => [h.k, h.name]));
+  $('months').innerHTML = Array.from({length: 12}, (_, m) => {
+    const first = utc(year, m + 1, 1), days = new Date(Date.UTC(year, m + 1, 0)).getUTCDate();
+    let cells = '<tr>' + '<td></td>'.repeat(dow(first));
+    for (let d = 1; d <= days; d++){
+      const t = utc(year, m + 1, d), w = dow(t), k = key(t);
+      const cls = [names.has(k) ? 'hol' : w === 0 ? 'sun' : w === 6 ? 'sat' : '', t === todayT ? 'today' : ''].filter(Boolean).join(' ');
+      cells += `<td${cls ? ` class="${cls}"` : ''}${names.has(k) ? ` title="${names.get(k)}"` : ''}>${d}</td>`;
+      if (w === 6 && d < days) cells += '</tr><tr>';
+    }
+    return `<div class="mon"><h3>${m + 1}월</h3><table><thead><tr>${[...WEEK].map(x => `<th>${x}</th>`).join('')}</tr></thead><tbody>${cells}</tr></tbody></table></div>`;
+  }).join('');
+}
+const thisY = new Date().getFullYear();
+year = YEARS.includes(thisY) ? thisY : YEARS[0];
+$('years').innerHTML = YEARS.map(y => `<button type="button" data-y="${y}" aria-pressed="${y === year}">${y}년</button>`).join('');
+$('years').onclick = e => { const b = e.target.closest('button'); if (!b) return; year = +b.dataset.y;
+  $('years').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); render(); };
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>택배 조회 바로가기 - CJ대한통운·우체국·한진·롯데·로젠 송장번호 조회</title>
+<meta name="description" content="송장번호를 한 번 넣으면 CJ대한통운, 우체국, 한진, 롯데, 로젠, 경동, 합동, GS 반값택배, EMS 등 택배사 공식 조회 페이지로 바로 이동합니다. 번호는 자동으로 복사됩니다.">
+<meta name="keywords" content="택배조회, 택배 조회, 송장번호 조회, CJ대한통운 택배조회, 우체국택배조회, 롯데택배 배송조회, 한진택배 배송조회">
+<meta property="og:title" content="택배 조회 바로가기 - CJ대한통운·우체국·한진·롯데·로젠 송장번호 조회">
+<meta property="og:description" content="송장번호를 한 번 넣으면 CJ대한통운, 우체국, 한진, 롯데, 로젠, 경동, 합동, GS 반값택배, EMS 등 택배사 공식 조회 페이지로 바로 이동합니다. 번호는 자동으로 복사됩니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjang12.github.io/parcel/">
+<link rel="canonical" href="https://jjang12.github.io/parcel/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.carriers{display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:10px; margin-top:14px}
+.carriers a{display:flex; flex-direction:column; gap:2px; padding:14px; border-radius:12px; border:1px solid var(--line); background:var(--card); color:var(--ink); text-decoration:none; box-shadow:var(--shadow)}
+.carriers a:hover{border-color:var(--blue)}
+.carriers b{font-size:15px}
+.carriers small{font-size:12px; color:var(--muted)}
+.carriers .auto small{color:var(--good)}
+.btn.naver{background:#03C75A; box-shadow:0 4px 12px rgba(3,199,90,.25)}
+.recent{display:flex; flex-wrap:wrap; gap:6px; margin-top:8px}
+.recent button{font:inherit; font-size:13px; padding:4px 10px; border-radius:999px; border:1px solid var(--line); background:var(--paper); color:var(--muted); cursor:pointer}
+</style>
+</head>
+<body data-blog="kkultiplab">
+<main>
+<h1>택배 조회 바로가기</h1>
+<p class="lead">송장번호를 넣고 택배사를 누르면 공식 조회 페이지로 이동합니다. 번호는 자동으로 복사되니, 번호가 안 채워진 사이트에서는 붙여넣기만 하면 됩니다.</p>
+<div class="field"><label for="no">송장(운송장) 번호</label><input id="no" type="text" inputmode="numeric" placeholder="숫자만 넣어도 되고 - 가 있어도 됩니다" autocomplete="off"></div>
+<div class="recent" id="recent"></div>
+<div class="btns"><a class="btn naver" id="naver" href="#" target="_blank" rel="noopener">택배사 몰라도 네이버에서 조회</a></div>
+<p class="note">네이버 검색은 번호만으로 택배사를 찾아 바로 보여 주는 경우가 많습니다. 안 나오면 아래에서 택배사를 고르세요.</p>
+<div class="carriers" id="carriers"></div>
+<h2>안내</h2>
+<div class="note">
+  <p>짱툴은 조회 결과를 직접 가져오지 않고 각 택배사 공식 페이지로 연결만 합니다. 「번호 자동 입력」 표시가 있는 곳은 주소에 번호가 함께 넘어가고, 나머지는 페이지가 열리면 붙여넣기(Ctrl+V, 길게 눌러 붙여넣기) 하면 됩니다.</p>
+  <p>최근 조회한 번호는 이 브라우저에만 5개까지 남고, 어디에도 전송되지 않습니다. 쿠팡 로켓배송은 쿠팡 앱 「주문 목록」에서, 해외 직구는 판매처의 배송 추적 번호로 조회하세요.</p>
+</div>
+</main>
+<script src="/assets/site.js"></script>
+<script>
+/* [이름, 주소({n} = 번호), 번호 자동 입력 여부]. 2026-10 확인 */
+const CARRIERS = [
+  ['CJ대한통운', 'https://www.cjlogistics.com/ko/tool/parcel/tracking?gnbInvcNo={n}', true],
+  ['우체국택배', 'https://service.epost.go.kr/trace.RetrieveDomRigiTraceList.comm?sid1={n}', true],
+  ['로젠택배', 'https://www.ilogen.com/web/personal/trace/{n}', true],
+  ['한진택배', 'https://www.hanjin.com/kor/CMS/DeliveryMgr/WaybillResult.do?mCode=MN038&schLang=KR&wblnumText2={n}', false],
+  ['롯데택배', 'https://www.lotteglogis.com/home/reservation/tracking/linkView?InvNo={n}', false],
+  ['경동택배', 'https://kdexp.com/service/delivery/etc/delivery.do?barcode={n}', true],
+  ['합동택배', 'https://hdexp.co.kr/basic_delivery.hd?barcode={n}', true],
+  ['대신택배', 'https://www.ds3211.co.kr/freight/internalFreightSearch.ht?billno={n}', false],
+  ['일양로지스', 'https://www.ilyanglogis.co.kr/page/TrackingResult.do?trackingType=0&blNum={n}', false],
+  ['GS25 반값·편의점택배', 'https://www.cvsnet.co.kr/invoice/tracking.do?invoice_no={n}', true],
+  ['CU 편의점택배', 'https://www.cupost.co.kr/postbox/delivery/local.cupost', false],
+  ['우체국 EMS (국제)', 'https://service.epost.go.kr/trace.RetrieveEmsRigiTraceList.comm?POST_CODE={n}', true],
+];
+const clean = s => s.replace(/[^0-9A-Za-z]/g, '').toUpperCase();
+let recent = [];
+try { recent = JSON.parse(localStorage.getItem('jt-parcel') || '[]'); } catch {}
+function remember(n){
+  if (!n) return;
+  recent = [n, ...recent.filter(x => x !== n)].slice(0, 5);
+  try { localStorage.setItem('jt-parcel', JSON.stringify(recent)); } catch {}
+  showRecent();
+}
+function showRecent(){
+  $('recent').innerHTML = recent.length ? recent.map(n => `<button type="button" data-n="${n}">${n}</button>`).join('') : '';
+}
+function render(){
+  const n = clean($('no').value);
+  $('naver').href = 'https://search.naver.com/search.naver?query=' + encodeURIComponent('택배조회 ' + n);
+  $('carriers').innerHTML = CARRIERS.map(([name, url, auto], i) =>
+    `<a href="${url.replace('{n}', encodeURIComponent(n))}" target="_blank" rel="noopener" data-i="${i}"${auto ? ' class="auto"' : ''}><b>${name}</b><small>${auto ? '번호 자동 입력' : '열린 뒤 붙여넣기'}</small></a>`).join('');
+}
+const onGo = async () => { const n = clean($('no').value); if (!n) return; remember(n); if (await copyText(n)) toast('번호를 복사했습니다'); };
+$('carriers').addEventListener('click', onGo);
+$('naver').addEventListener('click', e => { if (!clean($('no').value)) { e.preventDefault(); $('no').focus(); toast('송장번호를 먼저 넣어 주세요'); } else onGo(); });
+$('carriers').addEventListener('click', e => { if (!clean($('no').value)) { e.preventDefault(); $('no').focus(); toast('송장번호를 먼저 넣어 주세요'); } }, true);
+$('recent').onclick = e => { const b = e.target.closest('button'); if (b) { $('no').value = b.dataset.n; render(); } };
+$('no').addEventListener('input', render);
+showRecent(); render();
+</script>
+</body>
+</html>
