@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>음력 양력 변환기 - 음력 생일 양력 날짜, 윤달, 간지·띠</title>
+<meta name="description" content="양력을 음력으로, 음력을 양력으로 바꿉니다. 윤달과 간지(육십갑자)·띠까지 보여 주고, 음력 생일이 앞으로 10년 동안 양력 며칠인지 한 번에 확인할 수 있습니다.">
+<meta name="keywords" content="음력 양력 변환기, 음력 양력 변환, 양력 음력 변환, 음력 생일 계산, 음력 변환기, 윤달">
+<meta property="og:title" content="음력 양력 변환기 - 음력 생일 양력 날짜, 윤달, 간지·띠">
+<meta property="og:description" content="양력을 음력으로, 음력을 양력으로 바꿉니다. 윤달과 간지(육십갑자)·띠까지 보여 주고, 음력 생일이 앞으로 10년 동안 양력 며칠인지 한 번에 확인할 수 있습니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjang12.github.io/lunar/">
+<link rel="canonical" href="https://jjang12.github.io/lunar/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.lunar-in{display:grid; grid-template-columns:1.2fr 1fr 1fr; gap:12px}
+#years tr.on td{background:var(--blue-soft); font-weight:700}
+.warn{color:var(--warn); font-weight:600}
+</style>
+</head>
+<body data-blog="kkultiplab">
+<main>
+<h1>음력 양력 변환기</h1>
+<p class="lead">양력과 음력을 서로 바꾸고, 윤달·간지·띠까지 보여 줍니다. 음력 생일은 아래 표에서 앞으로 10년치 양력 날짜를 바로 확인하세요.</p>
+<div class="seg" role="group" aria-label="변환 방향" id="dir">
+  <button type="button" data-v="s2l" aria-pressed="true">양력 → 음력</button>
+  <button type="button" data-v="l2s" aria-pressed="false">음력 → 양력</button>
+</div>
+<div id="solarBox"><div class="row">
+  <div class="field"><label for="sdate">양력 날짜</label><input id="sdate" type="date" min="1000-02-13" max="2050-12-31"></div>
+</div></div>
+<div id="lunarBox" hidden>
+  <div class="lunar-in">
+    <div class="field"><label for="ly">음력 연도</label><input id="ly" type="number" inputmode="numeric" value="1990"></div>
+    <div class="field"><label for="lm">월</label><select id="lm"></select></div>
+    <div class="field"><label for="ld">일</label><select id="ld"></select></div>
+  </div>
+  <label class="note"><input type="checkbox" id="leap"> 윤달</label>
+</div>
+<div class="panel"><div class="big" id="main"></div><div class="note" id="sub" style="margin-top:6px"></div></div>
+<table class="kv" id="kv"></table>
+<h2 id="yearsTitle">음력 생일의 양력 날짜 (앞으로 10년)</h2>
+<div class="tbl-wrap"><table class="list" id="years"><thead><tr><th>연도</th><th>양력 날짜</th><th>요일</th></tr></thead><tbody></tbody></table></div>
+<h2>계산 기준 안내</h2>
+<div class="note">
+  <p>한국천문연구원 음양력 자료를 바탕으로 한 오픈소스 라이브러리 korean-lunar-calendar(MIT 라이선스)를 사용합니다. 양력 1000년 2월 13일 ~ 2050년 12월 31일 범위를 변환할 수 있습니다.</p>
+  <p>윤달은 음력에서 한 해에 한 번 같은 달이 두 번 오는 것으로, 몇 년에 한 번 생깁니다(예: 2025년 윤6월). 윤달 생일은 그해에 윤달이 없으면 보통 평달 같은 날로 지냅니다.</p>
+  <p>간지는 연·월·일의 육십갑자이고, 띠는 음력 설을 기준으로 바뀝니다. 사주처럼 입춘·절기를 기준으로 하는 연주·월주와는 다를 수 있습니다.</p>
+</div>
+</main>
+<script src="/assets/site.js"></script>
+<script src="/assets/vendor/korean-lunar-calendar.min.js"></script>
+<script>
+const cal = new KoreanLunarCalendar();
+const WEEK = '일월화수목금토';
+const ANIMAL = {자: '쥐', 축: '소', 인: '호랑이', 묘: '토끼', 진: '용', 사: '뱀', 오: '말', 미: '양', 신: '원숭이', 유: '닭', 술: '개', 해: '돼지'};
+let dir = 's2l';
+const pad = n => String(n).padStart(2, '0');
+const dow = (y, m, d) => WEEK[new Date(Date.UTC(y, m - 1, d)).getUTCDay()];
+const ddd = ({year, month, day}) => `${year}년 ${month}월 ${day}일`;
+function gapjaRows(){
+  const g = cal.getKoreanGapja(), c = cal.getChineseGapja();
+  const animal = ANIMAL[g.year.charAt(1)];
+  return [['간지 (연·월·일)', `${g.year} ${g.month} ${g.day}`], ['한자', `${c.year} ${c.month} ${c.day}`], ['띠', `${animal}띠`]];
+}
+function solarOf(y, m, d, leap){ return cal.setLunarDate(y, m, d, leap) ? cal.getSolarCalendar() : null; }
+function calc(){
+  if (dir === 's2l'){
+    const v = $('sdate').value; if (!v) return;
+    const [y, m, d] = v.split('-').map(Number);
+    if (!cal.setSolarDate(y, m, d)) { $('main').textContent = '변환할 수 없는 날짜입니다'; $('sub').textContent = ''; $('kv').innerHTML = ''; return; }
+    const L = cal.getLunarCalendar();
+    $('main').innerHTML = `음력 ${L.intercalation ? '(윤) ' : ''}${L.month}월 ${L.day}일<small>${L.year}년</small>`;
+    $('sub').textContent = `양력 ${y}년 ${m}월 ${d}일 (${dow(y, m, d)}요일)`;
+    $('kv').innerHTML = [['음력', `${ddd(L)}${L.intercalation ? ' (윤달)' : ''}`], ...gapjaRows()].map(([k, x]) => `<tr><th>${k}</th><td>${x}</td></tr>`).join('');
+    yearsTable(L.month, L.day, L.intercalation);
+  } else {
+    const y = parseInt($('ly').value, 10), m = +$('lm').value, d = +$('ld').value, leap = $('leap').checked;
+    const S = solarOf(y, m, d, leap);
+    if (!S) { $('main').innerHTML = '<span class="warn">없는 날짜입니다</span>'; $('sub').textContent = leap ? `${y}년에는 윤${m}월이 없거나, 그 달에 ${d}일이 없습니다.` : `음력 ${y}년 ${m}월은 ${d}일이 없는 작은달(29일)입니다.`; $('kv').innerHTML = ''; yearsTable(m, d, leap); return; }
+    $('main').innerHTML = `양력 ${S.month}월 ${S.day}일<small>${S.year}년 (${dow(S.year, S.month, S.day)}요일)</small>`;
+    $('sub').textContent = `음력 ${y}년 ${leap ? '윤' : ''}${m}월 ${d}일`;
+    cal.setLunarDate(y, m, d, leap);
+    $('kv').innerHTML = [['양력', `${ddd(S)} (${dow(S.year, S.month, S.day)}요일)`], ...gapjaRows()].map(([k, x]) => `<tr><th>${k}</th><td>${x}</td></tr>`).join('');
+    yearsTable(m, d, leap);
+  }
+}
+function yearsTable(m, d, leap){
+  const now = new Date().getFullYear(), rows = [];
+  $('yearsTitle').textContent = `음력 ${leap ? '윤' : ''}${m}월 ${d}일의 양력 날짜 (${now}~${now + 9}년)`;
+  for (let y = now; y < now + 10; y++){
+    let S = leap ? solarOf(y, m, d, true) : null, note = '';
+    if (!S) { S = solarOf(y, m, d, false); if (leap && S) note = ' (윤달 없음 → 평달)'; }
+    if (!S && d === 30) { S = solarOf(y, m, 29, false); note = ' (30일 없음 → 29일)'; }
+    rows.push(S ? `<tr${y === now ? ' class="on"' : ''}><td>${y}년</td><td>${S.month}월 ${S.day}일${note}</td><td>${dow(S.year, S.month, S.day)}요일</td></tr>` : `<tr><td>${y}년</td><td colspan="2">범위 밖</td></tr>`);
+  }
+  $('years').querySelector('tbody').innerHTML = rows.join('');
+}
+$('lm').innerHTML = Array.from({length: 12}, (_, i) => `<option value="${i + 1}">${i + 1}월</option>`).join('');
+$('ld').innerHTML = Array.from({length: 30}, (_, i) => `<option value="${i + 1}">${i + 1}일</option>`).join('');
+const t = new Date(); $('sdate').value = `${t.getFullYear()}-${pad(t.getMonth() + 1)}-${pad(t.getDate())}`;
+document.querySelectorAll('#dir button').forEach(b => b.onclick = () => {
+  dir = b.dataset.v;
+  document.querySelectorAll('#dir button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  $('solarBox').hidden = dir !== 's2l'; $('lunarBox').hidden = dir === 's2l';
+  calc();
+});
+['sdate', 'ly', 'lm', 'ld', 'leap'].forEach(id => $(id).addEventListener('input', calc));
+calc();
+</script>
+</body>
+</html>

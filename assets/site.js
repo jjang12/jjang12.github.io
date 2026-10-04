@@ -21,6 +21,7 @@ const SITE = {
     {name: '날짜', icon: 'calendar', tone: 'amber', items: [
       {p: '/age/', t: '만 나이', i: 'cake'},
       {p: '/dday/', t: '날짜·D-day', i: 'calendar-days'},
+      {p: '/lunar/', t: '음력 양력 변환', i: 'moon'},
     ]},
     {name: '월급·세금', icon: 'receipt', tone: 'green', items: [
       {p: '/salary/', t: '연봉 실수령액', i: 'wallet'},
@@ -37,6 +38,7 @@ const SITE = {
       {p: '/bmi/', t: 'BMI·비만도', i: 'heart-pulse'},
       {p: '/pyeong/', t: '평수 변환', i: 'ruler'},
       {p: '/unit/', t: '단위 변환', i: 'arrow-left-right'},
+      {p: '/power/', t: '전기요금', i: 'plug-zap'},
     ]},
   ],
   blogs: {
