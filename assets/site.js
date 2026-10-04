@@ -20,7 +20,7 @@ const SITE = {
     ]},
     {name: '날짜', icon: 'calendar', tone: 'amber', items: [
       {p: '/age/', t: '만 나이', i: 'cake'},
-      {p: '/dday/', t: 'D-day', i: 'calendar-days'},
+      {p: '/dday/', t: '날짜·D-day', i: 'calendar-days'},
     ]},
     {name: '돈·생활', icon: 'coins', tone: 'green', items: [
       {p: '/salary/', t: '연봉 실수령액', i: 'wallet'},
