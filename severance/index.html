@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>퇴직금 계산기 2026 - 평균임금·퇴직소득세·세후 실수령액</title>
+<meta name="description" content="입사일, 마지막 근무일, 최근 3개월 급여를 넣으면 1일 평균임금과 퇴직금, 퇴직소득세·지방소득세, 세후 실수령액을 계산합니다. 상여금·연차수당도 반영합니다.">
+<meta name="keywords" content="퇴직금 계산기, 퇴직금계산기, 퇴직소득세 계산기, 퇴직금 세금, 퇴직금 계산 방법, 평균임금 계산">
+<meta property="og:title" content="퇴직금 계산기 2026 - 평균임금·퇴직소득세·세후 실수령액">
+<meta property="og:description" content="입사일, 마지막 근무일, 최근 3개월 급여를 넣으면 1일 평균임금과 퇴직금, 퇴직소득세·지방소득세, 세후 실수령액을 계산합니다. 상여금·연차수당도 반영합니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjang12.github.io/severance/">
+<link rel="canonical" href="https://jjang12.github.io/severance/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+<style>.warn{color:var(--warn); font-weight:600}</style>
+</head>
+<body data-blog="aicoinlab">
+<main>
+<h1>퇴직금 계산기</h1>
+<p class="lead">입사일, 마지막 근무일, 최근 3개월 급여를 넣으면 퇴직금과 퇴직소득세, 세후 실수령액을 계산합니다.</p>
+<div class="row">
+  <div class="field"><label for="start">입사일</label><input id="start" type="date" value="2018-03-02"></div>
+  <div class="field"><label for="end">마지막 근무일</label><input id="end" type="date"></div>
+</div>
+<div class="row">
+  <div class="field"><label for="pay3">퇴직 전 3개월 급여 합계 (세전, 만원)</label><input id="pay3" type="number" inputmode="numeric" value="1200"></div>
+  <div class="field"><label for="bonus">최근 1년 상여금 총액 (만원)</label><input id="bonus" type="number" inputmode="numeric" value="0"></div>
+  <div class="field"><label for="leave">최근 1년 연차수당 (만원)</label><input id="leave" type="number" inputmode="numeric" value="0"></div>
+</div>
+<div class="panel"><div class="big" id="main"></div><div class="note" id="sub" style="margin-top:6px"></div></div>
+<table class="kv" id="tbl"></table>
+<h2>퇴직금별 세금 표 (근속 10년 기준)</h2>
+<div class="tbl-wrap"><table class="list" id="list"><thead><tr><th>퇴직금</th><th>퇴직소득세</th><th>지방소득세</th><th>세후 받는 돈</th></tr></thead><tbody></tbody></table></div>
+<h2>계산 기준 안내</h2>
+<div class="note">
+  <p><b>퇴직금</b> = 1일 평균임금 × 30일 × (재직일수 ÷ 365). 1일 평균임금은 퇴직 전 3개월 동안 받은 임금 총액(상여금·연차수당은 1년치의 3/12을 더함)을 그 3개월의 날짜 수로 나눈 값입니다. 평균임금이 통상임금보다 적으면 통상임금으로 계산합니다.</p>
+  <p>퇴직금은 같은 회사에서 1년 이상, 주 15시간 이상 일했을 때 받을 수 있습니다. 퇴직일은 마지막 근무일의 다음 날입니다.</p>
+  <p><b>퇴직소득세</b>(2023년 이후 기준): 퇴직금에서 근속연수공제를 빼고 12배 해 근속연수로 나눈 환산급여에 환산급여공제를 적용한 뒤, 기본세율로 낸 세액을 다시 12로 나누고 근속연수를 곱합니다. 지방소득세는 퇴직소득세의 10%입니다. 근속연수는 1년 미만 기간을 1년으로 올려 셉니다.</p>
+  <p>퇴직연금(DC형)·IRP로 받거나 회사 규정이 다르면 금액이 달라질 수 있습니다. 정확한 금액은 회사 급여 담당자나 고용노동부 퇴직금 계산기로 확인하세요.</p>
+</div>
+</main>
+<script src="/assets/site.js"></script>
+<script>
+const DAY = 864e5;
+const d0 = s => { const [y, m, d] = s.split('-').map(Number); return Date.UTC(y, m - 1, d); };
+function serviceYears(startMs, retireMs){ // 근속연수: 1년 미만은 1년으로
+  const a = new Date(startMs), b = new Date(retireMs);
+  let y = b.getUTCFullYear() - a.getUTCFullYear();
+  const anniv = Date.UTC(a.getUTCFullYear() + y, a.getUTCMonth(), a.getUTCDate());
+  if (anniv > retireMs) y--;
+  const afterY = Date.UTC(a.getUTCFullYear() + y, a.getUTCMonth(), a.getUTCDate());
+  return Math.max(y + (retireMs > afterY ? 1 : 0), 1);
+}
+function serviceDeduction(n){
+  if (n <= 5) return 1e6 * n;
+  if (n <= 10) return 5e6 + 2e6 * (n - 5);
+  if (n <= 20) return 15e6 + 2.5e6 * (n - 10);
+  return 40e6 + 3e6 * (n - 20);
+}
+function convDeduction(x){
+  if (x <= 8e6) return x;
+  if (x <= 70e6) return 8e6 + (x - 8e6) * 0.6;
+  if (x <= 100e6) return 45.2e6 + (x - 70e6) * 0.55;
+  if (x <= 300e6) return 61.7e6 + (x - 100e6) * 0.45;
+  return 151.7e6 + (x - 300e6) * 0.35;
+}
+function taxByBase(b){ // 종합소득세 기본세율
+  const T = [[14e6,.06,0],[50e6,.15,1.26e6],[88e6,.24,5.76e6],[150e6,.35,15.44e6],[300e6,.38,19.94e6],[500e6,.40,25.94e6],[1e9,.42,35.94e6],[Infinity,.45,65.94e6]];
+  if (b <= 0) return 0;
+  for (const [lim, r, q] of T) if (b <= lim) return b * r - q;
+}
+function retireTax(pay, years){
+  const sd = Math.min(serviceDeduction(years), pay);
+  const conv = (pay - sd) * 12 / years;
+  const cd = convDeduction(conv);
+  const base = Math.max(conv - cd, 0);
+  const tax = floor10(taxByBase(base) / 12 * years);
+  return {sd, conv, cd, base, tax, local: floor10(tax * 0.1)};
+}
+function calc(){
+  const s = $('start').value, e = $('end').value;
+  if (!s || !e) return;
+  const start = d0(s), retire = d0(e) + DAY;
+  const days = Math.round((retire - start) / DAY);
+  const back = new Date(retire); back.setUTCMonth(back.getUTCMonth() - 3);
+  const days3 = Math.round((retire - back.getTime()) / DAY);
+  const wage3 = (parseFloat($('pay3').value) || 0) * 1e4 + ((parseFloat($('bonus').value) || 0) + (parseFloat($('leave').value) || 0)) * 1e4 * 3 / 12;
+  const avg = days3 > 0 ? wage3 / days3 : 0;
+  const pay = Math.floor(avg * 30 * days / 365);
+  if (days <= 0){ $('main').textContent = '날짜를 확인해 주세요'; $('sub').textContent = ''; $('tbl').innerHTML = ''; return; }
+  const years = serviceYears(start, retire);
+  const t = retireTax(pay, years);
+  const net = pay - t.tax - t.local;
+  $('main').innerHTML = `퇴직금 ${fmt(pay)}원<small>세전</small>`;
+  $('sub').innerHTML = days < 365 ? '<span class="warn">재직 기간이 1년 미만이면 법정 퇴직금 대상이 아닙니다.</span>'
+    : `세후 약 ${fmt(net)}원 · 세금 ${fmt(t.tax + t.local)}원 (실효세율 ${pay ? ((t.tax + t.local) / pay * 100).toFixed(2) : 0}%)`;
+  $('tbl').innerHTML = [
+    ['재직일수', `${fmt(days)}일 (근속연수 ${years}년)`],
+    ['3개월 날짜 수', `${days3}일`],
+    ['1일 평균임금', `${fmt(avg)}원`],
+    ['퇴직금 (세전)', `${fmt(pay)}원`],
+    ['근속연수공제', `${fmt(t.sd)}원`],
+    ['환산급여', `${fmt(t.conv)}원`],
+    ['환산급여공제', `${fmt(t.cd)}원`],
+    ['과세표준', `${fmt(t.base)}원`],
+    ['퇴직소득세', `${fmt(t.tax)}원`],
+    ['지방소득세', `${fmt(t.local)}원`],
+  ].map(([k, v]) => `<tr><th>${k}</th><td>${v}</td></tr>`).join('') + `<tr class="total"><th>세후 받는 돈</th><td>${fmt(net)}원</td></tr>`;
+}
+const today = new Date(); $('end').value = new Date(today.getTime() - today.getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
+['start', 'end', 'pay3', 'bonus', 'leave'].forEach(id => $(id).addEventListener('input', calc));
+calc();
+$('list').querySelector('tbody').innerHTML = [1000, 2000, 3000, 5000, 7000, 10000, 15000, 20000].map(man => {
+  const t = retireTax(man * 1e4, 10);
+  return `<tr><td>${fmt(man)}만원</td><td>${fmt(t.tax)}</td><td>${fmt(t.local)}</td><td><b>${fmt(man * 1e4 - t.tax - t.local)}</b></td></tr>`;
+}).join('');
+</script>
+</body>
+</html>

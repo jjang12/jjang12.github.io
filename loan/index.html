@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>대출 이자 계산기 - 원리금균등·원금균등·만기일시 월 상환액</title>
+<meta name="description" content="대출금, 금리, 기간을 넣으면 원리금균등·원금균등·만기일시 상환 방식별 월 상환액과 총이자, 연도별 상환 일정을 바로 계산합니다. 거치기간도 반영합니다.">
+<meta name="keywords" content="대출 이자 계산기, 대출계산기, 대출이자계산기, 원리금균등상환 계산기, 원금균등상환, 주택담보대출 계산기">
+<meta property="og:title" content="대출 이자 계산기 - 원리금균등·원금균등·만기일시 월 상환액">
+<meta property="og:description" content="대출금, 금리, 기간을 넣으면 원리금균등·원금균등·만기일시 상환 방식별 월 상환액과 총이자, 연도별 상환 일정을 바로 계산합니다. 거치기간도 반영합니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjang12.github.io/loan/">
+<link rel="canonical" href="https://jjang12.github.io/loan/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+details.sched{margin-top:12px}
+details.sched summary{cursor:pointer; font-weight:600; color:var(--blue); padding:6px 0}
+.cmp td:first-child{font-weight:600}
+.cmp tr.on td{background:var(--blue-soft)}
+</style>
+</head>
+<body data-blog="aicoinlab">
+<main>
+<h1>대출 이자 계산기</h1>
+<p class="lead">대출금, 금리, 기간을 넣으면 상환 방식별 월 상환액과 총이자를 바로 계산합니다. 거치기간이 있으면 그 기간에는 이자만 냅니다.</p>
+<div class="seg" role="group" aria-label="상환 방식">
+  <button type="button" data-m="equal" aria-pressed="true">원리금균등</button>
+  <button type="button" data-m="principal" aria-pressed="false">원금균등</button>
+  <button type="button" data-m="bullet" aria-pressed="false">만기일시</button>
+</div>
+<div class="row">
+  <div class="field"><label for="amt">대출금 (만원)</label><input id="amt" type="number" inputmode="numeric" value="30000"></div>
+  <div class="field"><label for="rate">연 금리 (%)</label><input id="rate" type="number" step="0.01" inputmode="decimal" value="4.0"></div>
+</div>
+<div class="row">
+  <div class="field"><label for="yrs">대출 기간 (년)</label><input id="yrs" type="number" inputmode="numeric" value="30"></div>
+  <div class="field"><label for="grace">거치기간 (개월, 기간에 포함)</label><input id="grace" type="number" inputmode="numeric" value="0"></div>
+</div>
+<div class="panel"><div class="big" id="main"></div><div class="note" id="sub" style="margin-top:6px"></div></div>
+<h2>상환 방식별 비교</h2>
+<div class="tbl-wrap"><table class="list cmp" id="cmp"><thead><tr><th>상환 방식</th><th>첫 달 상환액</th><th>마지막 달</th><th>총이자</th></tr></thead><tbody></tbody></table></div>
+<h2>연도별 상환 일정</h2>
+<div class="tbl-wrap"><table class="list" id="yearly"><thead><tr><th>연차</th><th>낸 원금</th><th>낸 이자</th><th>남은 원금</th></tr></thead><tbody></tbody></table></div>
+<details class="sched"><summary>월별 상환 일정 전체 보기</summary>
+<div class="tbl-wrap"><table class="list" id="monthly"><thead><tr><th>회차</th><th>상환액</th><th>원금</th><th>이자</th><th>남은 원금</th></tr></thead><tbody></tbody></table></div>
+</details>
+<h2>상환 방식 차이</h2>
+<div class="note">
+  <p><b>원리금균등</b>: 매달 같은 금액(원금+이자)을 냅니다. 초반에는 이자 비중이 크고 갈수록 원금 비중이 커집니다. 주택담보대출에서 가장 많이 씁니다.</p>
+  <p><b>원금균등</b>: 매달 같은 원금에 남은 원금의 이자를 더해 냅니다. 처음 부담이 크지만 갈수록 줄고, 총이자는 원리금균등보다 적습니다.</p>
+  <p><b>만기일시</b>: 매달 이자만 내고 원금은 마지막 달에 한 번에 갚습니다. 월 부담은 가장 적지만 총이자는 가장 큽니다. 신용대출·전세자금대출에 흔합니다.</p>
+</div>
+<h2>계산 기준 안내</h2>
+<div class="note">
+  <p>월 이자는 남은 원금 × 연 금리 ÷ 12로 계산하고, 금액은 원 단위에서 반올림했습니다. 금리는 기간 내내 같다고 봅니다(고정금리 가정).</p>
+  <p>은행은 실제 날짜 수로 이자를 계산(일할 계산)하고, 변동금리는 주기마다 금리가 바뀌므로 실제 납입액과 조금 다를 수 있습니다. 중도상환수수료·보증료·인지세는 넣지 않았습니다.</p>
+</div>
+</main>
+<script src="/assets/site.js"></script>
+<script>
+let mode = 'equal';
+const NAMES = {equal: '원리금균등', principal: '원금균등', bullet: '만기일시'};
+/* 월별 일정: [회차, 상환액, 원금, 이자, 남은 원금] */
+function schedule(P, annual, n, g, m){
+  const r = annual / 100 / 12, rows = [];
+  let bal = P;
+  const amortN = Math.max(n - g, 1);
+  const pmt = r ? P * r * Math.pow(1 + r, amortN) / (Math.pow(1 + r, amortN) - 1) : P / amortN;
+  for (let k = 1; k <= n; k++){
+    const interest = bal * r;
+    let prin = 0;
+    if (k > g){
+      if (m === 'equal') prin = pmt - interest;
+      else if (m === 'principal') prin = P / amortN;
+      else prin = k === n ? bal : 0;
+    }
+    if (k === n) prin = bal;
+    bal = Math.max(bal - prin, 0);
+    rows.push([k, prin + interest, prin, interest, bal]);
+  }
+  return rows;
+}
+const won = n => fmt(n) + '원';
+function calc(){
+  const P = (parseFloat($('amt').value) || 0) * 1e4;
+  const annual = Math.max(parseFloat($('rate').value) || 0, 0);
+  const n = Math.min(Math.max(Math.round((parseFloat($('yrs').value) || 0) * 12), 1), 600);
+  const g = Math.min(Math.max(parseInt($('grace').value, 10) || 0, 0), n - 1);
+  const all = {};
+  for (const m of Object.keys(NAMES)) all[m] = schedule(P, annual, n, g, m);
+  const rows = all[mode];
+  const totalI = rows.reduce((s, x) => s + x[3], 0);
+  const first = rows[0][1], afterGrace = rows[Math.min(g, n - 1)][1];
+  $('main').innerHTML = mode === 'equal' && !g ? `월 ${won(first)}<small>매달 같은 금액</small>`
+    : `첫 달 ${won(first)}<small>${mode === 'bullet' ? '매달 이자만' : g ? `거치 뒤 ${won(afterGrace)}` : `마지막 달 ${won(rows[n - 1][1])}`}</small>`;
+  $('sub').textContent = `총이자 ${won(totalI)} · 총 상환액 ${won(P + totalI)} · ${n}개월${g ? ` (거치 ${g}개월)` : ''}`;
+  $('cmp').querySelector('tbody').innerHTML = Object.entries(all).map(([m, rs]) =>
+    `<tr${m === mode ? ' class="on"' : ''}><td>${NAMES[m]}</td><td>${won(rs[0][1])}</td><td>${won(rs[n - 1][1])}</td><td><b>${won(rs.reduce((s, x) => s + x[3], 0))}</b></td></tr>`).join('');
+  const ys = [];
+  for (let y = 0; y < Math.ceil(n / 12); y++){
+    const part = rows.slice(y * 12, y * 12 + 12);
+    ys.push(`<tr><td>${y + 1}년차</td><td>${fmt(part.reduce((s, x) => s + x[2], 0))}</td><td>${fmt(part.reduce((s, x) => s + x[3], 0))}</td><td>${fmt(part[part.length - 1][4])}</td></tr>`);
+  }
+  $('yearly').querySelector('tbody').innerHTML = ys.join('');
+  $('monthly').querySelector('tbody').innerHTML = rows.map(x => `<tr><td>${x[0]}회</td><td>${fmt(x[1])}</td><td>${fmt(x[2])}</td><td>${fmt(x[3])}</td><td>${fmt(x[4])}</td></tr>`).join('');
+}
+document.querySelectorAll('.seg button').forEach(b => b.onclick = () => {
+  mode = b.dataset.m;
+  document.querySelectorAll('.seg button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  calc();
+});
+['amt', 'rate', 'yrs', 'grace'].forEach(id => $(id).addEventListener('input', calc));
+calc();
+</script>
+</body>
+</html>
