@@ -58,7 +58,7 @@ function interest(kind, A, n, annual, way){
 }
 function result(A, n, annual, way, tax){
   const principal = kind === 'saving' ? A * n : A;
-  const pre = Math.floor(interest(kind, A, n, annual, way));
+  const pre = Math.floor(interest(kind, A, n, annual, way) + 1e-6); // 1e-6: 소수 오차로 1원 덜 나오는 것 방지
   const t = floor10(pre * tax);
   return {principal, pre, t, post: pre - t, total: principal + pre - t};
 }

@@ -88,7 +88,7 @@ function calc(){
   const days3 = Math.round((retire - back.getTime()) / DAY);
   const wage3 = (parseFloat($('pay3').value) || 0) * 1e4 + ((parseFloat($('bonus').value) || 0) + (parseFloat($('leave').value) || 0)) * 1e4 * 3 / 12;
   const avg = days3 > 0 ? wage3 / days3 : 0;
-  const pay = Math.floor(avg * 30 * days / 365);
+  const pay = Math.floor(avg * 30 * days / 365 + 1e-6);
   if (days <= 0){ $('main').textContent = '날짜를 확인해 주세요'; $('sub').textContent = ''; $('tbl').innerHTML = ''; return; }
   const years = serviceYears(start, retire);
   const t = retireTax(pay, years);

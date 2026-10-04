@@ -27,6 +27,8 @@ const SITE = {
       {p: '/salary/', t: '연봉 실수령액', i: 'wallet'},
       {p: '/severance/', t: '퇴직금', i: 'briefcase'},
       {p: '/hourly/', t: '시급·주휴수당', i: 'clock'},
+      {p: '/unemployment/', t: '실업급여', i: 'hand-coins'},
+      {p: '/vat/', t: '부가세', i: 'calculator'},
     ]},
     {name: '대출·금융', icon: 'landmark', tone: 'teal', items: [
       {p: '/loan/', t: '대출 이자', i: 'percent'},
