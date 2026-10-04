@@ -1,32 +1,32 @@
 /* 사이트 공통 설정: 메뉴·배너·블로그 소개는 여기만 고치면 전체 페이지에 반영됩니다.
    새 도구를 추가할 때는 groups 의 알맞은 묶음에 한 줄 넣고, index.html 카드와 sitemap.xml 에도 추가하세요.
-   k 는 '관련 블로그 글'을 고를 때 쓰는 단어(글 제목·카테고리에 들어 있으면 우선 노출)입니다. */
+   도구별 '관련 블로그 글'을 고르는 단어는 .github/scripts/build_posts.py 의 TOOLS 에 있습니다. */
 const SITE = {
   name: '짱툴',
   groups: [
     {name: '글자·단어', icon: 'type', tone: 'violet', items: [
-      {p: '/hanbang/', t: '한방단어', i: 'target', k: ['끝말잇기', '단어', '맞춤법', '한글', '국어']},
-      {p: '/wordchain/', t: '끝말잇기 대결', i: 'swords', k: ['끝말잇기', '단어', '게임', '퀴즈', '국어']},
-      {p: '/symbols/', t: '특수문자', i: 'omega', k: ['특수문자', '이모지', '키보드', '단축키', '기호']},
-      {p: '/count/', t: '글자수 세기', i: 'letter-text', k: ['글자수', '자기소개서', '자소서', '이력서', '취업', '채용']},
-      {p: '/typo/', t: '한영 변환', i: 'languages', k: ['키보드', '한영', '타자', '단축키', '윈도우', '맥북']},
+      {p: '/hanbang/', t: '한방단어', i: 'target'},
+      {p: '/wordchain/', t: '끝말잇기 대결', i: 'swords'},
+      {p: '/symbols/', t: '특수문자', i: 'omega'},
+      {p: '/count/', t: '글자수 세기', i: 'letter-text'},
+      {p: '/typo/', t: '한영 변환', i: 'languages'},
     ]},
     {name: '이미지·PDF', icon: 'layers', tone: 'sky', items: [
-      {p: '/image/', t: '이미지 변환', i: 'image', k: ['이미지', '사진', '용량', '변환', '편집']},
-      {p: '/heic/', t: 'HEIC→JPG', i: 'file-image', k: ['아이폰', 'HEIC', '사진', '갤러리', 'iOS']},
-      {p: '/img2pdf/', t: '이미지→PDF', i: 'file-output', k: ['PDF', '스캔', '서류', '문서', '사진']},
-      {p: '/pdf-merge/', t: 'PDF 합치기', i: 'files', k: ['PDF', '서류', '문서', '증빙', '계약']},
-      {p: '/qr/', t: 'QR 코드', i: 'qr-code', k: ['QR', '큐알', '링크', '카카오', '네이버']},
+      {p: '/image/', t: '이미지 변환', i: 'image'},
+      {p: '/heic/', t: 'HEIC→JPG', i: 'file-image'},
+      {p: '/img2pdf/', t: '이미지→PDF', i: 'file-output'},
+      {p: '/pdf-merge/', t: 'PDF 합치기', i: 'files'},
+      {p: '/qr/', t: 'QR 코드', i: 'qr-code'},
     ]},
     {name: '날짜', icon: 'calendar', tone: 'amber', items: [
-      {p: '/age/', t: '만 나이', i: 'cake', k: ['나이', '만나이', '만 나이', '생일', '출생', '연령']},
-      {p: '/dday/', t: 'D-day', i: 'calendar-days', k: ['일정', '날짜', '연휴', '공휴일', '마감', '기념일', '신청']},
+      {p: '/age/', t: '만 나이', i: 'cake'},
+      {p: '/dday/', t: 'D-day', i: 'calendar-days'},
     ]},
     {name: '돈·생활', icon: 'coins', tone: 'green', items: [
-      {p: '/salary/', t: '연봉 실수령액', i: 'wallet', k: ['연봉', '월급', '실수령', '세금', '연말정산', '4대보험', '소득']},
-      {p: '/money/', t: '금액 한글', i: 'banknote', k: ['금액', '계약', '은행', '송금', '대출', '예금']},
-      {p: '/pyeong/', t: '평수 변환', i: 'ruler', k: ['아파트', '평수', '부동산', '청약', '전세', '분양']},
-      {p: '/liquidation/', t: '청산가·펀딩비', i: 'chart-candlestick', k: ['코인', '비트코인', '선물', '펀딩', '거래소', '레버리지']},
+      {p: '/salary/', t: '연봉 실수령액', i: 'wallet'},
+      {p: '/money/', t: '금액 한글', i: 'banknote'},
+      {p: '/pyeong/', t: '평수 변환', i: 'ruler'},
+      {p: '/liquidation/', t: '청산가·펀딩비', i: 'chart-candlestick'},
     ]},
   ],
   blogs: {
@@ -150,7 +150,8 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
     rel = document.createElement('section');
     rel.className = 'rel';
     const sib = curGroup.items.filter(it => it !== curItem);
-    rel.innerHTML = `<div class="rel-posts" hidden><h2>이 도구와 함께 보면 좋은 글</h2><div class="post-grid"></div></div>
+    rel.innerHTML = `<div class="rel-posts" hidden><h2 class="rel-h">${icon('target')}이 도구와 관련된 글</h2><p class="rel-sub">도구 주제와 직접 연결된 추천 블로그 글입니다.</p><div class="post-grid"></div></div>
+      <div class="new-posts" hidden><h2 class="new-h">${icon('sparkles')}추천 블로그 최신 글</h2><p class="rel-sub"></p><div class="post-grid"></div></div>
       ${sib.length ? `<h2>${curGroup.name} 도구 더 보기</h2><div class="chips tone-${curGroup.tone}">${sib.map(it => `<a href="${it.p}">${icon(it.i)}${it.t}</a>`).join('')}</div>` : ''}`;
     main.append(rel);
   }
@@ -184,20 +185,29 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
   /* 블로그 글 불러오기 (assets/posts.json 은 GitHub Actions 가 4시간마다 갱신) */
   const home = document.getElementById('home-posts');
   if (!rel && !bRight && !home) return;
-  const card = (p, cls = 'post') => `<a class="${cls}" href="${esc(p.u)}" target="_blank" rel="noopener">
-    <span class="thumb">${p.img ? `<img src="${esc(p.img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ''}</span>
+  const card = (p, cls = 'post', tag = '') => `<a class="${cls}" href="${esc(p.u)}" target="_blank" rel="noopener">
+    <span class="thumb">${tag ? `<em class="post-tag">${tag}</em>` : ''}${p.img ? `<img src="${esc(p.img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ''}</span>
     <span class="post-body"><b>${esc(p.t)}</b><small><img src="/assets/img/profile-${p.b}.png" alt="" width="16" height="16">${(SITE.blogs[p.b] || {}).name || ''} · ${p.d.slice(5).replace('-', '.')}</small></span></a>`;
   fetch('/assets/posts.json').then(r => r.ok ? r.json() : Promise.reject(r.status)).then(d => {
     const posts = d.posts || [];
     if (!posts.length) return;
     if (rel) {
-      const score = p => curItem.k.reduce((s, w) => s + ((p.t + ' ' + p.c).includes(w) ? 1 : 0), 0);
-      const ranked = posts.map(p => [score(p), p]).filter(([s]) => s > 0)
-        .sort((a, b) => b[0] - a[0] || b[1].d.localeCompare(a[1].d)).map(x => x[1]);
-      const pick = [...ranked, ...posts.filter(p => p.b === blogKey && !ranked.includes(p))].slice(0, 4);
-      const box = rel.querySelector('.rel-posts');
-      box.querySelector('.post-grid').innerHTML = pick.map(p => card(p)).join('');
-      box.hidden = false;
+      const related = ((d.related || {})[path] || []).slice(0, 4);
+      if (related.length) {
+        const box = rel.querySelector('.rel-posts');
+        box.querySelector('.post-grid').innerHTML = related.map(p => card(p, 'post is-rel', '관련 글')).join('');
+        box.hidden = false;
+      }
+      if (related.length < 4) {
+        const urls = new Set(related.map(p => p.u));
+        const fill = posts.filter(p => p.b === blogKey && !urls.has(p.u)).slice(0, Math.max(2, 4 - related.length));
+        const box = rel.querySelector('.new-posts');
+        box.querySelector('.rel-sub').textContent = related.length
+          ? '관련 글 외에 함께 둘러보기 좋은 최근 글입니다.'
+          : '이 도구와 직접 관련된 글은 아직 없어서, 추천 블로그의 최근 글을 보여 드립니다.';
+        box.querySelector('.post-grid').innerHTML = fill.map(p => card(p)).join('');
+        box.hidden = false;
+      }
     }
     if (bRight) {
       const latest = order.flatMap(k => posts.filter(p => p.b === k).slice(0, 4));
