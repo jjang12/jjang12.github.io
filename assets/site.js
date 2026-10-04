@@ -142,6 +142,7 @@ const ICONS = {
 const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ''}</svg>`;
 
 (() => {
+  document.getElementById('static-nav')?.remove();   // 검색 로봇용 정적 도구 링크(build_seo.py) — 화면에서는 좌측 메뉴가 대신한다
   const path = location.pathname.replace(/index\.html$/, '');
   const blogKey = document.body.dataset.blog || 'kkultiplab';
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));

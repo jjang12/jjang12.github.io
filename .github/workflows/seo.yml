@@ -1,0 +1,36 @@
+name: SEO 정보 맞추기
+
+# 페이지나 메뉴(site.js)가 바뀌면 head 공유·구조화 정보, 정적 도구 링크, 사이트맵을 다시 맞춘다.
+# 공유 이미지(assets/og)는 맥 크롬으로 로컬에서 만든다(build_seo.py --images) — 여기서는 만들지 않는다.
+on:
+  push:
+    branches: [main]
+    paths: ['**/index.html', 'assets/site.js', '.github/scripts/build_seo.py']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: seo
+  cancel-in-progress: false
+
+jobs:
+  seo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # 사이트맵 lastmod 를 파일별 마지막 커밋 날짜로
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 .github/scripts/build_seo.py
+      - name: 바뀐 경우에만 커밋
+        run: |
+          if git diff --quiet; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -am 'Sync SEO blocks and sitemap'
+          git pull --rebase
+          git push
