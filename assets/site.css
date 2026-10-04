@@ -156,30 +156,27 @@ table.list thead th{color:var(--muted); font-weight:600}
 .tools li[hidden]{display:none}
 .empty{color:var(--muted)}
 
-/* 블로그 글 카드 */
-.post-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px}
-.post{display:flex; flex-direction:column; border-radius:var(--r); overflow:hidden; background:var(--card); border:1px solid var(--line); text-decoration:none; color:var(--ink); box-shadow:var(--shadow); transition:transform .15s, box-shadow .15s}
-.post:hover{transform:translateY(-2px); box-shadow:var(--shadow-up)}
-.post .thumb{display:block; aspect-ratio:16/10; background:linear-gradient(135deg,var(--blue-soft),color-mix(in srgb,var(--violet) 14%,var(--soft))); overflow:hidden}
-.post .thumb img{display:block; width:100%; height:100%; object-fit:cover}
-.post-body{display:flex; flex-direction:column; gap:8px; padding:12px 14px 14px; flex:1}
-.post-body b{font-size:15px; line-height:1.45; font-weight:700; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
-.post-body small{display:flex; align-items:center; gap:6px; margin-top:auto; color:var(--muted); font-size:12.5px}
+/* 블로그 글 목록 */
+.post-list{display:grid; grid-template-columns:1fr; column-gap:32px; border-top:1px solid var(--line)}
+@media (min-width:760px){ .post-list{grid-template-columns:repeat(2,minmax(0,1fr))} }
+.post{display:flex; align-items:center; gap:16px; padding:16px 2px; border-bottom:1px solid var(--line); text-decoration:none; color:var(--ink); min-width:0}
+.post-body{display:flex; flex-direction:column; gap:5px; flex:1; min-width:0}
+.post-body b{font-size:16px; line-height:1.45; font-weight:700; letter-spacing:-0.01em; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
+.post:hover .post-body b{color:var(--blue); text-decoration:underline; text-underline-offset:3px}
+.post-body .ex{color:var(--muted); font-size:14px; line-height:1.5; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
+.post-body small{display:flex; align-items:center; gap:6px; color:var(--muted); font-size:12.5px}
 .post-body small img{width:16px; height:16px; border-radius:50%; object-fit:cover}
-.post.mini{flex-direction:row; align-items:center; gap:10px; padding:8px; box-shadow:none; border-color:transparent; background:transparent}
-.post.mini:hover{background:var(--card); border-color:var(--line); transform:none}
-.post.mini .thumb{flex:none; width:64px; aspect-ratio:1; border-radius:10px}
-.post.mini .post-body{padding:0; gap:4px}
+.post .thumb{flex:none; width:96px; height:96px; border-radius:12px; overflow:hidden; background:linear-gradient(135deg,var(--blue-soft),color-mix(in srgb,var(--violet) 14%,var(--soft))); border:1px solid var(--line)}
+.post .thumb img{display:block; width:100%; height:100%; object-fit:cover}
+.post-tag{display:inline-block; padding:1px 7px; border-radius:999px; font-style:normal; font-size:11.5px; font-weight:800; color:#fff; background:var(--blue)}
+@media (max-width:480px){ .post{gap:12px; padding:14px 0} .post .thumb{width:84px; height:84px} .post-body b{font-size:15px} .post-body .ex{-webkit-line-clamp:1} }
+.post.mini{gap:10px; padding:8px; border:0; border-radius:10px}
+.post.mini:hover{background:var(--card)}
+.post.mini .thumb{order:-1; width:60px; height:60px; border-radius:10px}
+.post.mini .post-body{gap:4px}
 .post.mini .post-body b{font-size:13.5px; font-weight:600}
+.post.mini:hover .post-body b{text-decoration:none}
 .post.mini .post-body small{font-size:12px}
-
-@media (max-width:599px){
-  .post-grid{gap:10px}
-  .post-grid .post{flex-direction:row; min-height:92px}
-  .post-grid .post .thumb{flex:none; width:112px; aspect-ratio:auto}
-  .post-grid .post-body{padding:10px 12px; gap:6px}
-  .post-grid .post-body b{font-size:14.5px}
-}
 
 /* 관련 영역 */
 .rel{margin-top:56px; padding-top:8px; border-top:1px solid var(--line)}
@@ -188,11 +185,7 @@ table.list thead th{color:var(--muted); font-weight:600}
 .rel-h .ic{color:var(--blue)} .new-h .ic{color:var(--muted)}
 .rel-sub{margin:0 0 14px; color:var(--muted); font-size:14px}
 .rel-posts{padding:4px 0 0}
-.post .thumb{position:relative}
-.post-tag{position:absolute; top:8px; left:8px; z-index:1; padding:3px 8px; border-radius:999px; font-style:normal; font-size:11.5px; font-weight:800; color:#fff; background:var(--blue); box-shadow:0 2px 6px rgba(0,0,0,.2)}
-.post.is-rel{border-color:color-mix(in srgb,var(--blue) 45%,var(--line))}
-.new-posts .post{box-shadow:none}
-@media (min-width:600px){ .rel .post-grid{grid-template-columns:repeat(2,minmax(0,1fr))} }
+
 .chips{display:flex; flex-wrap:wrap; gap:8px}
 .chips a{display:inline-flex; align-items:center; gap:7px; padding:9px 14px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--ink); text-decoration:none; font-size:14px; font-weight:600}
 .chips a .ic{width:16px; height:16px; color:var(--tone)}
@@ -262,5 +255,5 @@ footer.site-foot p{margin:0 0 10px}
 .toast.on{opacity:1}
 @media (prefers-reduced-motion:reduce){
   .toast,.side-nav,.nav-dim,.tools a,.post,.blog-card{transition:none}
-  .tools a:hover,.post:hover,.blog-card:hover{transform:none}
+  .tools a:hover,.blog-card:hover{transform:none}
 }

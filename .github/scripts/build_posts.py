@@ -56,6 +56,12 @@ def get(url, referer=None):
         return r.read()
 
 
+def summary(text, n=110):
+    t = re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', ' ', text or ''))).strip()
+    t = html.unescape(t)  # og:description 은 두 번 이스케이프돼 있음(&amp;quot;)
+    return t if len(t) <= n else t[:n].rstrip() + '…'
+
+
 def thumb(url):
     return url.split('?')[0] + '?type=w300' if url else ''
 
@@ -76,6 +82,7 @@ def fetch_rss(blog_id):
             'd': parsedate_to_datetime(it.findtext('pubDate')).strftime('%Y-%m-%d'),
             'c': (it.findtext('category') or '').strip(),
             'img': thumb(img.group(1)) if img else '',
+            's': summary(it.findtext('description', '')),
         })
     return info, posts
 
@@ -108,15 +115,18 @@ def fetch_titles(blog_id):
         time.sleep(0.3)
 
 
-def og_image(u):
+def og_meta(u):
+    """글 페이지의 대표 이미지·요약. 실패하면 빈 값."""
     blog_id, no = u.rstrip('/').split('/')[-2:]
     try:
         page = get(f'https://blog.naver.com/PostView.naver?blogId={blog_id}&logNo={no}').decode('utf-8', 'ignore')
     except Exception:
-        return ''
-    m = re.search(r'<meta property="og:image" content="([^"]+)"', page)
+        return {'img': '', 's': ''}
+    img = re.search(r'<meta property="og:image" content="([^"]+)"', page)
+    desc = re.search(r'<meta property="og:description" content="([^"]*)"', page)
     # 대표 이미지가 없는 글은 네이버 기본 아이콘(ssl.pstatic.net/static/blog/icon)이 나오므로 비워 둔다
-    return thumb(html.unescape(m.group(1))) if m and 'blogthumb' in m.group(1) else ''
+    return {'img': thumb(html.unescape(img.group(1))) if img and 'blogthumb' in img.group(1) else '',
+            's': summary(desc.group(1)) if desc else ''}
 
 
 def main():
@@ -140,12 +150,12 @@ def main():
         sys.exit('글을 하나도 가져오지 못해 기존 파일을 유지합니다.')
     posts.sort(key=lambda p: p['d'], reverse=True)
 
-    # 썸네일 캐시: 이번 RSS + 이전 파일의 관련 글
-    imgs = {p['u']: p['img'] for p in posts if p.get('img')}
+    # 썸네일·요약 캐시: 이번 RSS + 이전 파일의 관련 글(요약이 있는 것만 — 없으면 다시 읽음)
+    meta = {p['u']: {'img': p['img'], 's': p['s']} for p in posts}
     for lst in old.get('related', {}).values():
         for p in lst:
-            if p.get('img'):
-                imgs.setdefault(p['u'], p['img'])
+            if 's' in p:
+                meta.setdefault(p['u'], {'img': p.get('img', ''), 's': p['s']})
 
     related = {}
     if titles:
@@ -166,10 +176,10 @@ def main():
             related[path] = picked
         for lst in related.values():
             for p in lst:
-                if p['u'] not in imgs:
-                    imgs[p['u']] = og_image(p['u'])
+                if p['u'] not in meta:
+                    meta[p['u']] = og_meta(p['u'])
                     time.sleep(0.3)
-                p['img'] = imgs[p['u']]
+                p.update(meta[p['u']])
     else:  # 글 목록을 못 가져오면 이전 관련 글 유지
         related = old.get('related', {})
 

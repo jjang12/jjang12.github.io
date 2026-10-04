@@ -150,8 +150,8 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
     rel = document.createElement('section');
     rel.className = 'rel';
     const sib = curGroup.items.filter(it => it !== curItem);
-    rel.innerHTML = `<div class="rel-posts" hidden><h2 class="rel-h">${icon('target')}이 도구와 관련된 글</h2><p class="rel-sub">도구 주제와 직접 연결된 추천 블로그 글입니다.</p><div class="post-grid"></div></div>
-      <div class="new-posts" hidden><h2 class="new-h">${icon('sparkles')}추천 블로그 최신 글</h2><p class="rel-sub"></p><div class="post-grid"></div></div>
+    rel.innerHTML = `<div class="rel-posts" hidden><h2 class="rel-h">${icon('target')}이 도구와 관련된 글</h2><p class="rel-sub">도구 주제와 직접 연결된 추천 블로그 글입니다.</p><div class="post-list"></div></div>
+      <div class="new-posts" hidden><h2 class="new-h">${icon('sparkles')}추천 블로그 최신 글</h2><p class="rel-sub"></p><div class="post-list"></div></div>
       ${sib.length ? `<h2>${curGroup.name} 도구 더 보기</h2><div class="chips tone-${curGroup.tone}">${sib.map(it => `<a href="${it.p}">${icon(it.i)}${it.t}</a>`).join('')}</div>` : ''}`;
     main.append(rel);
   }
@@ -185,9 +185,11 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
   /* 블로그 글 불러오기 (assets/posts.json 은 GitHub Actions 가 4시간마다 갱신) */
   const home = document.getElementById('home-posts');
   if (!rel && !bRight && !home) return;
+  /* 글 한 줄: 제목·요약·블로그(왼쪽) + 작은 썸네일(오른쪽). mini(우측 영역)는 썸네일이 왼쪽, 요약 없음 */
   const card = (p, cls = 'post', tag = '') => `<a class="${cls}" href="${esc(p.u)}" target="_blank" rel="noopener">
-    <span class="thumb">${tag ? `<em class="post-tag">${tag}</em>` : ''}${p.img ? `<img src="${esc(p.img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ''}</span>
-    <span class="post-body"><b>${esc(p.t)}</b><small><img src="/assets/img/profile-${p.b}.png" alt="" width="16" height="16">${(SITE.blogs[p.b] || {}).name || ''} · ${p.d.slice(5).replace('-', '.')}</small></span></a>`;
+    <span class="post-body"><b>${esc(p.t)}</b>${p.s && !cls.includes('mini') ? `<span class="ex">${esc(p.s)}</span>` : ''}
+      <small>${tag ? `<em class="post-tag">${tag}</em>` : ''}<img src="/assets/img/profile-${p.b}.png" alt="" width="16" height="16">${(SITE.blogs[p.b] || {}).name || ''} · ${p.d.slice(5).replace('-', '.')}</small></span>
+    <span class="thumb">${p.img ? `<img src="${esc(p.img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ''}</span></a>`;
   fetch('/assets/posts.json').then(r => r.ok ? r.json() : Promise.reject(r.status)).then(d => {
     const posts = d.posts || [];
     if (!posts.length) return;
@@ -195,7 +197,7 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
       const related = ((d.related || {})[path] || []).slice(0, 4);
       if (related.length) {
         const box = rel.querySelector('.rel-posts');
-        box.querySelector('.post-grid').innerHTML = related.map(p => card(p, 'post is-rel', '관련 글')).join('');
+        box.querySelector('.post-list').innerHTML = related.map(p => card(p, 'post is-rel', '관련 글')).join('');
         box.hidden = false;
       }
       if (related.length < 4) {
@@ -205,7 +207,7 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
         box.querySelector('.rel-sub').textContent = related.length
           ? '관련 글 외에 함께 둘러보기 좋은 최근 글입니다.'
           : '이 도구와 직접 관련된 글은 아직 없어서, 추천 블로그의 최근 글을 보여 드립니다.';
-        box.querySelector('.post-grid').innerHTML = fill.map(p => card(p)).join('');
+        box.querySelector('.post-list').innerHTML = fill.map(p => card(p)).join('');
         box.hidden = false;
       }
     }
