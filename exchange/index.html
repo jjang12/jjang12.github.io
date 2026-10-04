@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>환율 계산기 - 달러·엔화·유로 원화 환산, 환전 수수료·우대율</title>
+<meta name="description" content="달러, 엔화, 유로, 위안, 동, 바트 등 18개 통화를 원화로(또는 원화를 외화로) 바로 환산합니다. 매일 갱신되는 환율과 최근 60일 추이, 환전 수수료·환율 우대율까지 계산합니다.">
+<meta name="keywords" content="환율 계산기, 환율계산기, 달러 계산기, 엔화 계산기, 달러 환율, 엔화 환율, 환전 계산기, 원달러 환율">
+<meta property="og:title" content="환율 계산기 - 달러·엔화·유로 원화 환산, 환전 수수료·우대율">
+<meta property="og:description" content="달러, 엔화, 유로, 위안, 동, 바트 등 18개 통화를 원화로(또는 원화를 외화로) 바로 환산합니다. 매일 갱신되는 환율과 최근 60일 추이, 환전 수수료·환율 우대율까지 계산합니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjang12.github.io/exchange/">
+<link rel="canonical" href="https://jjang12.github.io/exchange/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.chips2{display:flex; flex-wrap:wrap; gap:6px; margin:4px 0 14px}
+.chips2 button{font:inherit; font-size:14px; font-weight:600; padding:6px 12px; border-radius:999px; border:1px solid var(--line); background:var(--paper); color:var(--ink); cursor:pointer}
+.chips2 button[aria-pressed="true"]{background:var(--ink); color:var(--paper); border-color:var(--ink)}
+.chart{border:1px solid var(--line); border-radius:var(--r); padding:12px 12px 6px; background:var(--card)}
+.chart svg{display:block; width:100%; height:160px}
+.chart .meta{display:flex; flex-wrap:wrap; justify-content:space-between; gap:6px; font-size:13px; color:var(--muted); margin-top:4px}
+.up{color:var(--stamp)} .down{color:var(--blue)}
+.asof{font-size:12.5px; color:var(--muted)}
+#all tr.on td{background:var(--blue-soft); font-weight:700}
+#all tr{cursor:pointer}
+</style>
+</head>
+<body data-blog="aicoinlab">
+<main>
+<h1>환율 계산기</h1>
+<p class="lead">외화를 원화로, 원화를 외화로 바로 바꿉니다. 환율은 매일 자동으로 갱신되고, 은행에서 환전할 때 붙는 수수료와 우대율도 계산할 수 있습니다.</p>
+<div class="chips2" id="quick" role="group" aria-label="자주 쓰는 통화"></div>
+<div class="seg" role="group" aria-label="방향" id="dir">
+  <button type="button" data-v="f2k" aria-pressed="true">외화 → 원화</button>
+  <button type="button" data-v="k2f" aria-pressed="false">원화 → 외화</button>
+</div>
+<div class="row">
+  <div class="field"><label for="amt" id="amtLabel">금액 (USD)</label><input id="amt" type="text" inputmode="decimal" value="100"></div>
+  <div class="field"><label for="cur">통화</label><select id="cur"></select></div>
+</div>
+<div class="panel"><div class="big" id="main"></div><div class="note" id="sub" style="margin-top:6px"></div></div>
+
+<h2>은행에서 환전하면</h2>
+<div class="row">
+  <div class="field"><label for="spread">환전 수수료율 (%, 통화마다 자동)</label><input id="spread" type="number" step="0.01" inputmode="decimal"></div>
+  <div class="field"><label for="pref">환율 우대율 (%)</label><input id="pref" type="number" inputmode="numeric" min="0" max="100" value="0"></div>
+</div>
+<table class="kv" id="bank"></table>
+
+<h2 id="chartTitle">최근 60일 추이</h2>
+<div class="chart"><svg id="chart" viewBox="0 0 600 160" preserveAspectRatio="none" aria-label="환율 추이 그래프"></svg><div class="meta" id="chartMeta"></div></div>
+
+<h2>통화별 환율</h2>
+<p class="asof" id="asof"></p>
+<div class="tbl-wrap"><table class="list" id="all"><thead><tr><th>통화</th><th>기준 단위</th><th>원화</th><th id="amtCol">입력 금액</th></tr></thead><tbody></tbody></table></div>
+
+<h2>안내</h2>
+<div class="note">
+  <p>환율은 국제 시장의 중간 환율(매매기준율에 가까운 값)로, <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener">Rates By Exchange Rate API</a>에서 하루 한 번 받아옵니다. 추이 그래프는 유럽중앙은행 기준환율(Frankfurter, 영업일만)이라 동·대만 달러는 그래프가 없습니다. 실시간 시세가 아니므로 큰 금액 거래 전에는 은행 고시 환율을 확인하세요.</p>
+  <p>은행 창구에서 현찰을 살 때는 기준 환율에 수수료(달러·엔 약 1.75%, 유로 약 2%, 그 밖의 통화는 더 큼)가 붙고, 팔 때는 그만큼 빠집니다. <b>환율 우대 90%</b>는 이 수수료의 90%를 깎아 준다는 뜻입니다. 송금·카드 결제 환율은 또 다릅니다.</p>
+</div>
+</main>
+<script src="/assets/site.js"></script>
+<script>
+const CUR = {
+  USD: ['미국 달러', 1, '$', 1.75], JPY: ['일본 엔', 100, '¥', 1.75], EUR: ['유로', 1, '€', 1.99], CNY: ['중국 위안', 1, '¥', 5], VND: ['베트남 동', 100, '₫', 10],
+  THB: ['태국 바트', 1, '฿', 6], TWD: ['대만 달러', 1, 'NT$', 9], PHP: ['필리핀 페소', 1, '₱', 9], HKD: ['홍콩 달러', 1, 'HK$', 2], GBP: ['영국 파운드', 1, '£', 1.97],
+  AUD: ['호주 달러', 1, 'A$', 1.97], CAD: ['캐나다 달러', 1, 'C$', 1.97], SGD: ['싱가포르 달러', 1, 'S$', 2], CHF: ['스위스 프랑', 1, 'CHF', 1.98], NZD: ['뉴질랜드 달러', 1, 'NZ$', 2],
+  MYR: ['말레이시아 링깃', 1, 'RM', 6], IDR: ['인도네시아 루피아', 100, 'Rp', 10], MXN: ['멕시코 페소', 1, 'MX$', 6],
+};
+const QUICK = ['USD', 'JPY', 'EUR', 'CNY', 'VND', 'THB', 'TWD', 'PHP'];
+let R = null, cur = 'USD', dir = 'f2k';
+const num = s => { const v = parseFloat(String(s).replace(/[^\d.]/g, '')); return isNaN(v) ? 0 : v; };
+const krw = n => Math.round(n).toLocaleString('ko-KR') + '원';
+const fx = (n, c) => (c === 'VND' || c === 'IDR' || c === 'JPY' ? Math.round(n).toLocaleString('ko-KR') : (Math.round(n * 100) / 100).toLocaleString('ko-KR', {minimumFractionDigits: 2, maximumFractionDigits: 2})) + ' ' + c;
+const rate = (c = cur) => R.rates[c];
+function calc(){
+  if (!R) return;
+  const a = num($('amt').value), r = rate(), [name, unit] = CUR[cur];
+  $('amtLabel').textContent = dir === 'f2k' ? `금액 (${cur})` : '금액 (원)';
+  if (dir === 'f2k'){ $('main').innerHTML = `${krw(a * r)}<small>${fx(a, cur)}</small>`; }
+  else { $('main').innerHTML = `${fx(a / r, cur)}<small>${krw(a)}</small>`; }
+  $('sub').textContent = `${name} ${unit} ${cur} = ${(r * unit).toLocaleString('ko-KR', {maximumFractionDigits: 2})}원` + (unit > 1 ? ` (1 ${cur} = ${r.toLocaleString('ko-KR', {maximumFractionDigits: 4})}원)` : '');
+  const sp = (parseFloat($('spread').value) || 0) / 100 * (1 - Math.min(Math.max(+$('pref').value || 0, 0), 100) / 100);
+  const buy = r * (1 + sp), sell = r * (1 - sp);
+  const fxAmt = dir === 'f2k' ? a : a / r;
+  $('bank').innerHTML = [
+    ['현찰 살 때 환율 (원 → 외화)', `${(buy * unit).toLocaleString('ko-KR', {maximumFractionDigits: 2})}원 / ${unit} ${cur}`],
+    [`${fx(fxAmt, cur)} 사려면`, krw(fxAmt * buy)],
+    ['현찰 팔 때 환율 (외화 → 원)', `${(sell * unit).toLocaleString('ko-KR', {maximumFractionDigits: 2})}원 / ${unit} ${cur}`],
+    [`${fx(fxAmt, cur)} 팔면`, krw(fxAmt * sell)],
+    ['살 때 수수료 (기준 환율 대비)', krw(fxAmt * (buy - r))],
+  ].map(([k, v]) => `<tr><th>${k}</th><td>${v}</td></tr>`).join('');
+  $('amtCol').textContent = dir === 'f2k' ? `${fx(a, cur)} 와 같은 금액` : `${krw(a)}`;
+  $('all').querySelector('tbody').innerHTML = Object.keys(CUR).filter(c => R.rates[c]).map(c => {
+    const [n2, u2] = CUR[c], v = R.rates[c];
+    const cell = dir === 'f2k' ? fx(a * r / v, c) : fx(a / v, c);
+    return `<tr data-c="${c}"${c === cur ? ' class="on"' : ''}><td>${n2} ${c}</td><td>${u2} ${c}</td><td>${(v * u2).toLocaleString('ko-KR', {maximumFractionDigits: 2})}원</td><td>${cell}</td></tr>`;
+  }).join('');
+  chart();
+}
+function chart(){
+  const h = (R.history || {})[cur] || [], [name, unit] = CUR[cur];
+  $('chartTitle').textContent = `${name} 최근 60일 추이 (${unit} ${cur} 기준)`;
+  if (h.length < 2) { $('chart').innerHTML = '<text x="300" y="80" text-anchor="middle" fill="currentColor" font-size="14">추이 자료가 없는 통화입니다</text>'; $('chartMeta').textContent = ''; return; }
+  const ys = h.map(x => x[1] * unit), lo = Math.min(...ys), hi = Math.max(...ys), pad = (hi - lo) * 0.12 || 1;
+  const X = i => i / (h.length - 1) * 600, Y = v => 150 - (v - (lo - pad)) / (hi - lo + pad * 2) * 140;
+  const line = ys.map((v, i) => `${i ? 'L' : 'M'}${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(' ');
+  $('chart').innerHTML = `<path d="${line} L600,160 L0,160 Z" fill="var(--blue)" opacity=".08"/><path d="${line}" fill="none" stroke="var(--blue)" stroke-width="2.5" vector-effect="non-scaling-stroke"/>`;
+  const first = ys[0], last = ys[ys.length - 1], ch = (last - first) / first * 100;
+  const f = v => v.toLocaleString('ko-KR', {maximumFractionDigits: 2});
+  $('chartMeta').innerHTML = `<span>${h[0][0].slice(5).replace('-', '.')} ${f(first)}원</span><span>최저 ${f(lo)} · 최고 ${f(hi)}</span><span>${h[h.length - 1][0].slice(5).replace('-', '.')} ${f(last)}원 <b class="${ch >= 0 ? 'up' : 'down'}">${ch >= 0 ? '▲' : '▼'} ${Math.abs(ch).toFixed(2)}%</b></span>`;
+}
+function pick(c){
+  cur = c; $('cur').value = c; $('spread').value = CUR[c][3];
+  $('quick').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.c === c));
+  calc();
+}
+$('cur').innerHTML = Object.entries(CUR).map(([c, [n]]) => `<option value="${c}">${n} (${c})</option>`).join('');
+$('quick').innerHTML = QUICK.map(c => `<button type="button" data-c="${c}" aria-pressed="${c === cur}">${CUR[c][0].split(' ').pop()} ${c}</button>`).join('');
+$('quick').onclick = e => { const b = e.target.closest('button'); if (b) pick(b.dataset.c); };
+$('cur').addEventListener('input', () => pick($('cur').value));
+$('all').onclick = e => { const tr = e.target.closest('tr[data-c]'); if (tr) { pick(tr.dataset.c); $('amt').scrollIntoView({block: 'center'}); } };
+document.querySelectorAll('#dir button').forEach(b => b.onclick = () => {
+  const a = num($('amt').value);
+  if (R) $('amt').value = dir === 'f2k' ? Math.round(a * rate()).toLocaleString('ko-KR') : String(Math.round(a / rate() * 100) / 100);   // 방향을 바꾸면 금액도 바꿔 넣음
+  dir = b.dataset.v; document.querySelectorAll('#dir button').forEach(x => x.setAttribute('aria-pressed', x === b)); calc();
+});
+['amt', 'spread', 'pref'].forEach(id => $(id).addEventListener('input', calc));
+$('spread').value = CUR.USD[3];
+fetch('/assets/rates.json').then(r => r.json()).then(d => {
+  R = d;
+  const t = d.rates_at ? new Date(d.rates_at) : null;
+  $('asof').textContent = t && !isNaN(t) ? `환율 기준: ${t.toLocaleString('ko-KR', {timeZone: 'Asia/Seoul', dateStyle: 'medium', timeStyle: 'short'})} (한국 시간) · 하루 한 번 갱신` : '';
+  calc();
+}).catch(() => { $('main').textContent = '환율을 불러오지 못했습니다. 잠시 후 다시 열어 주세요.'; });
+</script>
+</body>
+</html>
