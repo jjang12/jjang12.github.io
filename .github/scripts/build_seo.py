@@ -19,7 +19,7 @@ from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-BASE = 'https://jjang12.github.io'
+BASE = 'https://jjangtool.com'
 SITE_NAME = '짱툴'
 CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 
@@ -124,7 +124,7 @@ h1{{margin:0;font-size:{size}px;line-height:1.18;letter-spacing:-0.03em;font-wei
 .foot{{position:absolute;left:90px;bottom:56px;font-size:26px;color:#B9C2D6}}</style></head><body>
 <div class="brand"><span class="mark"><svg viewBox="0 0 24 24">{zap}</svg></span>{site}</div>
 <div class="row"><span class="ic"><svg viewBox="0 0 24 24">{icon}</svg></span><div><div class="g">{group}</div><h1>{title}</h1></div></div>
-<div class="foot">무료 · 설치·가입 없이 바로 · jjang12.github.io</div></body></html>"""
+<div class="foot">무료 · 설치·가입 없이 바로 · jjangtool.com</div></body></html>"""
 TONES = {'violet': '#A894FF', 'sky': '#5BB8EE', 'amber': '#F0A54A', 'green': '#4FCB94', 'teal': '#4CC9C9', 'rose': '#F07A98'}
 
 
