@@ -121,7 +121,7 @@ h2{font-size:20px; margin:44px 0 14px; letter-spacing:-0.02em}
 .field{display:flex; flex-direction:column; gap:6px; margin-bottom:14px}
 .field label{font-size:14px; font-weight:600}
 .row{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px}
-input[type=text],input[type=number],input[type=date],input[type=search],select,textarea{
+input[type=text],input[type=number],input[type=date],input[type=time],input[type=search],select,textarea{
   font:inherit; font-size:17px; padding:11px 13px; width:100%;
   border:1.5px solid var(--line); border-radius:10px; background:var(--paper); color:var(--ink); transition:border-color .15s, box-shadow .15s}
 input:focus,select:focus,textarea:focus{border-color:var(--blue); box-shadow:0 0 0 4px color-mix(in srgb,var(--blue) 15%,transparent); outline:none}
