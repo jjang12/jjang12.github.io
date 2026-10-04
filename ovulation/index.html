@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>배란일 계산기 - 가임기, 다음 생리 예정일, 출산 예정일</title>
+<meta name="description" content="마지막 생리 시작일과 평균 생리 주기를 넣으면 배란 예정일과 가임기, 다음 생리 예정일을 달력으로 보여 주고 6개월치 일정과 출산 예정일(임신 시)도 계산합니다.">
+<meta name="keywords" content="배란일 계산기, 배란일계산기, 가임기 계산, 배란일 계산, 생리 예정일 계산, 출산 예정일 계산기, 가임기 계산기">
+<meta property="og:title" content="배란일 계산기 - 가임기, 다음 생리 예정일, 출산 예정일">
+<meta property="og:description" content="마지막 생리 시작일과 평균 생리 주기를 넣으면 배란 예정일과 가임기, 다음 생리 예정일을 달력으로 보여 주고 6개월치 일정과 출산 예정일(임신 시)도 계산합니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjang12.github.io/ovulation/">
+<link rel="canonical" href="https://jjang12.github.io/ovulation/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.legend{display:flex; flex-wrap:wrap; gap:12px; font-size:13px; color:var(--muted); margin:10px 0}
+.legend i{display:inline-block; width:12px; height:12px; border-radius:4px; margin-right:5px; vertical-align:-1px}
+.cals{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:14px}
+.mon{border:1px solid var(--line); border-radius:12px; padding:12px; background:var(--card)}
+.mon h3{margin:0 0 8px; font-size:15px}
+.mon table{width:100%; border-collapse:collapse; table-layout:fixed; text-align:center; font-size:13px; font-variant-numeric:tabular-nums}
+.mon th{color:var(--muted); font-weight:600; padding:2px 0}
+.mon td{padding:4px 0; border-radius:7px}
+.c-period{background:color-mix(in srgb,#E8684F 22%,transparent); color:#C2414B; font-weight:700}
+.c-fertile{background:color-mix(in srgb,#4CC08A 22%,transparent); color:var(--good); font-weight:700}
+.c-ovul{background:#18915F; color:#fff; font-weight:800}
+.c-today{outline:2px solid var(--ink); outline-offset:-2px}
+</style>
+</head>
+<body data-blog="kkultiplab">
+<main>
+<h1>배란일 계산기</h1>
+<p class="lead">마지막 생리 시작일과 평균 주기를 넣으면 배란 예정일과 가임기, 다음 생리 예정일을 계산합니다. 입력한 날짜는 저장되지 않습니다.</p>
+<div class="row">
+  <div class="field"><label for="lmp">마지막 생리 시작일</label><input id="lmp" type="date"></div>
+  <div class="field"><label for="cycle">평균 생리 주기 (일)</label><input id="cycle" type="number" inputmode="numeric" min="20" max="45" value="28"></div>
+  <div class="field"><label for="len">생리 기간 (일)</label><input id="len" type="number" inputmode="numeric" min="2" max="10" value="5"></div>
+</div>
+<div class="panel"><div class="big" id="main"></div><div class="note" id="sub" style="margin-top:6px"></div></div>
+<table class="kv" id="kv"></table>
+<h2>달력</h2>
+<div class="legend"><span><i style="background:color-mix(in srgb,#E8684F 40%,transparent)"></i>생리 (예정)</span><span><i style="background:color-mix(in srgb,#4CC08A 40%,transparent)"></i>가임기</span><span><i style="background:#18915F"></i>배란 예정일</span></div>
+<div class="cals" id="cals"></div>
+<h2>앞으로 6번의 주기</h2>
+<div class="tbl-wrap"><table class="list" id="list"><thead><tr><th>생리 시작 (예정)</th><th>가임기</th><th>배란 예정일</th></tr></thead><tbody></tbody></table></div>
+<h2>계산 기준 안내</h2>
+<div class="note">
+  <p>배란은 보통 다음 생리 시작 약 14일 전에 일어난다는 기준으로 계산합니다(배란 예정일 = 다음 생리 예정일 − 14일). 정자는 몸속에서 길게는 5일, 난자는 약 하루 살기 때문에 <b>가임기는 배란 예정일 5일 전부터 다음 날까지</b>로 표시했습니다.</p>
+  <p><b>출산 예정일</b>은 네겔레 법칙(마지막 생리 시작일 + 280일)으로 계산하며, 주기가 28일보다 길거나 짧으면 그만큼 더하거나 뺍니다. 실제 예정일은 초음파 검사로 정해집니다.</p>
+  <p>주기가 불규칙하거나 스트레스·질환·약 복용이 있으면 배란일이 달라집니다. 이 계산은 참고용이며 피임 방법으로 쓰면 안 됩니다. 임신 계획이나 생리 불순은 산부인과 전문의와 상담하세요.</p>
+</div>
+</main>
+<script src="/assets/site.js"></script>
+<script>
+const DAY = 864e5, WEEK = '일월화수목금토';
+const pad = n => String(n).padStart(2, '0');
+const utc = s => { const [y, m, d] = s.split('-').map(Number); return Date.UTC(y, m - 1, d); };
+const fd = t => { const d = new Date(t); return `${d.getUTCMonth() + 1}월 ${d.getUTCDate()}일(${WEEK[d.getUTCDay()]})`; };
+const fy = t => { const d = new Date(t); return `${d.getUTCFullYear()}년 ${d.getUTCMonth() + 1}월 ${d.getUTCDate()}일(${WEEK[d.getUTCDay()]})`; };
+const now = new Date(), today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+function cycles(lmp, cyc, n){
+  const out = [];
+  for (let i = 0; i < n; i++){
+    const start = lmp + i * cyc * DAY, next = start + cyc * DAY, ov = next - 14 * DAY;
+    out.push({start, ov, fertile: [ov - 5 * DAY, ov + DAY], next});
+  }
+  return out;
+}
+function calc(){
+  const v = $('lmp').value; if (!v) return;
+  const lmp = utc(v), cyc = Math.min(Math.max(parseInt($('cycle').value, 10) || 28, 20), 45), len = Math.min(Math.max(parseInt($('len').value, 10) || 5, 1), 10);
+  const all = cycles(lmp, cyc, 8);
+  // 오늘 이후 처음 오는 배란일(지났으면 다음 주기)
+  const cur = all.find(c => c.fertile[1] >= today) || all[0];
+  const dd = Math.round((cur.ov - today) / DAY);
+  const inFertile = today >= cur.fertile[0] && today <= cur.fertile[1];
+  $('main').innerHTML = `배란 예정일 ${fd(cur.ov)}<small>${dd > 0 ? `D-${dd}` : dd === 0 ? '오늘' : '지남'}</small>`;
+  $('sub').textContent = inFertile ? '지금은 가임기입니다.' : `가임기 ${fd(cur.fertile[0])} ~ ${fd(cur.fertile[1])}`;
+  const due = lmp + (280 + (cyc - 28)) * DAY;
+  $('kv').innerHTML = [
+    ['가임기', `${fd(cur.fertile[0])} ~ ${fd(cur.fertile[1])}`],
+    ['배란 예정일', fd(cur.ov)],
+    ['다음 생리 예정일', fd(cur.next)],
+    ['이번 주기에 임신했다면 출산 예정일', fy(due)],
+  ].map(([k, x]) => `<tr><th>${k}</th><td>${x}</td></tr>`).join('');
+  $('list').querySelector('tbody').innerHTML = all.filter(c => c.next > today - 7 * DAY).slice(0, 6).map(c =>
+    `<tr><td>${fd(c.start)}</td><td>${fd(c.fertile[0])} ~ ${fd(c.fertile[1])}</td><td><b>${fd(c.ov)}</b></td></tr>`).join('');
+  // 달력: 이번 달부터 3개월
+  const mark = new Map();
+  for (const c of all){
+    for (let t = c.start; t < c.start + len * DAY; t += DAY) mark.set(t, 'c-period');
+    for (let t = c.fertile[0]; t <= c.fertile[1]; t += DAY) mark.set(t, 'c-fertile');
+    mark.set(c.ov, 'c-ovul');
+  }
+  const y0 = new Date(cur.start).getUTCFullYear(), m0 = new Date(cur.start).getUTCMonth();   // 지금 주기가 시작된 달부터
+  $('cals').innerHTML = [0, 1, 2].map(k => {
+    const y = y0 + Math.floor((m0 + k) / 12), m = (m0 + k) % 12;
+    const start = Date.UTC(y, m, 1), days = new Date(Date.UTC(y, m + 1, 0)).getUTCDate(), w0 = new Date(start).getUTCDay();
+    let cells = '<tr>' + '<td></td>'.repeat(w0);
+    for (let d = 1; d <= days; d++){
+      const t = Date.UTC(y, m, d), cls = [mark.get(t) || '', t === today ? 'c-today' : ''].filter(Boolean).join(' ');
+      cells += `<td${cls ? ` class="${cls}"` : ''}>${d}</td>`;
+      if ((w0 + d) % 7 === 0 && d < days) cells += '</tr><tr>';
+    }
+    return `<div class="mon"><h3>${y}년 ${m + 1}월</h3><table><thead><tr>${[...WEEK].map(x => `<th>${x}</th>`).join('')}</tr></thead><tbody>${cells}</tr></tbody></table></div>`;
+  }).join('');
+}
+const t0 = new Date(today - 10 * DAY); $('lmp').value = `${t0.getUTCFullYear()}-${pad(t0.getUTCMonth() + 1)}-${pad(t0.getUTCDate())}`;
+['lmp', 'cycle', 'len'].forEach(id => $(id).addEventListener('input', calc));
+calc();
+</script>
+</body>
+</html>

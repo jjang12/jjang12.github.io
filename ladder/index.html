@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>사다리게임 - 이름·결과 넣고 바로 하는 온라인 사다리 타기</title>
+<meta name="description" content="참가자 이름과 결과(당첨·꽝·커피 등)를 넣으면 무작위 사다리를 만들어 줍니다. 이름을 누르면 길을 따라 내려가고, 전체 결과도 한 번에 볼 수 있습니다. 최대 12명.">
+<meta name="keywords" content="사다리게임, 사다리 타기, 온라인 사다리, 사다리 게임 만들기, 내기 사다리, 제비뽑기">
+<meta property="og:title" content="사다리게임 - 이름·결과 넣고 바로 하는 온라인 사다리 타기">
+<meta property="og:description" content="참가자 이름과 결과(당첨·꽝·커피 등)를 넣으면 무작위 사다리를 만들어 줍니다. 이름을 누르면 길을 따라 내려가고, 전체 결과도 한 번에 볼 수 있습니다. 최대 12명.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjang12.github.io/ladder/">
+<link rel="canonical" href="https://jjang12.github.io/ladder/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.names{display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:8px; margin-bottom:12px}
+.names input{font-size:15px; padding:8px 10px}
+.board{position:relative; margin-top:14px; border:1px solid var(--line); border-radius:var(--r); background:var(--card); padding:10px 8px; overflow-x:auto}
+.board svg{display:block; width:100%; min-width:320px; height:auto; touch-action:manipulation}
+.board .top{cursor:pointer}
+.board .top rect{fill:var(--soft); stroke:var(--line)}
+.board .top:hover rect{stroke:var(--blue)}
+.board .top.done rect{fill:var(--blue-soft)}
+.board text{font-family:inherit; font-size:13px; fill:var(--ink); text-anchor:middle; dominant-baseline:middle}
+.board .rail{stroke:var(--line); stroke-width:4; stroke-linecap:round}
+.board .bot rect{fill:var(--paper); stroke:var(--line)}
+.board .bot.open rect{fill:var(--tone, var(--blue)); stroke:none}
+.board .bot.open text{fill:#fff; font-weight:700}
+.board path.trace{fill:none; stroke-width:5; stroke-linecap:round; stroke-linejoin:round}
+#res tr td:last-child{font-weight:700}
+@media (prefers-reduced-motion:reduce){ .board path.trace{transition:none !important} }
+</style>
+</head>
+<body data-blog="kkultiplab">
+<main>
+<h1>사다리게임</h1>
+<p class="lead">참가자와 결과를 넣고 「사다리 만들기」를 누르세요. 위의 이름을 누르면 길을 따라 내려가 결과가 열립니다. 사다리는 누를 때마다 새로 무작위로 만들어집니다.</p>
+<div class="row">
+  <div class="field"><label for="n">인원</label><select id="n"></select></div>
+  <div class="field"><label for="preset">결과 빠르게 채우기</label><select id="preset">
+    <option value="">직접 입력</option><option value="win1">당첨 1명 + 꽝</option><option value="lose1">벌칙 1명 + 통과</option><option value="coffee">커피 쏘기 1명</option><option value="order">순서 정하기 (1번~)</option>
+  </select></div>
+</div>
+<p class="note" style="margin:0 0 4px">참가자</p>
+<div class="names" id="who"></div>
+<p class="note" style="margin:0 0 4px">결과</p>
+<div class="names" id="what"></div>
+<div class="btns">
+  <button type="button" class="btn" id="make">사다리 만들기</button>
+  <button type="button" class="btn sub" id="all" disabled>전체 결과 보기</button>
+  <button type="button" class="btn sub" id="copy" disabled>결과 복사</button>
+</div>
+<div class="board" id="board" hidden><svg id="svg" xmlns="http://www.w3.org/2000/svg"></svg></div>
+<table class="kv" id="res"></table>
+<h2>안내</h2>
+<div class="note">
+  <p>사다리는 브라우저의 암호용 난수(crypto.getRandomValues)로 만들어 누가 해도 결과를 미리 알 수 없습니다. 가로줄은 이웃한 칸에 같은 높이로 겹치지 않게 놓고, 모든 칸 사이에 가로줄이 하나 이상 생기게 했습니다.</p>
+  <p>이름이나 결과를 바꾸면 사다리를 다시 만들어야 합니다. 입력한 내용은 어디에도 저장되지 않습니다.</p>
+</div>
+</main>
+<script src="/assets/site.js"></script>
+<script>
+const COLORS = ['#3157E0', '#E8684F', '#18915F', '#D27A12', '#6A4FD8', '#0E8C8C', '#D0476B', '#1584C5', '#8A6D00', '#C2414B', '#4F7A28', '#7C3AED'];
+const rnd = n => { const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] % n; };
+let L = null;   // {n, rows, rungs[row][gap], map[start] = end, who, what}
+function fields(){
+  const n = +$('n').value;
+  const keep = (id, i, def) => { const el = document.querySelector(`#${id} input[data-i="${i}"]`); return el ? el.value : def; };
+  $('who').innerHTML = Array.from({length: n}, (_, i) => `<input type="text" data-i="${i}" maxlength="10" value="${keep('who', i, `참가자${i + 1}`)}" aria-label="참가자 ${i + 1}">`).join('');
+  $('what').innerHTML = Array.from({length: n}, (_, i) => `<input type="text" data-i="${i}" maxlength="10" value="${keep('what', i, i === 0 ? '당첨' : '꽝')}" aria-label="결과 ${i + 1}">`).join('');
+}
+function preset(){
+  const n = +$('n').value, p = $('preset').value;
+  const vals = p === 'win1' ? ['당첨', ...Array(n - 1).fill('꽝')] : p === 'lose1' ? ['벌칙', ...Array(n - 1).fill('통과')]
+    : p === 'coffee' ? ['커피 쏘기', ...Array(n - 1).fill('얻어 마시기')] : p === 'order' ? Array.from({length: n}, (_, i) => `${i + 1}번`) : null;
+  if (vals) document.querySelectorAll('#what input').forEach((el, i) => el.value = vals[i]);
+}
+function build(n){
+  const rows = Math.max(10, n * 2 + 4);
+  for (;;){
+    const rungs = Array.from({length: rows}, () => Array(n - 1).fill(false));
+    for (let r = 0; r < rows; r++) for (let g = 0; g < n - 1; g++)
+      if (!(g > 0 && rungs[r][g - 1]) && rnd(100) < 38) rungs[r][g] = true;
+    if (Array.from({length: n - 1}, (_, g) => rungs.some(r => r[g])).every(Boolean)) {
+      const map = [], paths = [];
+      for (let s = 0; s < n; s++){
+        let c = s; const pts = [[c, -1]];
+        for (let r = 0; r < rows; r++){
+          pts.push([c, r]);
+          if (c < n - 1 && rungs[r][c]) c++; else if (c > 0 && rungs[r][c - 1]) c--;
+          pts.push([c, r]);
+        }
+        pts.push([c, rows]);
+        map[s] = c; paths[s] = pts;
+      }
+      return {n, rows, rungs, map, paths};
+    }
+  }
+}
+function draw(){
+  const {n, rows, rungs} = L, W = Math.max(420, n * 84), bw = Math.min(76, W / n - 10), m = bw / 2 + 4;   // 이름 칸이 양 끝에서 잘리지 않게
+  const gap = (W - 2 * m) / Math.max(n - 1, 1), top = 46, bot = 46, rowH = 24, H = top + rows * rowH + bot + 20;
+  const x = c => m + c * gap, y = r => top + 10 + (r + 0.5) * rowH;
+  L.geo = {x, y, top, H, rows, rowH};
+  let s = `<svg viewBox="0 0 ${W} ${H}" style="max-width:${Math.round(W * 1.15)}px; margin:0 auto">`;   // 넓은 화면에서 너무 커지지 않게
+  for (let c = 0; c < n; c++) s += `<line class="rail" x1="${x(c)}" y1="${top}" x2="${x(c)}" y2="${H - bot}"/>`;
+  for (let r = 0; r < rows; r++) for (let g = 0; g < n - 1; g++) if (rungs[r][g]) s += `<line class="rail" x1="${x(g)}" y1="${y(r)}" x2="${x(g + 1)}" y2="${y(r)}"/>`;
+  s += '<g id="traces"></g>';
+  L.who.forEach((nm, c) => { s += `<g class="top" data-s="${c}" tabindex="0" role="button" aria-label="${nm} 결과 보기"><rect x="${x(c) - bw / 2}" y="4" width="${bw}" height="34" rx="9"/><text x="${x(c)}" y="21">${esc(nm)}</text></g>`; });
+  L.what.forEach((r, c) => { s += `<g class="bot" data-e="${c}"><rect x="${x(c) - bw / 2}" y="${H - bot + 6}" width="${bw}" height="34" rx="9"/><text x="${x(c)}" y="${H - bot + 23}">?</text></g>`; });
+  $('svg').outerHTML = s.replace('<svg', '<svg id="svg" xmlns="http://www.w3.org/2000/svg"') + '</svg>';
+  $('svg').querySelectorAll('.top').forEach(g => { const go = () => trace(+g.dataset.s); g.onclick = go; g.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } }; });
+}
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+function trace(s, instant){
+  const {x, y, top, H, rows} = L.geo, pts = L.paths[s];
+  const d = pts.map(([c, r], i) => `${i ? 'L' : 'M'}${x(c)},${r < 0 ? top : r >= rows ? H - 46 : y(r)}`).join(' ');
+  const color = COLORS[s % COLORS.length];
+  const tr = $('svg').querySelector('#traces');
+  tr.querySelector(`[data-s="${s}"]`)?.remove();
+  tr.insertAdjacentHTML('beforeend', `<path class="trace" data-s="${s}" d="${d}" stroke="${color}"/>`);
+  const p = tr.lastElementChild, len = p.getTotalLength();
+  const open = () => {
+    const e = L.map[s], b = $('svg').querySelector(`.bot[data-e="${e}"]`);
+    b.classList.add('open'); b.style.setProperty('--tone', color); b.querySelector('text').textContent = L.what[e];
+    $('svg').querySelector(`.top[data-s="${s}"]`).classList.add('done');
+    L.shown.add(s); showResults();
+  };
+  if (instant || matchMedia('(prefers-reduced-motion: reduce)').matches) { open(); return; }
+  p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
+  p.getBoundingClientRect();
+  p.style.transition = `stroke-dashoffset ${Math.min(2.2, 0.8 + rows * 0.06)}s linear`;
+  p.style.strokeDashoffset = 0;
+  setTimeout(open, Math.min(2200, 800 + rows * 60));
+}
+function showResults(){
+  const rows = [...L.shown].sort((a, b) => a - b).map(s => [L.who[s], L.what[L.map[s]]]);
+  $('res').innerHTML = rows.map(([w, r]) => `<tr><th>${esc(w)}</th><td>${esc(r)}</td></tr>`).join('');
+  $('copy').disabled = !rows.length;
+}
+$('make').onclick = () => {
+  const who = [...document.querySelectorAll('#who input')].map((el, i) => el.value.trim() || `참가자${i + 1}`);
+  const what = [...document.querySelectorAll('#what input')].map((el, i) => el.value.trim() || '-');
+  L = {...build(who.length), who, what, shown: new Set()};
+  $('board').hidden = false; draw(); $('res').innerHTML = ''; $('all').disabled = false; $('copy').disabled = true;
+  $('board').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest'});
+};
+$('all').onclick = () => { if (L) L.who.forEach((_, s) => { if (!L.shown.has(s)) trace(s, true); }); };
+$('copy').onclick = async () => { const t = [...L.shown].sort((a, b) => a - b).map(s => `${L.who[s]} → ${L.what[L.map[s]]}`).join('\n'); if (await copyText(t)) toast('결과를 복사했습니다'); };
+$('n').innerHTML = Array.from({length: 11}, (_, i) => `<option value="${i + 2}"${i + 2 === 4 ? ' selected' : ''}>${i + 2}명</option>`).join('');
+$('n').addEventListener('input', () => { fields(); preset(); });
+$('preset').addEventListener('input', preset);
+fields();
+</script>
+</body>
+</html>
