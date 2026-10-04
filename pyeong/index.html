@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>평수 계산기 - ㎡ 평 변환, 아파트 전용면적 평수</title>
+<meta name="description" content="제곱미터(㎡)와 평을 양방향으로 변환하고, 59㎡·84㎡ 등 아파트 전용면적별 평수를 표로 보여 줍니다. 1평 = 3.3058㎡.">
+<meta name="keywords" content="평수 계산기, 평 제곱미터 변환, ㎡ 평 변환, 84제곱미터 몇평, 59제곱미터 몇평">
+<meta property="og:title" content="평수 계산기 - ㎡ 평 변환, 아파트 전용면적 평수">
+<meta property="og:description" content="제곱미터(㎡)와 평을 양방향으로 변환하고, 59㎡·84㎡ 등 아파트 전용면적별 평수를 표로 보여 줍니다. 1평 = 3.3058㎡.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjang12.github.io/pyeong/">
+<link rel="canonical" href="https://jjang12.github.io/pyeong/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+
+</head>
+<body data-blog="aicoinlab">
+<main>
+<h1>평수 계산기</h1>
+<p class="lead">㎡와 평 중 아무 칸에나 숫자를 넣으면 다른 칸이 바로 바뀝니다.</p>
+<div class="row">
+  <div class="field"><label for="m2">제곱미터 (㎡)</label><input id="m2" type="number" step="any" inputmode="decimal" value="84"></div>
+  <div class="field"><label for="py">평</label><input id="py" type="number" step="any" inputmode="decimal"></div>
+</div>
+<div class="panel"><div class="big" id="main"></div></div>
+<h2>아파트 전용면적별 평수</h2>
+<div class="tbl-wrap"><table class="list" id="tbl"><thead><tr><th>전용면적</th><th>전용 평수</th><th>흔히 부르는 평형 (공급면적)</th></tr></thead><tbody></tbody></table></div>
+<h2>계산 기준 안내</h2>
+<div class="note">
+  <p>1평은 400/121㎡(약 3.3058㎡)이고, 1㎡는 0.3025평입니다. 이 값으로 소수점까지 정확히 계산합니다.</p>
+  <p>「84㎡ = 34평형」처럼 부르는 평형은 계단·복도 같은 공용면적을 더한 공급면적 기준이라 단지마다 다릅니다. 표의 평형은 흔히 쓰는 대략적인 값입니다.</p>
+</div>
+</main>
+<script src="/assets/site.js"></script>
+<script>
+const R = 400 / 121; // 1평 = 400/121 ㎡
+const r2 = n => (Math.round(n * 100) / 100).toLocaleString('ko-KR', {maximumFractionDigits: 2});
+function show(m){ $('main').innerHTML = `${r2(m)}㎡ = ${r2(m / R)}평`; }
+$('m2').addEventListener('input', () => { const m = parseFloat($('m2').value); if (isNaN(m)) return; $('py').value = +(m / R).toFixed(4); show(m); });
+$('py').addEventListener('input', () => { const p = parseFloat($('py').value); if (isNaN(p)) return; const m = p * R; $('m2').value = +m.toFixed(4); show(m); });
+$('m2').dispatchEvent(new Event('input'));
+const TYPES = [[39,'15~16평형'],[49,'19~20평형'],[59,'24~25평형'],[74,'29~30평형'],[84,'32~34평형'],[102,'39~40평형'],[114,'43~45평형'],[135,'50~52평형']];
+$('tbl').querySelector('tbody').innerHTML = TYPES.map(([m, t]) => `<tr><td>${m}㎡</td><td>${r2(m / R)}평</td><td>${t}</td></tr>`).join('');
+</script>
+</body>
+</html>

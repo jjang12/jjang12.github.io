@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>연봉 실수령액 계산기 2026 - 4대보험·소득세 공제 내역</title>
+<meta name="description" content="2026년 국민연금 4.75%, 건강보험 3.595%, 장기요양 13.14%, 고용보험 0.9% 반영. 연봉을 넣으면 월 실수령액과 공제 항목을 계산하고 연봉별 실수령액 표를 보여 줍니다.">
+<meta name="keywords" content="연봉 실수령액, 연봉 실수령액 계산기, 2026 실수령액, 월급 실수령액, 4대보험 계산기">
+<meta property="og:title" content="연봉 실수령액 계산기 2026 - 4대보험·소득세 공제 내역">
+<meta property="og:description" content="2026년 국민연금 4.75%, 건강보험 3.595%, 장기요양 13.14%, 고용보험 0.9% 반영. 연봉을 넣으면 월 실수령액과 공제 항목을 계산하고 연봉별 실수령액 표를 보여 줍니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjang12.github.io/salary/">
+<link rel="canonical" href="https://jjang12.github.io/salary/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+
+</head>
+<body data-blog="aicoinlab">
+<main>
+<h1>연봉 실수령액 계산기</h1>
+<p class="lead">2026년 4대보험 요율과 소득세율을 반영해 월 실수령액과 공제 내역을 계산합니다.</p>
+<div class="row">
+  <div class="field"><label for="pay">연봉 (만원)</label><input id="pay" type="number" inputmode="numeric" value="4000"></div>
+  <div class="field"><label for="nt">월 비과세액 (만원, 식대 등)</label><input id="nt" type="number" inputmode="numeric" value="20"></div>
+  <div class="field"><label for="fam">부양가족 수 (본인 포함)</label><input id="fam" type="number" inputmode="numeric" min="1" value="1"></div>
+</div>
+<label class="note"><input type="checkbox" id="sev"> 퇴직금 포함 연봉 (연봉을 13으로 나눔)</label>
+<div class="panel"><div class="big" id="main"></div><div class="note" id="sub" style="margin-top:6px"></div></div>
+<table class="kv" id="tbl"></table>
+<h2>연봉별 실수령액 표 (본인 1명, 비과세 월 20만원)</h2>
+<div class="tbl-wrap"><table class="list" id="list"><thead><tr><th>연봉</th><th>월 세전</th><th>공제 합계</th><th>월 실수령액</th></tr></thead><tbody></tbody></table></div>
+<h2>계산 기준 안내</h2>
+<div class="note">
+  <p>4대보험 근로자 부담: 국민연금 4.75%(기준소득월액 41만~659만원, 2026.7~2027.6), 건강보험 3.595%, 장기요양 건강보험료의 13.14%, 고용보험 0.9%. 각 보험료는 10원 미만을 버립니다.</p>
+  <p>소득세는 연간 총급여에서 근로소득공제, 인적공제(1인 150만원), 연금·보험료 공제를 빼고 세율을 적용한 뒤 근로소득세액공제와 표준세액공제(13만원)를 반영해 12로 나눈 값입니다. 지방소득세는 소득세의 10%입니다.</p>
+  <p>회사가 매달 떼는 소득세는 국세청 간이세액표를 쓰기 때문에 실제 명세서와 월 몇천 원 정도 차이 날 수 있으며, 20세 이하 자녀 공제는 반영하지 않았습니다. 정확한 세금은 연말정산에서 확정됩니다.</p>
+</div>
+</main>
+<script src="/assets/site.js"></script>
+<script>
+const RATE = {np: 0.0475, hi: 0.03595, ltc: 0.1314, ei: 0.009, npMin: 410000, npMax: 6590000};
+function earnedDeduction(g){ // 근로소득공제 (한도 2,000만원)
+  let d;
+  if (g <= 5e6) d = g * 0.7;
+  else if (g <= 15e6) d = 3.5e6 + (g - 5e6) * 0.4;
+  else if (g <= 45e6) d = 7.5e6 + (g - 15e6) * 0.15;
+  else if (g <= 1e8) d = 12e6 + (g - 45e6) * 0.05;
+  else d = 14.75e6 + (g - 1e8) * 0.02;
+  return Math.min(d, 20e6);
+}
+function taxByBase(b){ // 종합소득세율
+  const T = [[14e6,.06,0],[50e6,.15,1.26e6],[88e6,.24,5.76e6],[150e6,.35,15.44e6],[300e6,.38,19.94e6],[500e6,.40,25.94e6],[1e9,.42,35.94e6],[Infinity,.45,65.94e6]];
+  if (b <= 0) return 0;
+  for (const [lim, r, q] of T) if (b <= lim) return b * r - q;
+}
+function earnedCredit(tax, g){ // 근로소득세액공제
+  let c = tax <= 1.3e6 ? tax * 0.55 : 715000 + (tax - 1.3e6) * 0.3;
+  let cap;
+  if (g <= 33e6) cap = 740000;
+  else if (g <= 70e6) cap = Math.max(740000 - (g - 33e6) * 0.008, 660000);
+  else if (g <= 120e6) cap = Math.max(660000 - (g - 70e6) / 2, 500000);
+  else cap = Math.max(500000 - (g - 120e6) / 2, 200000);
+  return Math.min(c, cap);
+}
+function compute(annual, nontaxMonthly, fam, sev){
+  const monthly = annual / (sev ? 13 : 12);
+  const taxable = Math.max(monthly - nontaxMonthly, 0);
+  const npBase = Math.floor(Math.min(Math.max(taxable, RATE.npMin), RATE.npMax) / 1000) * 1000;
+  const np = floor10(npBase * RATE.np);
+  const hi = floor10(taxable * RATE.hi);
+  const ltc = floor10(hi * RATE.ltc);
+  const ei = floor10(taxable * RATE.ei);
+  const gross = taxable * 12;
+  const income = gross - earnedDeduction(gross);
+  const base = income - 1.5e6 * fam - np * 12 - (hi + ltc + ei) * 12;
+  const calc = taxByBase(base);
+  const it = Math.max(calc - earnedCredit(calc, gross) - 130000, 0);
+  const tax = floor10(it / 12), local = floor10(tax * 0.1);
+  const ded = np + hi + ltc + ei + tax + local;
+  return {monthly, np, hi, ltc, ei, tax, local, ded, net: monthly - ded};
+}
+function calc(){
+  const a = (parseFloat($('pay').value) || 0) * 1e4;
+  const r = compute(a, (parseFloat($('nt').value) || 0) * 1e4, Math.max(parseInt($('fam').value, 10) || 1, 1), $('sev').checked);
+  $('main').innerHTML = `월 ${fmt(r.net)}원<small>실수령액</small>`;
+  $('sub').textContent = `연 환산 ${fmt(r.net * 12)}원, 공제율 ${r.monthly ? (r.ded / r.monthly * 100).toFixed(1) : 0}%`;
+  $('tbl').innerHTML = [['월 세전 급여', r.monthly],['국민연금', r.np],['건강보험', r.hi],['장기요양보험', r.ltc],['고용보험', r.ei],['소득세', r.tax],['지방소득세', r.local],['공제 합계', r.ded]]
+    .map(([k, v]) => `<tr><th>${k}</th><td>${fmt(v)}원</td></tr>`).join('') + `<tr class="total"><th>월 실수령액</th><td>${fmt(r.net)}원</td></tr>`;
+}
+['pay','nt','fam','sev'].forEach(id => $(id).addEventListener('input', calc));
+calc();
+const rows = [];
+for (let man = 2400; man <= 10000; man += man < 6000 ? 200 : 500){
+  const r = compute(man * 1e4, 2e5, 1, false);
+  rows.push(`<tr><td>${fmt(man)}만원</td><td>${fmt(r.monthly)}</td><td>${fmt(r.ded)}</td><td><b>${fmt(r.net)}</b></td></tr>`);
+}
+$('list').querySelector('tbody').innerHTML = rows.join('');
+</script>
+</body>
+</html>

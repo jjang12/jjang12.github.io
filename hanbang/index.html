@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>끝말잇기 한방단어 검색기 - 끝 글자·첫 글자로 찾기</title>
+<meta name="description" content="국립국어원 우리말샘 사전 기준 끝말잇기 한방단어를 끝 글자, 첫 글자로 찾고 내 단어가 한방인지 바로 검사합니다. 두음법칙 반영.">
+<meta name="keywords" content="끝말잇기 한방단어, 한방단어 모음, 끝말잇기 필승 단어, 한방단어 검색, 끝말잇기 이기는 법">
+<meta property="og:title" content="끝말잇기 한방단어 검색기">
+<meta property="og:description" content="끝 글자로 한방단어 찾기, 내 단어 한방 검사. 두음법칙 반영.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjang12.github.io/hanbang/">
+<link rel="canonical" href="https://jjang12.github.io/hanbang/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔚</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+:root{
+  --ink:#1F2633; --muted:#667085; --paper:#FFFFFF; --soft:#F3F5F9;
+  --line:#D9DEE7; --blue:#2F5BD3; --stamp:#C8322B; --warn:#B26A00;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#E6E9EF; --muted:#9AA3B2; --paper:#161A21; --soft:#1F2430;
+    --line:#333B4A; --blue:#7C9CF0; --stamp:#F0675F; --warn:#E3A23B;
+  }
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  font-size:16px; line-height:1.6;
+}
+main{max-width:760px; margin:0 auto; padding:40px 20px 64px}
+h1{font-size:30px; line-height:1.25; margin:0 0 8px; letter-spacing:-0.02em}
+.lead{color:var(--muted); margin:0 0 28px}
+h2{font-size:19px; margin:44px 0 12px}
+
+.mode{display:inline-flex; border:1px solid var(--line); border-radius:8px; overflow:hidden; margin-bottom:16px}
+.mode button{
+  border:0; background:transparent; color:var(--muted); font:inherit; font-size:14px;
+  padding:7px 14px; cursor:pointer;
+}
+.mode button[aria-pressed="true"]{background:var(--ink); color:var(--paper)}
+
+.search{display:flex; gap:8px}
+.search input{
+  flex:1; min-width:0; font:inherit; font-size:20px; padding:12px 14px;
+  border:2px solid var(--ink); border-radius:8px; background:var(--paper); color:var(--ink);
+}
+.search button{
+  font:inherit; font-weight:600; padding:0 20px; border:0; border-radius:8px;
+  background:var(--blue); color:#fff; cursor:pointer;
+}
+.kind{display:flex; flex-wrap:wrap; gap:16px; margin:12px 0 0; font-size:15px}
+.kind label{cursor:pointer}
+:focus-visible{outline:3px solid var(--blue); outline-offset:2px}
+
+#result{margin-top:28px}
+.status{color:var(--muted); font-size:15px; margin:0 0 12px}
+.check{
+  display:flex; align-items:center; gap:20px; padding:20px;
+  background:var(--soft); border-radius:8px;
+}
+.check .word{font-size:28px; font-weight:700}
+.check .detail{color:var(--muted); font-size:15px}
+.stamp{
+  flex:none; width:76px; height:76px; border:3px solid var(--stamp); border-radius:50%;
+  color:var(--stamp); font-weight:800; font-size:20px;
+  display:flex; align-items:center; justify-content:center; transform:rotate(-12deg);
+}
+.stamp.near{border-style:dashed; border-color:var(--warn); color:var(--warn); font-size:17px}
+.stamp.ok{border-color:var(--line); color:var(--muted); font-size:15px; transform:none}
+
+.group{margin-bottom:28px}
+.group h3{font-size:16px; margin:0 0 10px}
+.group h3 span{color:var(--muted); font-weight:400; font-size:14px}
+.esc{margin-top:10px; font-size:15px}
+.esc a{color:var(--blue)}
+.words a.near{border-bottom-style:dashed}
+.words{display:flex; flex-wrap:wrap; gap:6px 14px; margin:0; padding:0; list-style:none}
+.words a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--line)}
+.words a:hover{color:var(--blue); border-color:var(--blue)}
+.more{margin-top:16px; font:inherit; font-size:14px; padding:8px 14px; border:1px solid var(--line); border-radius:8px; background:transparent; color:var(--ink); cursor:pointer}
+
+.ends{display:flex; flex-wrap:wrap; gap:6px}
+.ends button{
+  font:inherit; font-size:17px; min-width:44px; padding:4px 8px; cursor:pointer;
+  border:1px solid var(--line); border-radius:6px; background:var(--paper); color:var(--ink);
+}
+.ends button small{color:var(--muted); font-size:11px; margin-left:3px}
+.ends button:hover{border-color:var(--stamp); color:var(--stamp)}
+#nearEnds button:hover{border-color:var(--warn); color:var(--warn)}
+
+.note{color:var(--muted); font-size:14px}
+.note p{margin:0 0 8px}
+footer{border-top:1px solid var(--line); margin-top:48px; padding-top:20px; font-size:14px; color:var(--muted)}
+footer a{color:var(--blue)}
+@media (max-width:480px){
+  h1{font-size:25px}
+  .check{gap:14px; padding:16px}
+  .stamp{width:64px; height:64px; font-size:17px}
+}
+</style>
+</head>
+<body data-blog="kkultiplab">
+<main>
+  <h1>끝말잇기 한방단어 검색기</h1>
+  <p class="lead">끝 글자로 이어 갈 단어가 없는 한방단어와, 1~3개뿐인 준한방 단어를 찾고 내 단어를 검사합니다. 두음법칙(력→역, 륨→윰)까지 반영했습니다.</p>
+
+  <div class="mode" role="group" aria-label="단어 범위">
+    <button type="button" data-mode="basic" aria-pressed="true">일상 단어</button>
+    <button type="button" data-mode="all" aria-pressed="false">전문용어 포함</button>
+  </div>
+
+  <div class="search">
+    <input id="q" type="search" maxlength="20" placeholder="예: 륨, 늄, 꾼" aria-label="검색어" autocomplete="off">
+    <button type="button" id="go">찾기</button>
+  </div>
+  <div class="kind" role="radiogroup" aria-label="검색 방법">
+    <label><input type="radio" name="kind" value="end" checked> 이 글자로 끝나는 단어</label>
+    <label><input type="radio" name="kind" value="start"> 이 글자로 시작하는 단어</label>
+    <label><input type="radio" name="kind" value="check"> 단어 한방 검사</label>
+  </div>
+
+  <section id="result" aria-live="polite"><p class="status">데이터를 불러오는 중입니다.</p></section>
+
+  <h2>한방 끝 글자 모음</h2>
+  <p class="note" style="margin-top:-4px">이 글자로 끝나면 이어 갈 단어가 없습니다. 숫자는 해당 한방단어 수, 누르면 목록이 열립니다.</p>
+  <div class="ends" id="ends"></div>
+
+  <h2>준한방 끝 글자 모음</h2>
+  <p class="note" style="margin-top:-4px">이어 갈 단어가 1~3개뿐인 끝 글자입니다. 상대가 그 단어를 모르면 사실상 한방입니다.</p>
+  <div class="ends" id="nearEnds"></div>
+
+  <h2>판정 기준</h2>
+  <div class="note">
+    <p>국립국어원 우리말샘의 명사 중 일반어만 사용합니다. 옛말·북한어·방언, 구·속담, 지명·인명은 제외했습니다.</p>
+    <p>「일상 단어」는 전문 분야 표시가 없는 뜻이 하나 이상 있는 단어만, 「전문용어 포함」은 의학·화학 등 분야 용어까지 포함합니다. 게임마다 쓰는 사전이 달라 결과가 다를 수 있습니다.</p>
+    <p>끝 글자와 그 두음법칙 변환 글자로 시작하는 단어가 모두 없으면 한방단어, 합쳐서 1~3개면 준한방 단어로 판정합니다. 준한방 단어에 마우스를 올리면 이어 갈 수 있는 단어가 보입니다.</p>
+  </div>
+
+  <div class="note" style="margin-top:32px">
+    <p>사전 데이터 출처: 국립국어원 우리말샘 (<span id="meta"></span>)</p>
+  </div>
+</main>
+<script src="/assets/site.js"></script>
+<script>
+(() => {
+  const PAGE = 300;
+  const SENSE_URL = 'https://opendict.korean.go.kr/dictionary/view?sense_no=';
+  let data = null, mode = 'basic';
+
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const link = (w, code, cls = '', title = '') =>
+    `<a href="${SENSE_URL}${code}" target="_blank" rel="noopener"${cls ? ` class="${cls}"` : ''}${title ? ` title="${esc(title)}"` : ''}>${esc(w)}</a>`;
+
+  // 두음법칙 (build_hanbang.py 와 동일한 규칙)
+  const N_TO_O = new Set([6,12,17,20]), R_TO_O = new Set([2,6,7,12,17,20]), R_TO_N = new Set([0,1,8,11,13,18]);
+  function dueum(ch){
+    const code = ch.charCodeAt(0) - 0xAC00;
+    if (code < 0 || code >= 11172) return null;
+    const cho = Math.floor(code / 588), jung = Math.floor((code % 588) / 28), jong = code % 28;
+    let n;
+    if (cho === 2 && N_TO_O.has(jung)) n = 11;
+    else if (cho === 5 && R_TO_O.has(jung)) n = 11;
+    else if (cho === 5 && R_TO_N.has(jung)) n = 2;
+    else return null;
+    return String.fromCharCode(0xAC00 + n * 588 + jung * 28 + jong);
+  }
+
+  const HB = () => mode === 'all' ? 1 : 2;
+  const NEAR = () => mode === 'all' ? 4 : 8;
+  const startMap = () => mode === 'all' ? data.start_all : data.start_basic;
+  const escMap = () => mode === 'all' ? data.escape_all : data.escape_basic;
+  const hbPool = () => data.words.filter(r => r[1] & HB());
+  const nearPool = () => data.words.filter(r => r[1] & NEAR());
+  // 조사 으로/로: 받침이 있고 ㄹ 받침이 아니면 '으로'
+  const ro = w => { const c = w.charCodeAt(w.length - 1) - 0xAC00; const j = c >= 0 && c < 11172 ? c % 28 : 0; return j && j !== 8 ? '으로' : '로'; };
+  const kind = () => document.querySelector('input[name="kind"]:checked').value;
+
+  // 끝 글자 ch 로 이어 갈 수 있는 단어 목록
+  function escapes(ch){
+    const alt = dueum(ch), m = escMap();
+    return [...(m[ch] || []), ...(alt ? (m[alt] || []) : [])];
+  }
+
+  function section(box, title, list, near){
+    const g = document.createElement('div');
+    g.className = 'group';
+    g.innerHTML = `<h3>${esc(title)} <span>${list.length.toLocaleString()}개</span></h3><ul class="words"></ul>`;
+    box.appendChild(g);
+    const ul = g.querySelector('ul');
+    let shown = 0;
+    const more = () => {
+      const slice = list.slice(shown, shown + PAGE);
+      ul.insertAdjacentHTML('beforeend', slice.map(r => {
+        const t = near ? '이어 갈 단어: ' + escapes(r[0].at(-1)).map(e => e[0]).join(', ') : '';
+        return `<li>${link(r[0], r[2], near ? 'near' : '', t)}</li>`;
+      }).join(''));
+      shown += slice.length;
+      const old = g.querySelector('.more'); if (old) old.remove();
+      if (shown < list.length){
+        g.insertAdjacentHTML('beforeend', `<button type="button" class="more">${(list.length - shown).toLocaleString()}개 더 보기</button>`);
+        g.querySelector('.more').onclick = more;
+      }
+    };
+    more();
+  }
+
+  function renderLists(q, label){
+    const test = label === 'end' ? r => r[0].endsWith(q) : r => r[0].startsWith(q);
+    const hb = hbPool().filter(test), near = nearPool().filter(test);
+    const what = label === 'end' ? `「${q}」${ro(q)} 끝나는` : `「${q}」${ro(q)} 시작하는`;
+    const box = $('result');
+    box.innerHTML = '';
+    if (!hb.length && !near.length){
+      box.innerHTML = `<p class="status">${esc(what)} 한방·준한방 단어가 없습니다. 다른 글자로 찾거나 「전문용어 포함」으로 바꿔 보세요.</p>`;
+      return;
+    }
+    if (hb.length) section(box, `${what} 한방단어`, hb, false);
+    if (near.length) section(box, `${what} 준한방 단어`, near, true);
+  }
+
+  function check(word){
+    const last = word.at(-1), alt = dueum(last), sm = startMap();
+    const a = sm[last] || 0, b = alt ? (sm[alt] || 0) : 0, total = a + b;
+    const how = alt ? `「${esc(last)}」 ${a.toLocaleString()}개 + 두음법칙 「${esc(alt)}」 ${b.toLocaleString()}개`
+                    : `「${esc(last)}」${ro(last)} 시작하는 단어 ${a.toLocaleString()}개`;
+    let stamp, msg, extra = '';
+    if (total === 0){ stamp = '<div class="stamp">한방</div>'; msg = '이어 갈 단어가 없습니다.'; }
+    else if (total <= data.meta.near_max){
+      stamp = '<div class="stamp near">준한방</div>';
+      msg = `이어 갈 단어가 ${total}개뿐입니다.`;
+      extra = `<div class="esc">이어 갈 단어: ${escapes(last).map(e => link(e[0], e[1])).join(', ')}</div>`;
+    } else { stamp = '<div class="stamp ok">이어짐</div>'; msg = '이어 갈 수 있는 단어가 있습니다.'; }
+    $('result').innerHTML = `<div class="check">${stamp}
+        <div><div class="word">${esc(word)}</div>
+        <div class="detail">${msg} ${how}</div>${extra}</div>
+      </div>`;
+  }
+
+  function run(){
+    if (!data) return;
+    const q = $('q').value.replace(/[^가-힣]/g, '');
+    if (!q){ $('result').innerHTML = '<p class="status">한글 글자나 단어를 입력하세요.</p>'; return; }
+    const k = kind();
+    if (k === 'check') return check(q);
+    renderLists(q, k);
+  }
+
+  function chips(el, list){
+    const cnt = new Map();
+    for (const r of list){ const c = r[0].at(-1); cnt.set(c, (cnt.get(c) || 0) + 1); }
+    const arr = [...cnt].sort((x, y) => y[1] - x[1] || x[0].localeCompare(y[0], 'ko'));
+    el.innerHTML = arr.map(([c, n]) => `<button type="button" data-c="${esc(c)}">${esc(c)}<small>${n}</small></button>`).join('');
+  }
+
+  function setMode(m){
+    mode = m;
+    document.querySelectorAll('.mode button').forEach(b => b.setAttribute('aria-pressed', b.dataset.mode === m));
+    chips($('ends'), hbPool());
+    chips($('nearEnds'), nearPool());
+    if ($('q').value.trim()) run();
+    else $('result').innerHTML = `<p class="status">한방단어 ${hbPool().length.toLocaleString()}개, 준한방 단어 ${nearPool().length.toLocaleString()}개에서 찾습니다.</p>`;
+  }
+
+  document.querySelectorAll('.mode button').forEach(b => b.onclick = () => setMode(b.dataset.mode));
+  $('go').onclick = run;
+  $('q').addEventListener('keydown', e => { if (e.key === 'Enter') run(); });
+  document.querySelectorAll('input[name="kind"]').forEach(r => r.onchange = () => { if ($('q').value.trim()) run(); });
+  const chipClick = e => {
+    const b = e.target.closest('button'); if (!b) return;
+    $('q').value = b.dataset.c;
+    document.querySelector('input[value="end"]').checked = true;
+    run();
+    $('result').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+  };
+  $('ends').onclick = chipClick;
+  $('nearEnds').onclick = chipClick;
+
+  fetch('hanbang.json')
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(d => {
+      if (!d.escape_all) throw new Error('old');
+      data = d;
+      $('meta').textContent = `명사 ${d.meta.words_all.toLocaleString()}개 분석`;
+      const q = new URLSearchParams(location.search).get('q');
+      if (q) $('q').value = q;
+      setMode('basic');
+    })
+    .catch(e => {
+      $('result').innerHTML = e.message === 'old'
+        ? '<p class="status">hanbang.json이 이전 버전입니다. 새 build_hanbang.py로 다시 만들어 올려 주세요.</p>'
+        : '<p class="status">hanbang.json 파일을 불러오지 못했습니다. index.html과 같은 폴더에 있는지 확인하세요.</p>';
+    });
+})();
+</script>
+</body>
+</html>

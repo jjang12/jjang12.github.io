@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>금액 한글 변환기 - 숫자를 한글·한자 금액으로 (계약서)</title>
+<meta name="description" content="12,345,000원을 일금 일천이백삼십사만오천원정, 壹仟貳佰參拾肆萬伍仟원처럼 한글·한자 금액으로 바꿉니다. 계약서, 영수증, 차용증 작성용.">
+<meta name="keywords" content="금액 한글 변환, 숫자 한글 변환, 한자 금액 변환, 일금 원정, 계약서 금액 표기">
+<meta property="og:title" content="금액 한글 변환기 - 숫자를 한글·한자 금액으로 (계약서)">
+<meta property="og:description" content="12,345,000원을 일금 일천이백삼십사만오천원정, 壹仟貳佰參拾肆萬伍仟원처럼 한글·한자 금액으로 바꿉니다. 계약서, 영수증, 차용증 작성용.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjang12.github.io/money/">
+<link rel="canonical" href="https://jjang12.github.io/money/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+
+</head>
+<body data-blog="aicoinlab">
+<main>
+<h1>금액 한글 변환기</h1>
+<p class="lead">숫자 금액을 계약서·영수증에 쓰는 한글·한자 표기로 바꿉니다. 쉼표는 넣어도 되고 빼도 됩니다.</p>
+<div class="field"><label for="n">금액 (원)</label><input id="n" type="text" inputmode="numeric" value="12345000"></div>
+<div class="panel"><div class="big" id="main" style="font-size:26px; word-break:keep-all"></div></div>
+<table class="kv" id="tbl"></table>
+<h2>표기 기준 안내</h2>
+<div class="note">
+  <p>계약서·차용증에는 위조를 막기 위해 「일천」「일백」처럼 1도 빠짐없이 쓰고, 앞뒤에 「일금」「원정」을 붙입니다.</p>
+  <p>한자 표기는 고치기 어려운 갖은자(壹貳參肆伍陸柒捌玖拾佰仟萬)를 씁니다. 「억」「조」는 갖은자가 따로 없어 億, 兆를 그대로 씁니다.</p>
+</div>
+</main>
+<script src="/assets/site.js"></script>
+<script>
+const KN = ['','일','이','삼','사','오','육','칠','팔','구'], KP = ['','십','백','천'];
+const HN = ['','壹','貳','參','肆','伍','陸','柒','捌','玖'], HP = ['','拾','佰','仟'];
+const GU = ['','만','억','조','경'], HGU = ['','萬','億','兆','京'];
+function conv(digits, N, P, U, withOne, sep){
+  const groups = [];
+  for (let i = digits.length; i > 0; i -= 4) groups.unshift(digits.slice(Math.max(0, i - 4), i));
+  const parts = [];
+  groups.forEach((g, gi) => {
+    const unit = U[groups.length - 1 - gi]; let s = '';
+    g.padStart(4, '0').split('').forEach((d, k) => {
+      const p = 3 - k, v = +d;
+      if (v) s += (v === 1 && p > 0 && !withOne ? '' : N[v]) + P[p];
+    });
+    if (s === '일' && unit === '만' && !withOne) s = ''; // 읽을 때는 「일만」 대신 「만」
+    if (s || unit === '만' && g.padStart(4, '0') === '0001') parts.push(s + unit);
+  });
+  return parts.join(sep);
+}
+function run(){
+  const digits = $('n').value.replace(/[^0-9]/g, '').replace(/^0+/, '');
+  if (!digits){ $('main').textContent = '숫자를 입력하세요.'; $('tbl').innerHTML = ''; return; }
+  if (digits.length > 20){ $('main').textContent = '경 단위(20자리)까지만 변환합니다.'; $('tbl').innerHTML = ''; return; }
+  const contract = conv(digits, KN, KP, GU, true, '');
+  $('main').textContent = `일금 ${contract}원정`;
+  const comma = digits.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  const rows = [
+    ['계약서 표기', `일금 ${contract}원정`],
+    ['읽는 방식', conv(digits, KN, KP, GU, false, ' ') + '원'],
+    ['한자 (갖은자)', `金 ${conv(digits, HN, HP, HGU, true, '')}원整`],
+    ['숫자 + 한글 단위', numUnit(digits) + '원'],
+    ['숫자', `₩${comma}`],
+  ];
+  $('tbl').innerHTML = rows.map(([k, v]) => `<tr><th>${k}</th><td style="word-break:keep-all">${v}</td></tr>`).join('');
+}
+function numUnit(digits){ // 1,234만 5,000
+  const groups = [];
+  for (let i = digits.length; i > 0; i -= 4) groups.unshift(digits.slice(Math.max(0, i - 4), i));
+  return groups.map((g, gi) => { const v = +g; return v ? v.toLocaleString('ko-KR') + GU[groups.length - 1 - gi] : ''; }).filter(Boolean).join(' ');
+}
+$('n').addEventListener('input', run); run();
+</script>
+</body>
+</html>

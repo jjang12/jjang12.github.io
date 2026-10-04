@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>끝말잇기 게임 - 컴퓨터와 끝말잇기 대결 (사전 단어)</title>
+<meta name="description" content="국립국어원 우리말샘 사전 단어로 컴퓨터와 끝말잇기를 합니다. 쉬움·보통·어려움 난이도, 두음법칙 적용, 힌트와 전적 기록.">
+<meta name="keywords" content="끝말잇기 게임, 끝말잇기 컴퓨터, 끝말잇기 온라인, 끝말잇기 대결, 혼자 끝말잇기">
+<meta property="og:title" content="끝말잇기 게임 - 컴퓨터와 끝말잇기 대결 (사전 단어)">
+<meta property="og:description" content="국립국어원 우리말샘 사전 단어로 컴퓨터와 끝말잇기를 합니다. 쉬움·보통·어려움 난이도, 두음법칙 적용, 힌트와 전적 기록.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjang12.github.io/wordchain/">
+<link rel="canonical" href="https://jjang12.github.io/wordchain/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+<style>.chain{list-style:none; margin:16px 0 0; padding:0}
+.chain li{display:flex; align-items:baseline; gap:12px; padding:8px 0; border-bottom:1px solid var(--line)}
+.chain li span{width:52px; color:var(--muted); font-size:13px; flex:none}
+.chain li b{font-size:18px}
+.chain li.me b{color:var(--blue)}</style>
+</head>
+<body data-blog="kkultiplab">
+<main>
+<h1>끝말잇기 컴퓨터 대결</h1>
+<p class="lead">사전에 있는 명사로 컴퓨터와 끝말잇기를 합니다. 두음법칙을 적용하고, 한 번 나온 단어는 다시 쓸 수 없습니다.</p>
+<div class="seg" role="group" aria-label="난이도">
+  <button type="button" data-lv="easy" aria-pressed="false">쉬움</button>
+  <button type="button" data-lv="normal" aria-pressed="true">보통</button>
+  <button type="button" data-lv="hard" aria-pressed="false">어려움</button>
+</div>
+<div class="panel" id="stage">
+  <div class="note" id="need">불러오는 중입니다.</div>
+  <div class="big" id="cur" style="margin:4px 0 0">&nbsp;</div>
+  <div class="note" id="msg" style="margin-top:6px"></div>
+</div>
+<div class="search" style="display:flex; gap:8px">
+  <input id="w" type="text" placeholder="단어 입력 후 Enter" autocomplete="off" aria-label="내 단어" disabled style="flex:1; min-width:0">
+  <button type="button" class="btn" id="send" disabled>내기</button>
+</div>
+<div class="btns">
+  <button type="button" class="btn sub" id="hint" disabled>힌트</button>
+  <button type="button" class="btn sub" id="giveup" disabled>포기</button>
+  <button type="button" class="btn sub" id="cpuFirst" disabled>컴퓨터 먼저</button>
+  <button type="button" class="btn sub" id="restart" disabled>새 게임</button>
+</div>
+<p class="note" id="score"></p>
+<ol class="chain" id="chain"></ol>
+<h2>규칙</h2>
+<div class="note">
+  <p>국립국어원 우리말샘의 일반 명사 중 전문용어가 아닌 단어 약 14만 개를 씁니다. 두 글자 이상이어야 하고, 옛말·방언·지명·인명은 쓸 수 없습니다.</p>
+  <p>첫 단어로는 한방단어를 쓸 수 없습니다. 앞 단어의 끝 글자로 시작해야 하며, 두음법칙에 따라 「력」은 「역」, 「름」은 「늠」으로도 시작할 수 있습니다.</p>
+  <p>「쉬움」은 컴퓨터가 이어 가기 쉬운 단어 위주로, 「어려움」은 이어 갈 단어가 적은 단어와 한방단어를 골라 냅니다.</p>
+</div>
+</main>
+<script src="/assets/site.js"></script>
+<script>
+const N_TO_O = new Set([6,12,17,20]), R_TO_O = new Set([2,6,7,12,17,20]), R_TO_N = new Set([0,1,8,11,13,18]);
+function dueum(ch){
+  const code = ch.charCodeAt(0) - 0xAC00; if (code < 0 || code >= 11172) return null;
+  const cho = Math.floor(code / 588), jung = Math.floor((code % 588) / 28), jong = code % 28; let n;
+  if (cho === 2 && N_TO_O.has(jung)) n = 11; else if (cho === 5 && R_TO_O.has(jung)) n = 11; else if (cho === 5 && R_TO_N.has(jung)) n = 2; else return null;
+  return String.fromCharCode(0xAC00 + n * 588 + jung * 28 + jong);
+}
+let dict = new Set(), byStart = new Map(), used = new Set(), usedStart = new Map(), last = null, over = true, level = 'normal';
+let score = {win: 0, lose: 0};
+try { score = JSON.parse(localStorage.getItem('wc-score')) || score; } catch {}
+const saveScore = () => { try { localStorage.setItem('wc-score', JSON.stringify(score)); } catch {} ; $('score').textContent = `전적 ${score.win}승 ${score.lose}패`; };
+const starts = ch => { const a = dueum(ch); return a ? [ch, a] : [ch]; };
+const left = ch => starts(ch).reduce((s, c) => s + (byStart.get(c) || []).length - (usedStart.get(c) || 0), 0);
+const options = ch => starts(ch).flatMap(c => (byStart.get(c) || []).filter(w => !used.has(w)));
+const pick = a => a[Math.floor(Math.random() * a.length)];
+function use(w){ used.add(w); usedStart.set(w[0], (usedStart.get(w[0]) || 0) + 1); last = w; }
+function add(w, who){
+  const li = document.createElement('li'); li.className = who; li.innerHTML = `<span>${who === 'me' ? '나' : '컴퓨터'}</span><b>${w}</b>`;
+  $('chain').prepend(li);
+}
+function showNeed(){
+  if (!last){ $('need').textContent = '아무 단어로나 시작하세요.'; $('cur').innerHTML = '&nbsp;'; return; }
+  const s = starts(last.at(-1));
+  $('cur').textContent = last;
+  $('need').textContent = `다음 글자: ${s.join(' 또는 ')} (이을 수 있는 단어 ${left(last.at(-1)).toLocaleString()}개)`;
+}
+function end(win, text){
+  over = true; win ? score.win++ : score.lose++; saveScore();
+  $('msg').innerHTML = `<b style="color:${win ? 'var(--good)' : 'var(--stamp)'}">${win ? '이겼습니다!' : '졌습니다.'}</b> ${text}`;
+  ['w','send','hint','giveup'].forEach(id => $(id).disabled = true);
+}
+function cpu(){
+  const keys = [...byStart.keys()];
+  const opts = last ? options(last.at(-1)) : Array.from({length: 40}, () => byStart.get(pick(keys))).flat().filter(w => !used.has(w));
+  if (!opts.length){ end(true, `컴퓨터가 「${starts(last.at(-1)).join('/')}」${euro(starts(last.at(-1)).at(-1))} 시작하는 단어를 찾지 못했습니다.`); return; }
+  let w;
+  if (!last){ const ok = opts.filter(o => left(o.at(-1)) > 1); w = pick(ok.length ? ok : opts); use(w); add(w, 'cpu'); showNeed(); $('msg').textContent = ''; $('w').disabled = $('send').disabled = $('hint').disabled = $('giveup').disabled = false; $('w').focus(); return; }
+  const scored = () => opts.map(o => [o, left(o.at(-1)) - (starts(o.at(-1)).includes(o[0]) ? 1 : 0)]);
+  if (level === 'easy'){ const good = opts.filter(o => left(o.at(-1)) >= 30); w = pick(good.length ? good : opts); }
+  else if (level === 'hard'){
+    const s = scored().sort((a, b) => a[1] - b[1]);
+    const kill = s.filter(x => x[1] <= 0);
+    w = kill.length ? pick(kill)[0] : pick(s.slice(0, 5))[0];
+  } else { const ok = opts.filter(o => left(o.at(-1)) > 0); w = pick(ok.length ? ok : opts); }
+  use(w); add(w, 'cpu'); showNeed();
+  if (left(w.at(-1)) === 0) end(false, `「${w}」${eun(w)} 한방단어라 이어 갈 단어가 없습니다.`);
+  else { $('msg').textContent = ''; $('w').disabled = $('send').disabled = $('hint').disabled = $('giveup').disabled = false; $('w').focus(); }
+}
+function submit(){
+  if (over) return;
+  const w = $('w').value.trim();
+  const fail = t => { $('msg').textContent = t; $('w').select(); };
+  if (!/^[가-힣]{2,}$/.test(w)) return fail('한글 두 글자 이상으로 입력하세요.');
+  if (last && !starts(last.at(-1)).includes(w[0])) return fail(`「${starts(last.at(-1)).join('」 또는 「')}」${euro(starts(last.at(-1)).at(-1))} 시작해야 합니다.`);
+  if (used.has(w)) return fail(`「${w}」${eun(w)} 이미 나온 단어입니다.`);
+  if (!dict.has(w)) return fail(`「${w}」${eun(w)} 사전(일상 명사)에 없는 단어입니다.`);
+  if (!last && left(w.at(-1)) - (starts(w.at(-1)).includes(w[0]) ? 1 : 0) <= 0) return fail('첫 단어로는 한방단어를 쓸 수 없습니다.');
+  $('w').value = ''; $('cpuFirst').disabled = true;
+  use(w); add(w, 'me'); showNeed();
+  $('w').disabled = $('send').disabled = true;
+  setTimeout(cpu, 450);
+}
+function reset(){
+  used = new Set(); usedStart = new Map(); last = null; over = false; $('chain').innerHTML = ''; $('msg').textContent = '';
+  ['w','send','hint','giveup','cpuFirst','restart'].forEach(id => $(id).disabled = false); showNeed(); $('w').focus();
+}
+$('send').onclick = submit;
+$('w').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) submit(); });
+$('restart').onclick = reset;
+$('cpuFirst').onclick = () => { $('cpuFirst').disabled = true; cpu(); };
+$('hint').onclick = () => {
+  if (!last) return toast('아무 단어로나 시작하면 됩니다.');
+  const o = options(last.at(-1));
+  const h = o.length ? pick(o) : null;
+  $('msg').textContent = h ? `힌트: 「${h[0]}${'○'.repeat(h.length - 1)}」 같은 ${h.length}글자 단어가 있습니다. (이을 수 있는 단어 ${o.length.toLocaleString()}개)` : '이을 수 있는 단어가 없습니다.';
+};
+$('giveup').onclick = () => { const o = last ? options(last.at(-1)) : []; end(false, o.length ? `이런 단어가 있었습니다: ${o.sort(() => Math.random() - .5).slice(0, 5).join(', ')}` : ''); };
+document.querySelectorAll('.seg button').forEach(b => b.onclick = () => {
+  level = b.dataset.lv; document.querySelectorAll('.seg button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  toast(`난이도: ${b.textContent}`);
+});
+saveScore();
+fetch('words.txt').then(r => { if (!r.ok) throw 0; return r.text(); }).then(t => {
+  for (const w of t.split('\n')){ const s = w.trim(); if (s.length < 2) continue; dict.add(s); if (!byStart.has(s[0])) byStart.set(s[0], []); byStart.get(s[0]).push(s); }
+  reset();
+}).catch(() => { $('need').textContent = 'words.txt를 불러오지 못했습니다. wordchain 폴더 안에 있는지 확인하세요.'; });
+</script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>D-day 계산기 - 날짜 차이, N일 후 날짜, 100일·1000일 기념일</title>
+<meta name="description" content="두 날짜 사이 일수, 기준일로부터 N일 후·전 날짜, 연애·출생 100일 200일 1000일 기념일을 요일과 함께 계산합니다.">
+<meta name="keywords" content="D-day 계산기, 디데이 계산기, 날짜 계산기, 100일 계산기, 기념일 계산기">
+<meta property="og:title" content="D-day 계산기 - 날짜 차이, N일 후 날짜, 100일·1000일 기념일">
+<meta property="og:description" content="두 날짜 사이 일수, 기준일로부터 N일 후·전 날짜, 연애·출생 100일 200일 1000일 기념일을 요일과 함께 계산합니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjang12.github.io/dday/">
+<link rel="canonical" href="https://jjang12.github.io/dday/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+
+</head>
+<body data-blog="kkultiplab">
+<main>
+<h1>D-day 계산기</h1>
+<p class="lead">날짜 차이, N일 후 날짜, 100일·1000일 기념일을 요일과 함께 계산합니다.</p>
+<div class="seg" role="group" aria-label="계산 종류">
+  <button type="button" data-t="diff" aria-pressed="true">날짜 차이</button>
+  <button type="button" data-t="add" aria-pressed="false">N일 후 날짜</button>
+  <button type="button" data-t="anni" aria-pressed="false">기념일</button>
+</div>
+<section data-p="diff">
+  <div class="row">
+    <div class="field"><label for="d1">시작일</label><input id="d1" type="date"></div>
+    <div class="field"><label for="d2">목표일</label><input id="d2" type="date" value="2026-12-25"></div>
+  </div>
+  <label class="note"><input type="checkbox" id="inc"> 시작일을 1일째로 포함</label>
+</section>
+<section data-p="add" hidden>
+  <div class="row">
+    <div class="field"><label for="a1">기준일</label><input id="a1" type="date"></div>
+    <div class="field"><label for="an">더할 일수 (빼려면 음수)</label><input id="an" type="number" value="100" inputmode="numeric"></div>
+  </div>
+</section>
+<section data-p="anni" hidden>
+  <div class="field"><label for="s1">시작일 (사귄 날, 태어난 날 등)</label><input id="s1" type="date"></div>
+</section>
+<div class="panel"><div class="big" id="main"></div><div class="note" id="sub" style="margin-top:6px"></div></div>
+<div class="tbl-wrap" id="list"></div>
+<h2>계산 기준 안내</h2>
+<div class="note">
+  <p>날짜 차이는 기본적으로 시작일을 빼고 셉니다(1일 → 2일은 1일 차이). 「시작일 포함」을 켜면 시작일을 1일째로 셉니다.</p>
+  <p>기념일은 관례대로 시작일을 1일째로 셉니다. 예를 들어 1월 1일에 시작했다면 100일은 4월 10일입니다(평년 기준).</p>
+</div>
+</main>
+<script src="/assets/site.js"></script>
+<script>
+const DAY = 86400000, WD = '일월화수목금토';
+const toUTC = s => { const [y,m,d] = s.split('-').map(Number); return Date.UTC(y, m-1, d); };
+const ds = t => { const d = new Date(t); return `${d.toISOString().slice(0,10)} (${WD[d.getUTCDay()]})`; };
+const now = new Date(); const T = new Date(now.getTime() - now.getTimezoneOffset()*60000).toISOString().slice(0,10);
+['d1','a1','s1'].forEach(id => $(id).value = T);
+let tab = 'diff';
+document.querySelectorAll('.seg button').forEach(b => b.onclick = () => {
+  tab = b.dataset.t;
+  document.querySelectorAll('.seg button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  document.querySelectorAll('section[data-p]').forEach(s => s.hidden = s.dataset.p !== tab);
+  calc();
+});
+function calc(){
+  $('list').innerHTML = ''; $('sub').textContent = '';
+  if (tab === 'diff'){
+    if (!$('d1').value || !$('d2').value) return;
+    let n = Math.round((toUTC($('d2').value) - toUTC($('d1').value)) / DAY);
+    if ($('inc').checked) n += n >= 0 ? 1 : -1;
+    $('main').textContent = n === 0 ? 'D-Day' : n > 0 ? `D-${fmt(n)}` : `D+${fmt(-n)}`;
+    $('sub').textContent = `${ds(toUTC($('d1').value))}부터 ${ds(toUTC($('d2').value))}까지 ${fmt(Math.abs(n))}일 (약 ${(Math.abs(n)/7).toFixed(1)}주)`;
+  } else if (tab === 'add'){
+    const n = parseInt($('an').value, 10);
+    if (!$('a1').value || isNaN(n)) return;
+    $('main').textContent = ds(toUTC($('a1').value) + n * DAY);
+    $('sub').textContent = `${ds(toUTC($('a1').value))} 기준 ${n >= 0 ? fmt(n) + '일 후' : fmt(-n) + '일 전'}`;
+  } else {
+    if (!$('s1').value) return;
+    const s = toUTC($('s1').value), t = toUTC(T);
+    const cur = Math.round((t - s) / DAY) + 1;
+    $('main').textContent = cur >= 1 ? `오늘 ${fmt(cur)}일째` : `시작까지 ${fmt(1 - cur)}일`;
+    const rows = [];
+    for (let k = 100; k <= 3000; k += 100) rows.push([`${fmt(k)}일`, s + (k - 1) * DAY]);
+    const sd = new Date(s);
+    for (let y = 1; y <= 10; y++) rows.push([`${y}주년`, Date.UTC(sd.getUTCFullYear() + y, sd.getUTCMonth(), sd.getUTCDate())]);
+    rows.sort((a, b) => a[1] - b[1]);
+    $('list').innerHTML = `<table class="list"><thead><tr><th>기념일</th><th>날짜</th><th>남은 날</th></tr></thead><tbody>${
+      rows.map(([k, d]) => { const left = Math.round((d - t) / DAY);
+        return `<tr${left < 0 ? ' style="color:var(--muted)"' : ''}><td>${k}</td><td>${ds(d)}</td><td>${left > 0 ? 'D-' + fmt(left) : left === 0 ? '오늘' : '지남'}</td></tr>`; }).join('')}</tbody></table>`;
+  }
+}
+document.querySelectorAll('input').forEach(i => i.addEventListener('input', calc));
+calc();
+</script>
+</body>
+</html>

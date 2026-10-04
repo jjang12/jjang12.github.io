@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>이미지 변환·압축·크기 조절 - JPG PNG WEBP 무료 변환</title>
+<meta name="description" content="JPG, PNG, WEBP를 서로 변환하고 화질과 크기를 조절해 용량을 줄입니다. 여러 장을 한 번에 처리하고 ZIP으로 받을 수 있으며, 파일은 서버로 전송되지 않습니다.">
+<meta name="keywords" content="이미지 변환, jpg 변환, png jpg 변환, webp 변환, 이미지 용량 줄이기, 이미지 크기 조절">
+<meta property="og:title" content="이미지 변환·압축·크기 조절 - JPG PNG WEBP 무료 변환">
+<meta property="og:description" content="JPG, PNG, WEBP를 서로 변환하고 화질과 크기를 조절해 용량을 줄입니다. 여러 장을 한 번에 처리하고 ZIP으로 받을 수 있으며, 파일은 서버로 전송되지 않습니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjang12.github.io/image/">
+<link rel="canonical" href="https://jjang12.github.io/image/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+
+</head>
+<body data-blog="jisik_plus">
+<main>
+<h1>이미지 변환·압축·크기 조절</h1>
+<p class="lead">JPG·PNG·WEBP를 서로 바꾸고, 화질과 크기를 조절해 용량을 줄입니다. 여러 장을 한 번에 처리합니다.</p>
+<label class="drop" id="drop"><input type="file" accept="image/*" multiple><b>이미지를 끌어다 놓거나 눌러서 선택</b><span>JPG, PNG, WEBP, GIF, BMP (아이폰 HEIC는 HEIC 변환 메뉴 이용)</span></label>
+<div class="row" style="margin-top:16px">
+  <div class="field"><label for="fmt">변환 형식</label><select id="fmt"><option value="image/jpeg">JPG</option><option value="image/png">PNG</option><option value="image/webp">WEBP</option></select></div>
+  <div class="field"><label for="q">화질 <span id="qv">80</span>%</label><input id="q" type="range" min="10" max="100" value="80"></div>
+  <div class="field"><label for="rs">크기</label><select id="rs"><option value="0">원본 크기</option><option value="w">가로 최대 (px)</option><option value="p">비율 (%)</option></select></div>
+  <div class="field"><label for="rv">값</label><input id="rv" type="number" inputmode="numeric" value="1920" disabled></div>
+</div>
+<div class="btns"><button type="button" class="btn" id="run" disabled>변환하기</button><button type="button" class="btn sub" id="zip" disabled>모두 ZIP으로 받기</button><button type="button" class="btn sub" id="reset">목록 비우기</button></div>
+<ul class="flist" id="list"></ul>
+<h2>사용 안내</h2>
+<div class="note">
+  <p>파일은 서버로 올라가지 않고 이 브라우저 안에서만 변환됩니다. 인터넷이 끊겨도 페이지가 열려 있으면 동작합니다.</p>
+  <p>화질은 JPG·WEBP에만 적용됩니다. PNG는 화질 손실 없는 형식이라 사진은 JPG나 WEBP로 바꿔야 용량이 크게 줄어듭니다.</p>
+  <p>투명 배경 PNG를 JPG로 바꾸면 투명한 부분은 흰색이 됩니다. 변환 과정에서 촬영 위치(GPS) 같은 사진 정보는 지워집니다.</p>
+</div>
+</main>
+<script src="/assets/site.js"></script>
+<script src="/assets/vendor/jszip.min.js"></script>
+<script>
+let files = [], results = [];
+const EXT = {'image/jpeg':'jpg','image/png':'png','image/webp':'webp'};
+bindDrop($('drop'), fs => { files.push(...fs.filter(f => f.type.startsWith('image/'))); results = []; render(); });
+$('q').oninput = () => $('qv').textContent = $('q').value;
+$('rs').onchange = () => { const v = $('rs').value; $('rv').disabled = v === '0'; $('rv').value = v === 'p' ? 50 : 1920; };
+$('reset').onclick = () => { files = []; results = []; render(); };
+function render(){
+  $('list').innerHTML = files.map((f, i) => { const r = results[i];
+    let right = `<span class="meta">${fmtBytes(f.size)}</span>`;
+    if (r && r.err) right = `<span class="meta" style="color:var(--stamp)">${r.err}</span>`;
+    else if (r) right = `<span class="meta">${fmtBytes(f.size)} → ${fmtBytes(r.blob.size)} (${((r.blob.size / f.size - 1) * 100).toFixed(0)}%), ${r.w}×${r.h}</span><a href="${r.url}" download="${r.name}">받기</a>`;
+    return `<li><span class="nm">${f.name.replace(/</g,'&lt;')}</span>${right}</li>`; }).join('');
+  $('run').disabled = !files.length;
+  $('zip').disabled = !results.some(r => r && r.blob);
+}
+async function decode(file){
+  if ('createImageBitmap' in window){ try { return await createImageBitmap(file); } catch {} }
+  return await new Promise((res, rej) => { const img = new Image(); img.onload = () => res(img); img.onerror = () => rej(); img.src = URL.createObjectURL(file); });
+}
+$('run').onclick = async () => {
+  $('run').disabled = true;
+  const type = $('fmt').value, q = $('q').value / 100, rs = $('rs').value, rv = parseFloat($('rv').value) || 0;
+  results.forEach(r => r && r.url && URL.revokeObjectURL(r.url)); results = [];
+  for (let i = 0; i < files.length; i++){
+    try {
+      const img = await decode(files[i]);
+      let w = img.width, h = img.height;
+      if (rs === 'w' && rv > 0 && w > rv){ h = Math.round(h * rv / w); w = rv; }
+      if (rs === 'p' && rv > 0){ w = Math.max(1, Math.round(w * rv / 100)); h = Math.max(1, Math.round(h * rv / 100)); }
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      const ctx = c.getContext('2d');
+      if (type === 'image/jpeg'){ ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h); }
+      ctx.imageSmoothingQuality = 'high'; ctx.drawImage(img, 0, 0, w, h);
+      const blob = await new Promise(r => c.toBlob(r, type, q));
+      if (!blob || blob.type !== type) throw new Error('이 브라우저는 해당 형식 저장을 지원하지 않습니다');
+      results[i] = {blob, w, h, name: baseName(files[i].name) + '.' + EXT[type], url: URL.createObjectURL(blob)};
+    } catch (e) { results[i] = {err: e && e.message ? e.message : '읽을 수 없는 이미지'}; }
+    render();
+  }
+  $('run').disabled = false;
+};
+$('zip').onclick = async () => {
+  const zip = new JSZip(), names = new Set();
+  results.forEach(r => { if (!r || !r.blob) return; let n = r.name, k = 1; while (names.has(n)) n = r.name.replace(/(\.[^.]+)$/, `_${k++}$1`); names.add(n); zip.file(n, r.blob); });
+  saveBlob(await zip.generateAsync({type: 'blob'}), 'images.zip');
+};
+</script>
+</body>
+</html>

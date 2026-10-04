@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>코인 선물 청산가 계산기 - 롱·숏 격리 마진, 펀딩비 계산</title>
+<meta name="description" content="진입가, 레버리지, 유지증거금률로 USDT 무기한 선물 격리 마진 롱·숏 청산가를 계산하고, 펀딩비율로 회당·일·월 펀딩 비용을 계산합니다.">
+<meta name="keywords" content="청산가 계산기, 코인 청산가 계산, 바이낸스 청산가, 펀딩비 계산기, 레버리지 청산가">
+<meta property="og:title" content="코인 선물 청산가 계산기 - 롱·숏 격리 마진, 펀딩비 계산">
+<meta property="og:description" content="진입가, 레버리지, 유지증거금률로 USDT 무기한 선물 격리 마진 롱·숏 청산가를 계산하고, 펀딩비율로 회당·일·월 펀딩 비용을 계산합니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjang12.github.io/liquidation/">
+<link rel="canonical" href="https://jjang12.github.io/liquidation/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+
+</head>
+<body data-blog="aicoinlab">
+<main>
+<h1>청산가·펀딩비 계산기</h1>
+<p class="lead">USDT 무기한 선물 격리 마진 기준 청산가와, 포지션을 유지할 때 드는 펀딩비를 계산합니다.</p>
+<div class="seg" role="group" aria-label="포지션 방향">
+  <button type="button" data-s="1" aria-pressed="true">롱</button>
+  <button type="button" data-s="-1" aria-pressed="false">숏</button>
+</div>
+<div class="row">
+  <div class="field"><label for="ep">진입가 (USDT)</label><input id="ep" type="number" step="any" inputmode="decimal" value="60000"></div>
+  <div class="field"><label for="lev">레버리지 (배)</label><input id="lev" type="number" step="any" inputmode="decimal" value="10"></div>
+  <div class="field"><label for="mmr">유지증거금률 (%)</label><input id="mmr" type="number" step="any" inputmode="decimal" value="0.5"></div>
+</div>
+<div class="panel"><div class="big" id="main"></div><div class="note" id="sub" style="margin-top:6px"></div></div>
+<h2>펀딩비</h2>
+<div class="row">
+  <div class="field"><label for="size">포지션 크기 (USDT, 레버리지 포함)</label><input id="size" type="number" step="any" inputmode="decimal" value="10000"></div>
+  <div class="field"><label for="fr">펀딩비율 (%)</label><input id="fr" type="number" step="any" inputmode="decimal" value="0.01"></div>
+  <div class="field"><label for="per">하루 정산 횟수</label><select id="per"><option value="3">3회 (8시간마다)</option><option value="6">6회 (4시간마다)</option><option value="24">24회 (1시간마다)</option></select></div>
+</div>
+<table class="kv" id="ftbl"></table>
+<h2>계산 기준 안내</h2>
+<div class="note">
+  <p>청산가 = 롱: 진입가 × (1 - 1/레버리지) ÷ (1 - 유지증거금률), 숏: 진입가 × (1 + 1/레버리지) ÷ (1 + 유지증거금률). 수수료와 거래소의 구간별 유지증거금 차감액은 반영하지 않았으므로 실제 청산가는 이보다 조금 더 진입가에 가깝습니다.</p>
+  <p>유지증거금률은 거래소·종목·포지션 크기마다 다릅니다(BTC 소액 기준 대략 0.4~0.5%). 교차 마진은 지갑 잔고 전체가 증거금이 되므로 이 계산과 다릅니다.</p>
+  <p>펀딩비율이 양수면 롱이 숏에게 내고, 음수면 숏이 롱에게 냅니다. 비율은 매 정산마다 바뀌므로 일·월 금액은 현재 비율이 유지된다고 가정한 값입니다.</p>
+</div>
+</main>
+<script src="/assets/site.js"></script>
+<script>
+let side = 1;
+const num = id => parseFloat($(id).value);
+const p = n => n.toLocaleString('ko-KR', {maximumFractionDigits: n >= 100 ? 2 : 6});
+document.querySelectorAll('.seg button').forEach(b => b.onclick = () => {
+  side = +b.dataset.s;
+  document.querySelectorAll('.seg button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  calc();
+});
+function calc(){
+  const ep = num('ep'), L = num('lev'), m = num('mmr') / 100;
+  if (ep > 0 && L >= 1 && m >= 0 && m < 1){
+    const lp = side > 0 ? ep * (1 - 1 / L) / (1 - m) : ep * (1 + 1 / L) / (1 + m);
+    const pct = (lp / ep - 1) * 100;
+    $('main').innerHTML = `${p(Math.max(lp, 0))}<small>USDT ${side > 0 ? '롱' : '숏'} 청산가</small>`;
+    $('sub').textContent = side > 0 && lp <= 0 ? '레버리지 1배 롱은 청산되지 않습니다.' : `진입가 대비 ${pct > 0 ? '+' : ''}${pct.toFixed(2)}% 움직이면 청산`;
+  } else { $('main').textContent = '입력값을 확인하세요.'; $('sub').textContent = '레버리지는 1 이상, 유지증거금률은 0~100% 사이여야 합니다.'; }
+  const size = num('size'), fr = num('fr') / 100, per = +$('per').value;
+  if (size > 0 && !isNaN(fr)){
+    const once = size * fr * side; // 양수 = 내는 돈
+    const word = v => v > 0 ? `${p(v)} USDT 지불` : v < 0 ? `${p(-v)} USDT 수령` : '0';
+    $('ftbl').innerHTML = [['1회', once], ['하루', once * per], ['7일', once * per * 7], ['30일', once * per * 30]]
+      .map(([k, v]) => `<tr><th>${k}</th><td>${word(v)}</td></tr>`).join('') +
+      `<tr><th>연 환산 비율</th><td>${(fr * per * 365 * 100).toFixed(2)}%</td></tr>`;
+  } else $('ftbl').innerHTML = '';
+}
+document.querySelectorAll('input,select').forEach(i => i.addEventListener('input', calc));
+calc();
+</script>
+</body>
+</html>

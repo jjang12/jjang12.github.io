@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HEIC JPG 변환 - 아이폰 사진 무료 변환 (여러 장 한 번에)</title>
+<meta name="description" content="아이폰 사진 HEIC 파일을 JPG로 무료 변환합니다. 여러 장을 한 번에 바꾸고 ZIP으로 받을 수 있으며, 사진은 서버로 전송되지 않고 내 기기에서만 처리됩니다.">
+<meta name="keywords" content="heic jpg 변환, heic 변환, 아이폰 사진 jpg 변환, heic 파일 열기, heic to jpg">
+<meta property="og:title" content="HEIC JPG 변환 - 아이폰 사진 무료 변환 (여러 장 한 번에)">
+<meta property="og:description" content="아이폰 사진 HEIC 파일을 JPG로 무료 변환합니다. 여러 장을 한 번에 바꾸고 ZIP으로 받을 수 있으며, 사진은 서버로 전송되지 않고 내 기기에서만 처리됩니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjang12.github.io/heic/">
+<link rel="canonical" href="https://jjang12.github.io/heic/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+
+</head>
+<body data-blog="jisik_plus">
+<main>
+<h1>HEIC JPG 변환</h1>
+<p class="lead">아이폰 사진(HEIC)을 어디서나 열리는 JPG로 바꿉니다. 사진이 서버로 올라가지 않아 개인 사진도 안심하고 변환할 수 있습니다.</p>
+<label class="drop" id="drop"><input type="file" accept=".heic,.heif,image/heic,image/heif" multiple><b>HEIC 파일을 끌어다 놓거나 눌러서 선택</b><span>여러 장을 한 번에 선택할 수 있습니다.</span></label>
+<div class="row" style="margin-top:16px">
+  <div class="field"><label for="q">JPG 화질 <span id="qv">90</span>%</label><input id="q" type="range" min="30" max="100" value="90"></div>
+</div>
+<div class="btns"><button type="button" class="btn" id="run" disabled>JPG로 변환</button><button type="button" class="btn sub" id="zip" disabled>모두 ZIP으로 받기</button><button type="button" class="btn sub" id="reset">목록 비우기</button></div>
+<ul class="flist" id="list"></ul>
+<h2>사용 안내</h2>
+<div class="note">
+  <p>파일은 서버로 올라가지 않고 이 브라우저 안에서만 변환됩니다. 인터넷이 끊겨도 페이지가 열려 있으면 동작합니다.</p>
+  <p>사진 한 장에 1~3초 정도 걸리며, 장수가 많으면 순서대로 처리됩니다. 처음 변환할 때 변환기를 불러오느라 조금 더 걸립니다.</p>
+  <p>아이폰에서 바로 JPG로 저장하려면 「설정 → 카메라 → 포맷 → 높은 호환성」을 고르면 됩니다.</p>
+</div>
+</main>
+<script src="/assets/site.js"></script>
+<script src="/assets/vendor/jszip.min.js"></script>
+<script>
+let files = [], results = [], libReady = null;
+const loadLib = () => libReady || (libReady = new Promise((res, rej) => { const s = document.createElement('script'); s.src = '/assets/vendor/heic2any.min.js'; s.onload = res; s.onerror = rej; document.head.append(s); }));
+bindDrop($('drop'), fs => { files.push(...fs.filter(f => /\.(heic|heif)$/i.test(f.name) || /hei[cf]/.test(f.type))); results = []; render(); loadLib(); });
+$('q').oninput = () => $('qv').textContent = $('q').value;
+$('reset').onclick = () => { files = []; results = []; render(); };
+function render(){
+  $('list').innerHTML = files.map((f, i) => { const r = results[i];
+    let right = `<span class="meta">${fmtBytes(f.size)}</span>`;
+    if (r === 'busy') right = '<span class="meta">변환 중</span>';
+    else if (r && r.err) right = `<span class="meta" style="color:var(--stamp)">${r.err}</span>`;
+    else if (r) right = `<span class="meta">${fmtBytes(f.size)} → ${fmtBytes(r.blob.size)}</span><a href="${r.url}" download="${r.name}">받기</a>`;
+    return `<li><span class="nm">${f.name.replace(/</g,'&lt;')}</span>${right}</li>`; }).join('');
+  $('run').disabled = !files.length;
+  $('zip').disabled = !results.some(r => r && r.blob);
+}
+$('run').onclick = async () => {
+  $('run').disabled = true;
+  try { await loadLib(); } catch { toast('변환기를 불러오지 못했습니다. 새로고침 후 다시 시도하세요.'); $('run').disabled = false; return; }
+  const q = $('q').value / 100; results = [];
+  for (let i = 0; i < files.length; i++){
+    results[i] = 'busy'; render();
+    try {
+      let out = await heic2any({blob: files[i], toType: 'image/jpeg', quality: q});
+      if (Array.isArray(out)) out = out[0];
+      results[i] = {blob: out, name: baseName(files[i].name) + '.jpg', url: URL.createObjectURL(out)};
+    } catch { results[i] = {err: 'HEIC 파일이 아니거나 손상된 파일'}; }
+    render();
+  }
+  $('run').disabled = false;
+};
+$('zip').onclick = async () => {
+  const zip = new JSZip(), names = new Set();
+  results.forEach(r => { if (!r || !r.blob) return; let n = r.name, k = 1; while (names.has(n)) n = r.name.replace(/(\.[^.]+)$/, `_${k++}$1`); names.add(n); zip.file(n, r.blob); });
+  saveBlob(await zip.generateAsync({type: 'blob'}), 'heic-jpg.zip');
+};
+</script>
+</body>
+</html>

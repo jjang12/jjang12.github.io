@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>글자수 세기 - 공백 포함·제외, 바이트 계산 (자소서)</title>
+<meta name="description" content="자기소개서·블로그 글자수 세기. 공백 포함, 공백 제외, 줄바꿈 제외, 바이트(한글 2바이트·UTF-8)를 입력과 동시에 계산합니다.">
+<meta name="keywords" content="글자수 세기, 글자수 세기 공백 포함, 자소서 글자수, 바이트 계산기, 글자수 계산기">
+<meta property="og:title" content="글자수 세기 - 공백 포함·제외, 바이트 계산 (자소서)">
+<meta property="og:description" content="자기소개서·블로그 글자수 세기. 공백 포함, 공백 제외, 줄바꿈 제외, 바이트(한글 2바이트·UTF-8)를 입력과 동시에 계산합니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjang12.github.io/count/">
+<link rel="canonical" href="https://jjang12.github.io/count/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+
+</head>
+<body data-blog="jisik_plus">
+<main>
+<h1>글자수 세기</h1>
+<p class="lead">입력하는 즉시 공백 포함·제외 글자 수와 바이트를 계산합니다. 자기소개서 제한 글자 수를 넣으면 남은 글자도 보여 줍니다.</p>
+<div class="field"><label for="t">내용</label><textarea id="t" placeholder="여기에 글을 붙여 넣으세요."></textarea></div>
+<div class="row">
+  <div class="field"><label for="limit">제한 글자 수 (선택)</label><input id="limit" type="number" min="0" inputmode="numeric" placeholder="예: 1000"></div>
+  <div class="field"><label for="basis">제한 기준</label><select id="basis"><option value="sp">공백 포함</option><option value="nosp">공백 제외</option><option value="b2">바이트(한글 2)</option></select></div>
+</div>
+<div class="panel">
+  <div class="big" id="main">0<small>자 (공백 포함)</small></div>
+  <div id="limitMsg" class="note" style="margin-top:6px"></div>
+</div>
+<table class="kv">
+  <tr><th>공백 포함</th><td id="c1">0</td></tr>
+  <tr><th>공백 포함, 줄바꿈 제외</th><td id="c2">0</td></tr>
+  <tr><th>공백 제외</th><td id="c3">0</td></tr>
+  <tr><th>바이트 (한글 2바이트 기준)</th><td id="c4">0</td></tr>
+  <tr><th>바이트 (UTF-8, 한글 3바이트)</th><td id="c5">0</td></tr>
+  <tr><th>단어 수</th><td id="c6">0</td></tr>
+  <tr><th>줄 수</th><td id="c7">0</td></tr>
+  <tr><th>문단 수</th><td id="c8">0</td></tr>
+</table>
+<h2>기준 안내</h2>
+<div class="note">
+  <p>「공백 포함」은 띄어쓰기와 줄바꿈을 모두 1자로 셉니다. 채용 사이트마다 줄바꿈 처리 방식이 다르므로, 줄바꿈을 세지 않는 곳은 「공백 포함, 줄바꿈 제외」 값을 보세요.</p>
+  <p>「한글 2바이트」는 한글·한자 등 영문 외 글자를 2바이트, 영문·숫자·공백을 1바이트로 셉니다. 바이트로 제한하는 지원서 양식은 대부분 이 기준입니다.</p>
+  <p>이모지처럼 여러 코드로 이루어진 글자도 화면에 보이는 대로 1자로 셉니다.</p>
+</div>
+</main>
+<script src="/assets/site.js"></script>
+<script>
+const seg = typeof Intl !== 'undefined' && Intl.Segmenter ? new Intl.Segmenter('ko', {granularity: 'grapheme'}) : null;
+const glen = s => seg ? [...seg.segment(s)].length : Array.from(s).length;
+const enc = new TextEncoder();
+function b2(s){ let n = 0; for (const ch of s) n += ch.codePointAt(0) < 128 ? 1 : 2; return n; }
+function calc(){
+  const s = $('t').value.replace(/\r\n?/g, '\n');
+  const r = {
+    sp: glen(s),
+    nonl: glen(s.replace(/\n/g, '')),
+    nosp: glen(s.replace(/\s/g, '')),
+    b2: b2(s),
+    u8: enc.encode(s).length,
+    words: (s.trim().match(/\S+/g) || []).length,
+    lines: s ? s.split('\n').length : 0,
+    paras: s.trim() ? s.trim().split(/\n\s*\n/).length : 0,
+  };
+  [['c1','sp'],['c2','nonl'],['c3','nosp'],['c4','b2'],['c5','u8'],['c6','words'],['c7','lines'],['c8','paras']]
+    .forEach(([id,k]) => $(id).textContent = fmt(r[k]));
+  const basis = $('basis').value, unit = basis === 'b2' ? '바이트' : '자';
+  const label = {sp:'공백 포함', nosp:'공백 제외', b2:'한글 2바이트'}[basis];
+  $('main').innerHTML = `${fmt(r[basis])}<small>${unit} (${label})</small>`;
+  const lim = parseInt($('limit').value, 10);
+  const m = $('limitMsg');
+  if (lim > 0){
+    const left = lim - r[basis];
+    m.style.color = left < 0 ? 'var(--stamp)' : 'var(--good)';
+    m.textContent = left < 0 ? `제한보다 ${fmt(-left)}${unit} 많습니다.` : `제한까지 ${fmt(left)}${unit} 남았습니다. (${(r[basis] / lim * 100).toFixed(1)}%)`;
+  } else m.textContent = '';
+}
+['t','limit','basis'].forEach(id => $(id).addEventListener('input', calc));
+calc();
+</script>
+</body>
+</html>

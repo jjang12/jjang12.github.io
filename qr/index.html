@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>QR 코드 만들기 - 무료 QR 코드 생성기 (PNG, SVG 저장)</title>
+<meta name="description" content="링크, 글, 와이파이 정보를 QR 코드로 바로 만듭니다. 크기·색상 선택, PNG와 SVG로 저장. 회원가입·워터마크 없이 무료이며 만료되지 않습니다.">
+<meta name="keywords" content="qr 코드 만들기, qr코드 생성, 무료 qr 코드, qr 코드 생성기, 와이파이 qr">
+<meta property="og:title" content="QR 코드 만들기 - 무료 QR 코드 생성기 (PNG, SVG 저장)">
+<meta property="og:description" content="링크, 글, 와이파이 정보를 QR 코드로 바로 만듭니다. 크기·색상 선택, PNG와 SVG로 저장. 회원가입·워터마크 없이 무료이며 만료되지 않습니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjang12.github.io/qr/">
+<link rel="canonical" href="https://jjang12.github.io/qr/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+
+</head>
+<body data-blog="jisik_plus">
+<main>
+<h1>QR 코드 만들기</h1>
+<p class="lead">링크나 글을 넣으면 바로 QR 코드가 만들어집니다. 만료되지 않고 워터마크도 없습니다.</p>
+<div class="seg" role="group" aria-label="내용 종류"><button type="button" data-k="text" aria-pressed="true">링크·글</button><button type="button" data-k="wifi" aria-pressed="false">와이파이</button></div>
+<div id="kText"><div class="field"><label for="txt">링크 또는 글</label><textarea id="txt" style="min-height:90px">https://jjang12.github.io/</textarea></div></div>
+<div id="kWifi" hidden><div class="row">
+  <div class="field"><label for="ssid">와이파이 이름</label><input id="ssid" type="text"></div>
+  <div class="field"><label for="pw">비밀번호</label><input id="pw" type="text"></div>
+  <div class="field"><label for="enc">보안</label><select id="enc"><option value="WPA">WPA/WPA2</option><option value="WEP">WEP</option><option value="nopass">없음</option></select></div>
+</div></div>
+<div class="row">
+  <div class="field"><label for="px">크기</label><select id="px"><option>256</option><option selected>512</option><option>1024</option></select></div>
+  <div class="field"><label for="ec">오류 복원</label><select id="ec"><option value="L">낮음 (7%)</option><option value="M" selected>보통 (15%)</option><option value="Q">높음 (25%)</option><option value="H">최고 (30%)</option></select></div>
+  <div class="field"><label for="fg">코드 색</label><input id="fg" type="color" value="#000000"></div>
+  <div class="field"><label for="bg">배경 색</label><input id="bg" type="color" value="#ffffff"></div>
+</div>
+<div class="panel" style="text-align:center"><canvas id="cv" style="max-width:100%; height:auto; width:256px"></canvas><p class="note" id="msg"></p></div>
+<div class="btns"><button type="button" class="btn" id="png">PNG 저장</button><button type="button" class="btn sub" id="svg">SVG 저장</button></div>
+<h2>사용 안내</h2>
+<div class="note">
+  <p>QR 코드 안에 내용이 직접 들어가는 방식이라 서버가 없어도 영구히 동작합니다. 대신 만든 뒤에는 내용을 바꿀 수 없습니다.</p>
+  <p>로고를 가운데 올리거나 인쇄물이 긁힐 수 있다면 오류 복원을 「높음」 이상으로 고르세요. 코드 색은 배경보다 충분히 진해야 잘 읽힙니다.</p>
+</div>
+</main>
+<script src="/assets/site.js"></script>
+<script src="/assets/vendor/qrcode.js"></script>
+<script>
+qrcode.stringToBytes = qrcode.stringToBytesFuncs['UTF-8'];
+let kind = 'text', qr = null;
+const wifiEsc = s => s.replace(/([\\;,:"])/g, '\\$1');
+function content(){
+  if (kind === 'text') return $('txt').value;
+  const e = $('enc').value;
+  return `WIFI:T:${e};S:${wifiEsc($('ssid').value)};${e === 'nopass' ? '' : 'P:' + wifiEsc($('pw').value) + ';'};`;
+}
+function draw(){
+  const text = content();
+  if (!text.trim()){ $('msg').textContent = '내용을 입력하세요.'; qr = null; return; }
+  try { qr = qrcode(0, $('ec').value); qr.addData(text, 'Byte'); qr.make(); }
+  catch { $('msg').textContent = '내용이 너무 깁니다. 줄이거나 오류 복원을 낮춰 주세요.'; qr = null; return; }
+  const n = qr.getModuleCount(), q = 4, size = +$('px').value, cell = size / (n + q * 2);
+  const c = $('cv'); c.width = c.height = size;
+  const ctx = c.getContext('2d'); ctx.fillStyle = $('bg').value; ctx.fillRect(0, 0, size, size); ctx.fillStyle = $('fg').value;
+  for (let r = 0; r < n; r++) for (let k = 0; k < n; k++) if (qr.isDark(r, k))
+    ctx.fillRect(Math.floor((k + q) * cell), Math.floor((r + q) * cell), Math.ceil(cell), Math.ceil(cell));
+  $('msg').textContent = `${Array.from(text).length}자, ${n}×${n} 칸`;
+}
+function svg(){
+  const n = qr.getModuleCount(), q = 4, t = n + q * 2; let d = '';
+  for (let r = 0; r < n; r++) for (let k = 0; k < n; k++) if (qr.isDark(r, k)) d += `M${k + q} ${r + q}h1v1h-1z`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${t} ${t}" shape-rendering="crispEdges"><rect width="${t}" height="${t}" fill="${$('bg').value}"/><path d="${d}" fill="${$('fg').value}"/></svg>`;
+}
+document.querySelectorAll('.seg button').forEach(b => b.onclick = () => {
+  kind = b.dataset.k; document.querySelectorAll('.seg button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  $('kText').hidden = kind !== 'text'; $('kWifi').hidden = kind !== 'wifi'; draw();
+});
+document.querySelectorAll('input,select,textarea').forEach(i => i.addEventListener('input', draw));
+$('png').onclick = () => qr && $('cv').toBlob(b => saveBlob(b, 'qrcode.png'));
+$('svg').onclick = () => qr && saveBlob(new Blob([svg()], {type: 'image/svg+xml'}), 'qrcode.svg');
+draw();
+</script>
+</body>
+</html>
