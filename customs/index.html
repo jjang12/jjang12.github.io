@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>관세 계산기 - 해외직구 관부가세, 150달러·미국 200달러 면세 확인</title>
+<meta name="description" content="해외직구 물품 가격과 배송비, 품목, 출발 국가를 넣으면 면세(150달러·미국 200달러) 여부와 관세·부가세 예상액, 총 결제 금액을 계산합니다. 환율은 매일 자동 갱신.">
+<meta name="keywords" content="관세 계산기, 관세계산기, 관부가세 계산기, 해외직구 관세, 직구 관세 계산, 150달러 면세, 200달러 면세">
+<meta property="og:title" content="관세 계산기 - 해외직구 관부가세, 150달러·미국 200달러 면세 확인">
+<meta property="og:description" content="해외직구 물품 가격과 배송비, 품목, 출발 국가를 넣으면 면세(150달러·미국 200달러) 여부와 관세·부가세 예상액, 총 결제 금액을 계산합니다. 환율은 매일 자동 갱신.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjang12.github.io/customs/">
+<link rel="canonical" href="https://jjang12.github.io/customs/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧰</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+<style>.ok{color:var(--good); font-weight:700} .warn{color:var(--warn); font-weight:700} #tbl tr.on td{background:var(--blue-soft); font-weight:700}</style>
+</head>
+<body data-blog="aicoinlab">
+<main>
+<h1>관세 계산기 (해외직구)</h1>
+<p class="lead">해외직구 물품 가격과 배송비, 품목을 넣으면 면세 여부와 관세·부가세 예상액을 계산합니다. 개인이 직접 쓰려고 산 물건(자가사용) 기준입니다.</p>
+<div class="row">
+  <div class="field"><label for="price">물품 가격 (현지 세금·현지 배송비 포함)</label><input id="price" type="text" inputmode="decimal" value="230"></div>
+  <div class="field"><label for="ship">국제 배송비</label><input id="ship" type="text" inputmode="decimal" value="20"></div>
+  <div class="field"><label for="cur">통화</label><select id="cur"><option value="USD">미국 달러 USD</option><option value="EUR">유로 EUR</option><option value="JPY">일본 엔 JPY</option><option value="CNY">중국 위안 CNY</option><option value="GBP">영국 파운드 GBP</option><option value="KRW">원화 KRW</option></select></div>
+</div>
+<div class="row">
+  <div class="field"><label for="from">출발 국가</label><select id="from"><option value="us">미국</option><option value="etc">미국 외 (중국·일본·유럽 등)</option></select></div>
+  <div class="field"><label for="item">품목</label><select id="item"></select></div>
+</div>
+<label class="note"><input type="checkbox" id="fta"> 미국산 원산지 증명이 있어 한미 FTA 관세 0% 적용</label>
+<div class="panel"><div class="big" id="main"></div><div class="note" id="sub" style="margin-top:6px"></div></div>
+<table class="kv" id="kv"></table>
+<h2>품목별 관세율 (기본, 참고용)</h2>
+<div class="tbl-wrap"><table class="list" id="tbl"><thead><tr><th>품목</th><th>관세율</th><th>면세 한도 (미국발)</th></tr></thead><tbody></tbody></table></div>
+<h2>계산 기준 안내</h2>
+<div class="note">
+  <p><b>면세 판단</b>: 물품 가격(현지 세금·현지 배송비 포함, 국제 배송비는 따로 표시되면 제외)이 미화 150달러 이하면 관세·부가세가 없습니다. 미국에서 오는 물건 중 목록통관 대상(일반 공산품)은 200달러까지 면세입니다. 식품·건강기능식품·의약품·일부 화장품 같은 목록통관 제외 품목은 미국발이어도 150달러 기준입니다.</p>
+  <p><b>세금</b>: 면세 한도를 넘으면 초과분이 아니라 <b>전체 금액</b>에 세금이 붙습니다. 과세가격 = (물품 가격 + 국제 배송비) × 환율, 관세 = 과세가격 × 관세율, 부가세 = (과세가격 + 관세) × 10%. 향수·고급 시계·가방 등 일부 고가품은 개별소비세가 더 붙을 수 있습니다.</p>
+  <p>환율은 짱툴 환율 계산기와 같은 자료(하루 한 번 갱신)이고, 실제 통관은 관세청이 주마다 고시하는 과세환율을 써서 조금 다를 수 있습니다. 같은 날 같은 판매자에게 산 물건을 나눠 보내면 합쳐서 과세(합산과세)될 수 있습니다. 정확한 세액은 관세청 「해외직구 예상세액 조회」로 확인하세요.</p>
+</div>
+</main>
+<script src="/assets/site.js"></script>
+<script>
+/* [이름, 관세율, 목록통관(미국 200달러) 가능] — 품목별 대표 기본세율 */
+const ITEMS = [
+  ['의류·잡화 (옷, 모자, 스카프)', 0.13, true], ['신발', 0.13, true], ['가방·지갑', 0.08, true], ['시계', 0.08, true],
+  ['노트북·태블릿·휴대폰', 0, true], ['카메라·이어폰·전자기기 일반', 0.08, true], ['화장품 (일반)', 0.065, true], ['화장품 (기능성: 미백·주름·자외선)', 0.065, false],
+  ['향수', 0.065, true], ['장난감·피규어', 0.08, true], ['스포츠·캠핑용품', 0.08, true], ['책', 0, true],
+  ['건강기능식품·영양제', 0.08, false], ['식품·커피·과자', 0.08, false], ['그 밖의 일반 물품', 0.08, true],
+];
+let R = null;
+const num = s => parseFloat(String(s).replace(/[^\d.]/g, '')) || 0;
+const toKRW = (v, c) => c === 'KRW' ? v : v * (R?.rates?.[c] || 0);
+const toUSD = (v, c) => c === 'USD' ? v : toKRW(v, c) / (R?.rates?.USD || 1);
+function calc(){
+  if (!R) return;
+  const c = $('cur').value, p = num($('price').value), s = num($('ship').value), us = $('from').value === 'us';
+  const [name, rate0, listOk] = ITEMS[+$('item').value];
+  const limit = us && listOk ? 200 : 150;
+  const pUSD = toUSD(p, c);
+  const free = pUSD <= limit;
+  const base = Math.floor(toKRW(p + s, c));
+  const rate = $('fta').checked && us ? 0 : rate0;
+  const duty = free ? 0 : Math.floor(base * rate / 10) * 10;
+  const vat = free ? 0 : Math.floor((base + duty) * 0.1 / 10) * 10;
+  const pay = base + duty + vat;
+  $('main').innerHTML = free ? `<span class="ok">면세</span><small>세금 0원</small>` : `세금 ${fmt(duty + vat)}원<small>관세 ${fmt(duty)} + 부가세 ${fmt(vat)}</small>`;
+  $('sub').innerHTML = `물품 가격 약 $${pUSD.toFixed(2)} → 면세 한도 $${limit} ${free ? '<span class="ok">이하</span>' : '<span class="warn">초과 — 전체 금액에 과세</span>'}` +
+    (!free && pUSD - limit < 30 ? ` · 한도까지 $${(pUSD - limit).toFixed(2)} 차이` : '');
+  $('kv').innerHTML = [
+    ['적용 환율', c === 'KRW' ? '-' : `1 ${c} = ${(R.rates[c] || 0).toLocaleString('ko-KR', {maximumFractionDigits: c === 'JPY' ? 4 : 2})}원`],
+    ['면세 한도', `$${limit} (${us ? (listOk ? '미국발 목록통관' : '미국발이지만 목록통관 제외 품목') : '미국 외'})`],
+    ['과세가격 (물품 + 국제 배송비)', `${fmt(base)}원`],
+    [`관세 (${(rate * 100).toFixed(1)}%${rate !== rate0 ? ', FTA' : ''})`, `${fmt(duty)}원`],
+    ['부가세 10%', `${fmt(vat)}원`],
+  ].map(([k, v]) => `<tr><th>${k}</th><td>${v}</td></tr>`).join('') + `<tr class="total"><th>물건값 + 배송비 + 세금</th><td>${fmt(pay)}원</td></tr>`;
+  $('tbl').querySelector('tbody').innerHTML = ITEMS.map(([n, r, l], i) => `<tr${i === +$('item').value ? ' class="on"' : ''}><td style="white-space:normal">${n}</td><td>${(r * 100).toFixed(1)}%</td><td>${l ? '$200' : '$150 (목록통관 제외)'}</td></tr>`).join('');
+}
+$('item').innerHTML = ITEMS.map(([n], i) => `<option value="${i}">${n}</option>`).join('');
+['price', 'ship', 'cur', 'from', 'item', 'fta'].forEach(id => $(id).addEventListener('input', calc));
+fetch('/assets/rates.json').then(r => r.json()).then(d => { R = d; calc(); }).catch(() => { $('main').textContent = '환율을 불러오지 못했습니다.'; });
+</script>
+</body>
+</html>
