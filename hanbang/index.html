@@ -196,6 +196,7 @@
     const more = () => {
       const slice = list.slice(shown, shown + PAGE);
       ul.insertAdjacentHTML('beforeend', slice.map(r => {
+        if (typeof r === 'string') return `<li>${esc(r)}</li>`;   // 일상 단어 전체 목록(뜻 번호 없음)
         const t = near ? '이어 갈 단어: ' + escapes(r[0].at(-1)).map(e => e[0]).join(', ') : '';
         return `<li>${link(r[0], r[2], near ? 'near' : '', t)}</li>`;
       }).join(''));
@@ -209,18 +210,34 @@
     more();
   }
 
+  // 일상 단어 전체(끝말잇기 대결과 같은 words.txt) — 처음 필요할 때 한 번만 받는다
+  let wordsP = null;
+  const loadWords = () => wordsP ||= fetch('/wordchain/words.txt')
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
+    .then(t => t.split('\n').map(w => w.trim()).filter(Boolean).sort((a, b) => a.length - b.length || (a < b ? -1 : 1)));
+  function plainLists(box, groups, note){
+    const g = document.createElement('div');
+    g.innerHTML = '<p class="status">단어 목록을 불러오는 중…</p>';
+    box.appendChild(g);
+    loadWords().then(ws => {
+      if (!g.isConnected) return;   // 그사이 다른 검색을 했으면 버림
+      g.remove();
+      for (const [title, test] of groups){ const list = ws.filter(test); if (list.length) section(box, title, list, false); }
+      if (note) box.insertAdjacentHTML('beforeend', `<p class="note">${note}</p>`);
+    }).catch(() => { g.innerHTML = '<p class="status">단어 목록을 불러오지 못했습니다.</p>'; });
+  }
+  const ALL_NOTE = '「전문용어 포함」이어도 목록에는 일상 단어만 보입니다(개수는 전문용어 포함).';
+
   function renderLists(q, label){
     const test = label === 'end' ? r => r[0].endsWith(q) : r => r[0].startsWith(q);
     const hb = hbPool().filter(test), near = nearPool().filter(test);
     const what = label === 'end' ? `「${q}」${ro(q)} 끝나는` : `「${q}」${ro(q)} 시작하는`;
     const box = $('result');
     box.innerHTML = '';
-    if (!hb.length && !near.length){
-      box.innerHTML = `<p class="status">${esc(what)} 한방·준한방 단어가 없습니다. 다른 글자로 찾거나 「전문용어 포함」으로 바꿔 보세요.</p>`;
-      return;
-    }
+    if (!hb.length && !near.length) box.innerHTML = `<p class="status">${esc(what)} 한방·준한방 단어는 없습니다.</p>`;
     if (hb.length) section(box, `${what} 한방단어`, hb, false);
     if (near.length) section(box, `${what} 준한방 단어`, near, true);
+    plainLists(box, [[`${what} 단어 (일상 단어 전체)`, label === 'end' ? w => w.endsWith(q) : w => w.startsWith(q)]], mode === 'all' ? ALL_NOTE : '');
   }
 
   function check(word){
@@ -239,6 +256,9 @@
         <div><div class="word">${esc(word)}</div>
         <div class="detail">${msg} ${how}</div>${extra}</div>
       </div>`;
+    if (total > data.meta.near_max)   // 이어지는 단어도 실제로 보여 준다
+      plainLists($('result'), [[`「${last}」${ro(last)} 시작하는 단어`, w => w[0] === last], ...(alt ? [[`두음법칙 「${alt}」${ro(alt)} 시작하는 단어`, w => w[0] === alt]] : [])],
+                 mode === 'all' ? ALL_NOTE : '');
   }
 
   function run(){
