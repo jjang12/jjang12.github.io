@@ -24,6 +24,7 @@ from urllib.parse import quote
 ROOT = Path(__file__).resolve().parents[2]
 BASE = 'https://jjangtool.com'
 SITE_NAME = '짱툴'
+TITLE_SUFFIX = ' | 짱툴'   # 메인 말고 모든 페이지 <title> 끝에 붙인다(og·twitter·RSS 제목엔 안 붙임)
 CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 
 
@@ -40,7 +41,7 @@ def read_site():
 def page_info(path: Path):
     s = path.read_text(encoding='utf-8')
     get = lambda pat: html.unescape(re.search(pat, s, re.S).group(1)).strip() if re.search(pat, s, re.S) else ''   # noqa: E731
-    return s, {'title': get(r'<title>(.*?)</title>'), 'desc': get(r'<meta name="description" content="([^"]*)"'),
+    return s, {'title': get(r'<title>(.*?)</title>').removesuffix(TITLE_SUFFIX), 'desc': get(r'<meta name="description" content="([^"]*)"'),
                'h1': re.sub(r'<[^>]+>', '', get(r'<h1[^>]*>(.*?)</h1>'))}
 
 
@@ -259,6 +260,8 @@ def main():
             continue
         s, info = page_info(f)
         s2 = re.sub(r'<link rel="icon" href="data:image/svg\+xml,[^"]*">\n?', '', s)   # 예전 이모지 아이콘
+        if p != '/':
+            s2 = re.sub(r'<title>(.*?)</title>', lambda m: m.group(0) if m.group(1).endswith(TITLE_SUFFIX) else f'<title>{m.group(1)}{TITLE_SUFFIX}</title>', s2, count=1)
         parent = '/' + p.strip('/').split('/')[0] + '/' if p.count('/') > 2 else None
         slug = 'home' if p == '/' else (parent or p).strip('/')
         # 구글 경로(BreadcrumbList)는 마지막 칸을 빼고 모두 주소가 있어야 해서, 주소 없는 묶음 이름은 넣지 않는다
