@@ -311,3 +311,29 @@ footer.site-foot p{margin:0 0 10px}
 .dd-links small{margin-left:4px; color:var(--muted); font-size:13px}
 .dd-links b{color:var(--blue); font-variant-numeric:tabular-nums; white-space:nowrap}
 table.list tr.past td{color:var(--muted)}
+
+/* 연도별 달력 (build_yearly.py) */
+.cal-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:18px 22px}
+.cal-m h3{margin:0 0 6px; font-size:17px}
+table.cal{width:100%; border-collapse:collapse; table-layout:fixed; font-variant-numeric:tabular-nums}
+table.cal th{font-size:12px; color:var(--muted); font-weight:600; padding:4px 0}
+table.cal th:first-child{color:var(--stamp)} table.cal th:last-child{color:var(--blue)}
+table.cal td{vertical-align:top; height:52px; padding:3px 2px; border-top:1px solid var(--line); text-align:center; overflow:hidden}
+table.cal td b{display:block; font-size:15px; font-weight:700}
+table.cal td.h b, table.cal td.h .ev{color:var(--stamp)}
+table.cal td.s b{color:var(--blue)}
+table.cal td.today{background:var(--blue-soft); border-radius:6px}
+table.cal small{display:block; font-size:10px; line-height:1.25; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+table.cal small.ev{font-weight:600} table.cal small.ev.t{color:var(--good)}
+table.ages td:last-child{white-space:normal; text-align:left; line-height:1.7}
+table.ages small{color:var(--muted)}
+
+@media print {
+  .site-head, .side-nav, .nav-dim, .bn, .rel, .blogs, .site-foot, .tool-head, .no-print, .faq, .dd-links, .static-nav{display:none !important}
+  body{padding-left:0 !important; background:#fff}
+  main{max-width:none; padding:0}
+  .cal-grid{grid-template-columns:repeat(3,1fr); gap:10px 14px}
+  .cal-m{break-inside:avoid}
+  table.cal td{height:40px}
+  .panel{background:none; border:0; padding:0}
+}
