@@ -5,6 +5,7 @@
 단어 데이터는 끝말잇기 도구가 쓰는 것을 그대로 읽는다 — 사전 데이터가 바뀌었을 때만 다시 돌리면 된다(매일 돌릴 필요 없음).
     wordchain/words.txt   기본 단어(우리말샘 명사·일반어, 전문용어만 있는 단어 제외) 한 줄에 하나
     hanbang/hanbang.json  한방·준한방 단어(words: [단어, 플래그, 뜻번호], 플래그 1=한방(전체) 2=한방(기본) 4·8=준한방)
+    hanbang/defs/*.json   단어 뜻 — 2글자 단어·한방단어 앞쪽 DEF_N 개에 짧게 붙인다
 만드는 글자: 기본 단어가 MIN_WORDS 개 넘게 시작하거나 끝나는 글자 + 한방단어가 HB_MIN 개 넘게 끝나는 글자.
 """
 import html
@@ -51,15 +52,51 @@ def ro(ch):
     return '으로' if p and p[2] and p[2] != 8 else '로'
 
 
+DEF_N = 60      # 묶음마다 뜻을 붙여 보여 줄 단어 수(나머지는 단어만)
+DEF_CUT = 42    # 뜻 글자 수
+DEFS = {}
+
+
+def load_defs():
+    """hanbang/defs/*.json (build_hanbang.py 가 만듦) — 검색기와 같은 뜻 데이터."""
+    for f in (ROOT / 'hanbang' / 'defs').glob('*.json'):
+        DEFS.update(json.loads(f.read_text(encoding='utf-8')))
+
+
+def short_def(w):
+    ds = DEFS.get(w)
+    if not ds:
+        return ''
+    t = re.split(r'\s*⇒', ds[0][0])[0].rstrip('…').strip()   # 「⇒규범 표기는…」 같은 덧말은 뺀다
+    t = re.split(r'(?<=[.])\s', t)[0]                          # 첫 문장만
+    return t if len(t) <= DEF_CUT else t[:DEF_CUT].rstrip(' ,·') + '…'
+
+
+def rank(w):
+    ds = DEFS.get(w)
+    return ds[0][3] if ds and len(ds[0]) > 3 else 0
+
+
+def with_defs(words, n=DEF_N):
+    """앞쪽 n개는 「단어 — 뜻」, 나머지는 단어만."""
+    head = [(w, short_def(w)) for w in words[:n]]
+    out = '<ul class="wdefs">' + ''.join(f'<li><b>{esc(w)}</b>{f" <span>{esc(t)}</span>" if t else ""}</li>' for w, t in head) + '</ul>'
+    if len(words) > n:
+        out += '<ul class="words">' + ''.join(f'<li>{esc(w)}</li>' for w in words[n:]) + '</ul>'
+    return out
+
+
 def word_list(words):
     out = ''
     for ln, label in ((2, '2글자'), (3, '3글자'), (4, '4글자 이상')):
         g = [w for w in words if (len(w) == ln if ln < 4 else len(w) >= 4)]
         if not g:
             continue
+        g = sorted(g, key=lambda w: -rank(w))   # 많이 쓰는 단어(용례·관련어 많은 단어)부터
         shown = g[:SHOW[ln]]
         more = f' <span class="note">(전체 {len(g):,}개 중 {len(shown)}개)</span>' if len(g) > len(shown) else f' <span class="note">{len(g):,}개</span>'
-        out += f'<h3>{label}{more}</h3><ul class="words">' + ''.join(f'<li>{esc(w)}</li>' for w in shown) + '</ul>'
+        lst = with_defs(shown) if ln == 2 else '<ul class="words">' + ''.join(f'<li>{esc(w)}</li>' for w in shown) + '</ul>'
+        out += f'<h3>{label}{more}</h3>{lst}'
     return out
 
 
@@ -85,7 +122,7 @@ def page(ch, d, related):
     else:
         title = f'{ch}{r} 시작하는 단어 · {ch}{r} 끝나는 단어 - 끝말잇기 {ch} 단어 모음'
         h1 = f'{ch}{r} 시작하는 단어 · {ch}{r} 끝나는 단어'
-        desc = (f'{ch}{r} 시작하는 단어 {len(st):,}개, {ch}{r} 끝나는 단어 {len(en):,}개를 2글자·3글자·4글자로 나눠 정리했습니다. '
+        desc = (f'{ch}{r} 시작하는 단어 {len(st):,}개, {ch}{r} 끝나는 단어 {len(en):,}개를 2글자·3글자·4글자로 나눠 뜻과 함께 정리했습니다. '
                 f'끝말잇기에서 {ch}{r} 이어 갈 단어와 {ch}{r} 시작하는 한방단어도 확인하세요. 국립국어원 우리말샘 기준.')
     cells = [(f'{len(st):,}개', f'{ch}{r} 시작하는 단어'), (f'{len(en):,}개', f'{ch}{r} 끝나는 단어'),
              (f'{len(hb_start):,}개', f'{ch}{r} 시작하는 한방단어'), (f'{len(hb_end):,}개', f'{ch}{r} 끝나는 한방단어'),
@@ -104,13 +141,13 @@ def page(ch, d, related):
     body = ('<div class="dd-stats">' + ''.join(f'<div><b>{a}</b><span>{b}</span></div>' for a, b in cells) + '</div>'
             f'<div class="panel"><p style="margin:0">{"</p><p style=\"margin:8px 0 0\">".join(tip)}</p></div>')
     if hb_end:
-        body += f'<h2>{ch}{r} 끝나는 한방단어</h2><ul class="words">' + ''.join(f'<li>{esc(w)}</li>' for w in hb_end[:300]) + '</ul>'
+        body += f'<h2>{ch}{r} 끝나는 한방단어</h2>' + with_defs(sorted(hb_end, key=lambda w: -rank(w))[:300])
         if len(hb_end) > 300:
             body += f'<p class="note">전체 {len(hb_end):,}개 중 300개. 나머지는 <a href="/hanbang/">한방단어 검색기</a>에서 볼 수 있습니다.</p>'
     if st:
         body += f'<h2>{ch}{r} 시작하는 단어</h2>' + word_list(st)
     if hb_start:
-        body += f'<h2>{ch}{r} 시작하는 한방단어</h2><ul class="words">' + ''.join(f'<li>{esc(w)}</li>' for w in hb_start[:200]) + '</ul>'
+        body += f'<h2>{ch}{r} 시작하는 한방단어</h2>' + with_defs(sorted(hb_start, key=lambda w: -rank(w))[:200])
     if en:
         body += f'<h2>{ch}{r} 끝나는 단어</h2>' + word_list(en)
     if near_end:
@@ -174,6 +211,7 @@ def load():
 
 
 def main():
+    load_defs()
     d = load()
     hb_end = defaultdict(int)
     for w, _ in d['hb']:
