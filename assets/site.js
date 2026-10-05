@@ -148,6 +148,8 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
   let curGroup = null, curItem = null;
   for (const g of SITE.groups) for (const it of g.items) if (it.p === path) { curGroup = g; curItem = it; }
+  /* 도구 아래 하위 페이지(예: /dday/suneung/)는 부모 도구로 본다 */
+  if (!curItem) for (const g of SITE.groups) for (const it of g.items) if (path.startsWith(it.p)) { curGroup = g; curItem = it; }
   const brand = `<a class="brand" href="/"><span class="brand-mark">${icon('zap')}</span>${SITE.name}<span class="brand-domain">jjangtool.com</span></a>`;
 
   /* 모바일 상단 바 */
@@ -225,7 +227,7 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
   if (curItem) {
     const top = document.createElement('div');
     top.className = `tool-head tone-${curGroup.tone}`;
-    top.innerHTML = `<span class="tool-icon">${icon(curItem.i)}</span><p class="crumb"><a href="/">전체 도구</a>${icon('chevron-right')}<span>${curGroup.name}</span></p>`;
+    top.innerHTML = `<span class="tool-icon">${icon(curItem.i)}</span><p class="crumb"><a href="/">전체 도구</a>${icon('chevron-right')}<span>${curGroup.name}</span>${path !== curItem.p ? `${icon('chevron-right')}<a href="${curItem.p}">${curItem.t}</a>` : ''}</p>`;
     main.querySelector('h1').before(top);
   }
 
@@ -281,6 +283,20 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
     <p class="foot-links">${Object.values(SITE.blogs).map(b => `<a href="${b.url}" target="_blank" rel="noopener">${b.name}</a>`).join('')}</p>`;
   blogs.after(foot);
 
+  /* D-day 숫자: 페이지를 만든 날(data-built)과 오늘이 다르면 다시 센다 */
+  const built = document.body.dataset.built;
+  if (built) {
+    const n = new Date(), t = Date.UTC(n.getFullYear(), n.getMonth(), n.getDate());
+    if (t !== Date.parse(built)) {
+      document.querySelectorAll('[data-dd]').forEach(e => {
+        const d = Math.round((Date.parse(e.dataset.dd) - t) / 864e5);
+        e.textContent = d === 0 ? 'D-day' : d > 0 ? `D-${d.toLocaleString()}` : e.closest('table') ? '지남' : `D+${(-d).toLocaleString()}`;
+      });
+      const s = document.querySelector('[data-today]');
+      if (s) s.textContent = `${n.getFullYear()}년 ${n.getMonth() + 1}월 ${n.getDate()}일(${'일월화수목금토'[n.getDay()]})`;
+    }
+  }
+
   /* 블로그 글 불러오기 (assets/posts.json 은 GitHub Actions 가 4시간마다 갱신) */
   const home = document.getElementById('home-posts');
   if (!rel && !bRight && !home) return;
@@ -293,7 +309,7 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
     const posts = d.posts || [];
     if (!posts.length) return;
     if (rel) {
-      const related = ((d.related || {})[path] || []).slice(0, 4);
+      const related = ((d.related || {})[curItem.p] || []).slice(0, 4);
       if (related.length) {
         const box = rel.querySelector('.rel-posts');
         box.querySelector('.post-list').innerHTML = related.map(p => card(p, 'post is-rel', '관련 글')).join('');

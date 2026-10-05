@@ -1,0 +1,36 @@
+name: D-day 페이지 갱신
+
+# 매일 0시(KST) 무렵 dday/<slug>/ 페이지의 남은 날 수를 새로 써 넣고, SEO 정보·사이트맵·RSS 를 맞춘다.
+on:
+  schedule:
+    - cron: '2 15 * * *'   # UTC 15:02 = KST 00:02
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: seo
+  cancel-in-progress: false
+
+jobs:
+  dday:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # 사이트맵 lastmod·RSS 발행일을 커밋 기록에서
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 .github/scripts/build_dday.py
+      - run: python3 .github/scripts/build_seo.py
+      - name: 바뀐 경우에만 커밋
+        run: |
+          git add -A dday sitemap.xml rss.xml
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Refresh D-day pages'
+          git pull --rebase
+          git push

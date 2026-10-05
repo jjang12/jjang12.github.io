@@ -83,11 +83,15 @@ def head_block(url, info, og, crumbs, faq, is_home, category):
     graph = []
     if is_home:
         graph.append({'@type': 'WebSite', 'name': SITE_NAME, 'alternateName': ['짱툴닷컴', 'jjangtool.com'], 'url': BASE + '/', 'inLanguage': 'ko-KR', 'description': info['desc']})
+    elif category == 'WebPage':
+        graph.append({'@type': 'WebPage', 'name': info['h1'], 'url': url, 'description': info['desc'], 'inLanguage': 'ko-KR',
+                      'isPartOf': {'@type': 'WebSite', 'name': SITE_NAME, 'url': BASE + '/'}})
     else:
         graph.append({'@type': 'WebApplication', 'name': info['h1'], 'url': url, 'description': info['desc'], 'inLanguage': 'ko-KR',
                       'applicationCategory': category, 'operatingSystem': '모든 기기 (웹 브라우저)',
                       'offers': {'@type': 'Offer', 'price': '0', 'priceCurrency': 'KRW'},
                       'isPartOf': {'@type': 'WebSite', 'name': SITE_NAME, 'url': BASE + '/'}})
+    if not is_home:
         graph.append({'@type': 'BreadcrumbList', 'itemListElement': [
             {'@type': 'ListItem', 'position': i + 1, 'name': n, **({'item': u} if u else {})} for i, (n, u) in enumerate(crumbs)]})
     if faq:
@@ -238,6 +242,9 @@ def main():
     for g in groups:
         for it in g['items']:
             pages.append((it['p'], ROOT / it['p'].strip('/') / 'index.html', g))
+            # 도구 아래 하위 페이지(예: dday/suneung/ — build_dday.py 가 만듦)
+            for sub in sorted((ROOT / it['p'].strip('/')).glob('*/index.html')):
+                pages.append((f"{it['p']}{sub.parent.name}/", sub, g))
     names = {}
     for p, f, _ in pages[1:]:
         if f.exists():
@@ -251,10 +258,11 @@ def main():
             continue
         s, info = page_info(f)
         s2 = re.sub(r'<link rel="icon" href="data:image/svg\+xml,[^"]*">\n?', '', s)   # 예전 이모지 아이콘
-        slug = 'home' if p == '/' else p.strip('/')
+        parent = '/' + p.strip('/').split('/')[0] + '/' if p.count('/') > 2 else None
+        slug = 'home' if p == '/' else (parent or p).strip('/')
         # 구글 경로(BreadcrumbList)는 마지막 칸을 빼고 모두 주소가 있어야 해서, 주소 없는 묶음 이름은 넣지 않는다
-        crumbs = [(SITE_NAME, BASE + '/')] + ([(info['h1'], BASE + p)] if g else [])
-        s2 = replace_block(s2, 'head', head_block(BASE + p, info, f'/assets/og/{slug}.jpg', crumbs, faq_of(s2), p == '/', CATEGORY.get(g['name'] if g else '', 'UtilitiesApplication')), '</head>')
+        crumbs = [(SITE_NAME, BASE + '/')] + ([(names[parent], BASE + parent)] if parent else []) + ([(info['h1'], BASE + p)] if g else [])
+        s2 = replace_block(s2, 'head', head_block(BASE + p, info, f'/assets/og/{slug}.jpg', crumbs, faq_of(s2), p == '/', 'WebPage' if parent else CATEGORY.get(g['name'] if g else '', 'UtilitiesApplication')), '</head>')
         s2 = replace_block(s2, 'nav', nav_block(groups, names, p), '<script src="/assets/site.js"></script>')
         if s2 != s:
             f.write_text(s2, encoding='utf-8')

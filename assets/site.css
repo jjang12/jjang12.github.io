@@ -292,3 +292,22 @@ footer.site-foot p{margin:0 0 10px}
 .faq summary::after{content:'+'; color:var(--muted); font-weight:500}
 .faq details[open] summary::after{content:'−'}
 .faq details p{margin:0 0 14px; color:var(--muted); font-size:15px; line-height:1.65}
+
+/* D-day 페이지 (build_dday.py) */
+.dd-hero{text-align:center; padding:28px 22px}
+.dd-label{margin:0; font-weight:700; color:var(--muted)}
+.dd-num{font-size:64px; font-weight:900; letter-spacing:-0.03em; line-height:1.1; color:var(--blue); font-variant-numeric:tabular-nums}
+.dd-date{margin:8px 0 4px; font-size:18px; font-weight:700}
+.dd-hero .note{margin:4px 0 0}
+.dd-bar{height:8px; max-width:420px; margin:16px auto 6px; border-radius:99px; overflow:hidden; background:color-mix(in srgb,var(--blue) 14%,transparent)}
+.dd-bar i{display:block; height:100%; border-radius:inherit; background:var(--blue)}
+.dd-stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin:0 0 6px}
+.dd-stats div{padding:12px 14px; border:1px solid var(--line); border-radius:12px; background:var(--paper)}
+.dd-stats b{display:block; font-size:20px; font-variant-numeric:tabular-nums}
+.dd-stats span{font-size:13px; color:var(--muted)}
+.dd-links{display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:8px; margin:0; padding:0; list-style:none}
+.dd-links a{display:flex; align-items:center; justify-content:space-between; gap:8px; padding:11px 14px; border:1px solid var(--line); border-radius:12px; background:var(--paper); color:var(--ink); text-decoration:none}
+.dd-links a:hover{border-color:var(--blue)}
+.dd-links small{margin-left:4px; color:var(--muted); font-size:13px}
+.dd-links b{color:var(--blue); font-variant-numeric:tabular-nums; white-space:nowrap}
+table.list tr.past td{color:var(--muted)}
