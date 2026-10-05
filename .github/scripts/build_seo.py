@@ -221,7 +221,7 @@ def rss_xml(items):
     return f"""<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
-  <title>{SITE_NAME} - 무료 생활 계산기·도구 모음</title>
+  <title>{SITE_NAME} - 무료 계산기·변환기 모음</title>
   <link>{BASE}/</link>
   <description>설치나 가입 없이 바로 쓰는 무료 생활 도구 모음</description>
   <language>ko</language>
