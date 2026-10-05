@@ -5,7 +5,7 @@
 단어 데이터는 끝말잇기 도구가 쓰는 것을 그대로 읽는다 — 사전 데이터가 바뀌었을 때만 다시 돌리면 된다(매일 돌릴 필요 없음).
     wordchain/words.txt   기본 단어(우리말샘 명사·일반어, 전문용어만 있는 단어 제외) 한 줄에 하나
     hanbang/hanbang.json  한방·준한방 단어(words: [단어, 플래그, 뜻번호], 플래그 1=한방(전체) 2=한방(기본) 4·8=준한방)
-    hanbang/defs/*.json   단어 뜻 — 2글자 단어·한방단어 앞쪽 DEF_N 개에 짧게 붙인다
+    hanbang/defs/*.json   단어 뜻 — 목록의 단어를 누르면 펼쳐지는 짧은 뜻, 많이 쓰는 단어부터 나열하는 점수
 만드는 글자: 기본 단어가 MIN_WORDS 개 넘게 시작하거나 끝나는 글자 + 한방단어가 HB_MIN 개 넘게 끝나는 글자.
 """
 import html
@@ -52,7 +52,6 @@ def ro(ch):
     return '으로' if p and p[2] and p[2] != 8 else '로'
 
 
-DEF_N = 60      # 묶음마다 뜻을 붙여 보여 줄 단어 수(나머지는 단어만)
 DEF_CUT = 42    # 뜻 글자 수
 DEFS = {}
 
@@ -77,13 +76,13 @@ def rank(w):
     return ds[0][3] if ds and len(ds[0]) > 3 else 0
 
 
-def with_defs(words, n=DEF_N):
-    """앞쪽 n개는 「단어 — 뜻」, 나머지는 단어만."""
-    head = [(w, short_def(w)) for w in words[:n]]
-    out = '<ul class="wdefs">' + ''.join(f'<li><b>{esc(w)}</b>{f" <span>{esc(t)}</span>" if t else ""}</li>' for w, t in head) + '</ul>'
-    if len(words) > n:
-        out += '<ul class="words">' + ''.join(f'<li>{esc(w)}</li>' for w in words[n:]) + '</ul>'
-    return out
+def chips(words):
+    """단어 목록. 뜻이 있는 단어는 누르면 그 자리에서 뜻이 펼쳐진다(<details> — 검색 로봇도 읽음)."""
+    out = []
+    for w in words:
+        t = short_def(w)
+        out.append(f'<li><details><summary>{esc(w)}</summary><span>{esc(t)}</span></details></li>' if t else f'<li>{esc(w)}</li>')
+    return '<ul class="words wd">' + ''.join(out) + '</ul>'
 
 
 def word_list(words):
@@ -95,8 +94,7 @@ def word_list(words):
         g = sorted(g, key=lambda w: -rank(w))   # 많이 쓰는 단어(용례·관련어 많은 단어)부터
         shown = g[:SHOW[ln]]
         more = f' <span class="note">(전체 {len(g):,}개 중 {len(shown)}개)</span>' if len(g) > len(shown) else f' <span class="note">{len(g):,}개</span>'
-        lst = with_defs(shown) if ln == 2 else '<ul class="words">' + ''.join(f'<li>{esc(w)}</li>' for w in shown) + '</ul>'
-        out += f'<h3>{label}{more}</h3>{lst}'
+        out += f'<h3>{label}{more}</h3>{chips(shown)}'
     return out
 
 
@@ -122,7 +120,7 @@ def page(ch, d, related):
     else:
         title = f'{ch}{r} 시작하는 단어 · {ch}{r} 끝나는 단어 - 끝말잇기 {ch} 단어 모음'
         h1 = f'{ch}{r} 시작하는 단어 · {ch}{r} 끝나는 단어'
-        desc = (f'{ch}{r} 시작하는 단어 {len(st):,}개, {ch}{r} 끝나는 단어 {len(en):,}개를 2글자·3글자·4글자로 나눠 뜻과 함께 정리했습니다. '
+        desc = (f'{ch}{r} 시작하는 단어 {len(st):,}개, {ch}{r} 끝나는 단어 {len(en):,}개를 2글자·3글자·4글자로 나눠 정리했습니다(단어를 누르면 뜻). '
                 f'끝말잇기에서 {ch}{r} 이어 갈 단어와 {ch}{r} 시작하는 한방단어도 확인하세요. 국립국어원 우리말샘 기준.')
     cells = [(f'{len(st):,}개', f'{ch}{r} 시작하는 단어'), (f'{len(en):,}개', f'{ch}{r} 끝나는 단어'),
              (f'{len(hb_start):,}개', f'{ch}{r} 시작하는 한방단어'), (f'{len(hb_end):,}개', f'{ch}{r} 끝나는 한방단어'),
@@ -141,18 +139,17 @@ def page(ch, d, related):
     body = ('<div class="dd-stats">' + ''.join(f'<div><b>{a}</b><span>{b}</span></div>' for a, b in cells) + '</div>'
             f'<div class="panel"><p style="margin:0">{"</p><p style=\"margin:8px 0 0\">".join(tip)}</p></div>')
     if hb_end:
-        body += f'<h2>{ch}{r} 끝나는 한방단어</h2>' + with_defs(sorted(hb_end, key=lambda w: -rank(w))[:300])
+        body += f'<h2>{ch}{r} 끝나는 한방단어</h2>' + chips(sorted(hb_end, key=lambda w: -rank(w))[:300])
         if len(hb_end) > 300:
             body += f'<p class="note">전체 {len(hb_end):,}개 중 300개. 나머지는 <a href="/hanbang/">한방단어 검색기</a>에서 볼 수 있습니다.</p>'
     if st:
         body += f'<h2>{ch}{r} 시작하는 단어</h2>' + word_list(st)
     if hb_start:
-        body += f'<h2>{ch}{r} 시작하는 한방단어</h2>' + with_defs(sorted(hb_start, key=lambda w: -rank(w))[:200])
+        body += f'<h2>{ch}{r} 시작하는 한방단어</h2>' + chips(sorted(hb_start, key=lambda w: -rank(w))[:200])
     if en:
         body += f'<h2>{ch}{r} 끝나는 단어</h2>' + word_list(en)
     if near_end:
-        body += (f'<h2>{ch}{r} 끝나는 준한방 단어</h2><p class="note">상대가 이을 단어가 1~3개뿐인 단어입니다.</p><ul class="words">' +
-                 ''.join(f'<li>{esc(w)}</li>' for w in near_end[:100]) + '</ul>')
+        body += f'<h2>{ch}{r} 끝나는 준한방 단어</h2><p class="note">상대가 이을 단어가 1~3개뿐인 단어입니다.</p>' + chips(near_end[:100])
     faq = [(f'{ch}{r} 시작하는 단어는 몇 개인가요?', f'우리말샘 기본 명사 기준 {len(st):,}개입니다.' + (f' 두음법칙으로 {alt}{ro(alt)} 시작하는 단어 {len(st_alt):,}개도 끝말잇기에 쓸 수 있습니다.' if alt and st_alt else '')),
            (f'{ch}{r} 끝나는 단어는 몇 개인가요?', f'기본 명사 기준 {len(en):,}개이고, 그중 한방단어는 {len(hb_end):,}개입니다.' if not dead else f'기본 명사 {len(en):,}개와 전문용어까지 합친 한방단어 {len(hb_end):,}개가 있습니다.'),
            ('끝말잇기에서 두음법칙을 써도 되나요?', '보통 허용합니다. 예를 들어 「력」으로 끝나면 「역」으로, 「리」로 끝나면 「이」로 시작하는 단어를 이어도 됩니다. 시작 전에 규칙을 정해 두세요.'),
@@ -186,12 +183,13 @@ def page(ch, d, related):
 <body data-blog="kkultiplab">
 <main>
 <h1>{esc(h1)}</h1>
-<p class="lead">끝말잇기에 쓸 수 있는 「{ch}」 단어를 모았습니다. 국립국어원 우리말샘 명사 기준이고, 두음법칙까지 반영했습니다.</p>
+<p class="lead">끝말잇기에 쓸 수 있는 「{ch}」 단어를 모았습니다. 국립국어원 우리말샘 명사 기준이고, 두음법칙까지 반영했습니다. 단어를 누르면 뜻이 보입니다.</p>
 {body}
 </main>
 <!-- seo:nav -->
 <!-- /seo:nav -->
 <script src="/assets/site.js"></script>
+<script>document.addEventListener('toggle', e => {{ const d = e.target; if (d.tagName === 'DETAILS' && d.open && d.closest('.wd')) document.querySelectorAll('.wd details[open]').forEach(x => x !== d && (x.open = false)); }}, true);</script>
 </body>
 </html>
 '''
