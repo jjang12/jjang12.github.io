@@ -337,3 +337,9 @@ table.ages small{color:var(--muted)}
   table.cal td{height:40px}
   .panel{background:none; border:0; padding:0}
 }
+
+/* 끝말잇기 글자별 페이지 (build_words.py) */
+ul.words{display:flex; flex-wrap:wrap; gap:6px 14px; margin:0 0 8px; padding:0; list-style:none}
+ul.chips{display:flex; flex-wrap:wrap; gap:6px; margin:0 0 10px; padding:0; list-style:none}
+ul.chips a{display:inline-grid; place-items:center; min-width:40px; height:40px; padding:0 8px; border:1px solid var(--line); border-radius:10px; background:var(--paper); color:var(--ink); font-weight:700; text-decoration:none}
+ul.chips a:hover{border-color:var(--blue); color:var(--blue)}

@@ -19,6 +19,7 @@ import tempfile
 from datetime import date, datetime
 from email.utils import format_datetime
 from pathlib import Path
+from urllib.parse import quote
 
 ROOT = Path(__file__).resolve().parents[2]
 BASE = 'https://jjangtool.com'
@@ -244,7 +245,7 @@ def main():
             pages.append((it['p'], ROOT / it['p'].strip('/') / 'index.html', g))
             # 도구 아래 하위 페이지(예: dday/suneung/ — build_dday.py 가 만듦)
             for sub in sorted((ROOT / it['p'].strip('/')).glob('*/index.html')):
-                pages.append((f"{it['p']}{sub.parent.name}/", sub, g))
+                pages.append((f"{it['p']}{quote(sub.parent.name)}/", sub, g))   # 한글 폴더(hanbang/기/)는 %인코딩 주소로
     names = {}
     for p, f, _ in pages[1:]:
         if f.exists():
