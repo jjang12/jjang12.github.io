@@ -5,6 +5,7 @@
     python3 .github/scripts/build_seo.py --images --force-images   # 이미지 전부 다시
 
 메뉴(도구 목록·묶음)는 assets/site.js 의 SITE.groups 를 그대로 읽는다 — 새 도구는 거기 넣고 이 스크립트를 돌리면 된다.
+RSS(rss.xml)도 같이 만든다 — 도구마다 처음 올린 날을 발행일로, 새 도구가 맨 위.
 페이지 안의 `<!-- seo:head -->…<!-- /seo:head -->`, `<!-- seo:nav -->…<!-- /seo:nav -->` 사이만 바꾼다(없으면 넣음).
 자주 묻는 질문은 `<section class="faq">` 안의 <details><summary>질문</summary><p>답</p></details> 를 읽어 FAQPage 로 넣는다.
 """
@@ -15,7 +16,8 @@ import shutil
 import subprocess
 import sys
 import tempfile
-from datetime import date
+from datetime import date, datetime
+from email.utils import format_datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -68,6 +70,7 @@ def head_block(url, info, og, crumbs, faq, is_home, category):
         '<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">',
         '<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">',
         '<meta name="theme-color" content="#3157E0">',
+        f'<link rel="alternate" type="application/rss+xml" title="{SITE_NAME}" href="{BASE}/rss.xml">',
         f'<meta property="og:site_name" content="{SITE_NAME}">',
         '<meta property="og:locale" content="ko_KR">',
         f'<meta property="og:image" content="{BASE}{og}">',
@@ -193,6 +196,42 @@ def git_date(rel: str) -> str:
         return date.today().isoformat()
 
 
+def git_added(rel: str) -> str:
+    """처음 커밋된 시각(ISO). 아직 커밋 전이면 지금."""
+    try:
+        d = subprocess.run(['git', 'log', '--diff-filter=A', '--follow', '--format=%cI', '--', rel], cwd=ROOT, capture_output=True, text=True).stdout.split()
+        return d[-1] if d else datetime.now().astimezone().isoformat(timespec='seconds')
+    except OSError:
+        return datetime.now().astimezone().isoformat(timespec='seconds')
+
+
+def rss_xml(items):
+    """items: (주소, 제목, 설명, 처음 올린 시각 ISO). 같은 입력이면 같은 결과가 나오게(빌드 시각을 넣지 않음)."""
+    items = sorted(items, key=lambda x: x[3], reverse=True)
+    rfc = lambda iso: format_datetime(datetime.fromisoformat(iso))   # noqa: E731
+    esc = lambda t: html.escape(t, quote=False)   # noqa: E731
+    body = ''.join(f"""  <item>
+    <title>{esc(t)}</title>
+    <link>{u}</link>
+    <guid isPermaLink="true">{u}</guid>
+    <description>{esc(d)}</description>
+    <pubDate>{rfc(iso)}</pubDate>
+  </item>
+""" for u, t, d, iso in items)
+    return f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>{SITE_NAME} - 무료 생활 계산기·도구 모음</title>
+  <link>{BASE}/</link>
+  <description>설치나 가입 없이 바로 쓰는 무료 생활 도구 모음</description>
+  <language>ko</language>
+  <atom:link href="{BASE}/rss.xml" rel="self" type="application/rss+xml"/>
+  <lastBuildDate>{rfc(items[0][3])}</lastBuildDate>
+{body}</channel>
+</rss>
+"""
+
+
 def main():
     groups, icons = read_site()
     pages = [('/', ROOT / 'index.html', None)]
@@ -225,6 +264,12 @@ def main():
     if (ROOT / 'sitemap.xml').read_text(encoding='utf-8') != sm:
         (ROOT / 'sitemap.xml').write_text(sm, encoding='utf-8')
         print('사이트맵 갱신')
+    feed = rss_xml([(BASE + p, page_info(f)[1]['title'], page_info(f)[1]['desc'], git_added(str(f.relative_to(ROOT))))
+                    for p, f, g in pages if g and f.exists()])
+    rss = ROOT / 'rss.xml'
+    if not rss.exists() or rss.read_text(encoding='utf-8') != feed:
+        rss.write_text(feed, encoding='utf-8')
+        print('RSS 갱신')
     print(f'페이지 {len(pages)}개 중 {changed}개 바뀜')
 
 
