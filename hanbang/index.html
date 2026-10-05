@@ -56,6 +56,12 @@
 .esc{margin-top:10px; font-size:15px}
 .esc a{color:var(--blue)}
 .words a.near{border-bottom-style:dashed}
+.words button.w{all:unset; cursor:pointer; color:var(--ink); border-bottom:1px solid var(--line)}
+.words button.w:hover,.words button.w:focus-visible{color:var(--blue); border-color:var(--blue)}
+.defs{margin:6px 0 8px; padding-left:20px; font-size:15px; line-height:1.6}
+.defs li{margin:2px 0}
+.defs a{color:var(--blue); font-size:13px; margin-left:4px}
+.defs .cat{color:var(--muted); font-size:13px}
 .words{display:flex; flex-wrap:wrap; gap:6px 14px; margin:0; padding:0; list-style:none}
 .words a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--line)}
 .words a:hover{color:var(--blue); border-color:var(--blue)}
@@ -196,7 +202,7 @@
     const more = () => {
       const slice = list.slice(shown, shown + PAGE);
       ul.insertAdjacentHTML('beforeend', slice.map(r => {
-        if (typeof r === 'string') return `<li>${esc(r)}</li>`;   // 일상 단어 전체 목록(뜻 번호 없음)
+        if (typeof r === 'string') return `<li><button type="button" class="w" data-w="${esc(r)}">${esc(r)}</button></li>`;   // 전체 단어 목록 — 누르면 그 단어를 검사
         const t = near ? '이어 갈 단어: ' + escapes(r[0].at(-1)).map(e => e[0]).join(', ') : '';
         return `<li>${link(r[0], r[2], near ? 'near' : '', t)}</li>`;
       }).join(''));
@@ -211,10 +217,23 @@
   }
 
   // 일상 단어 전체(끝말잇기 대결과 같은 words.txt) — 처음 필요할 때 한 번만 받는다
-  let wordsP = null;
-  const loadWords = () => wordsP ||= fetch('/wordchain/words.txt')
-    .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
-    .then(t => t.split('\n').map(w => w.trim()).filter(Boolean).sort((a, b) => a.length - b.length || (a < b ? -1 : 1)));
+  // 「전문용어 포함」이면 전문용어에만 있는 단어(words_extra.txt)를 더 받는다 — 그 모드를 켤 때만
+  const getText = url => fetch(url).then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
+    .then(t => t.split('\n').map(w => w.trim()).filter(Boolean));
+  const byLen = (a, b) => a.length - b.length || (a < b ? -1 : 1);
+  let basicP = null, allP = null;
+  const loadWords = () => {
+    basicP ||= getText('/wordchain/words.txt').then(ws => ws.sort(byLen));
+    if (mode !== 'all') return basicP;
+    return allP ||= Promise.all([basicP, getText('words_extra.txt')]).then(([a, b]) => [...a, ...b].sort(byLen));
+  };
+  // 뜻: defs/<첫 글자 코드>.json 을 그 글자 처음 볼 때 받는다
+  const defCache = new Map();
+  const loadDefs = ch => {
+    const k = ch.codePointAt(0).toString(16);
+    if (!defCache.has(k)) defCache.set(k, fetch(`defs/${k}.json`).then(r => r.ok ? r.json() : {}).catch(() => ({})));
+    return defCache.get(k);
+  };
   function plainLists(box, groups, note){
     const g = document.createElement('div');
     g.innerHTML = '<p class="status">단어 목록을 불러오는 중…</p>';
@@ -223,10 +242,8 @@
       if (!g.isConnected) return;   // 그사이 다른 검색을 했으면 버림
       g.remove();
       for (const [title, test] of groups){ const list = ws.filter(test); if (list.length) section(box, title, list, false); }
-      if (note) box.insertAdjacentHTML('beforeend', `<p class="note">${note}</p>`);
     }).catch(() => { g.innerHTML = '<p class="status">단어 목록을 불러오지 못했습니다.</p>'; });
   }
-  const ALL_NOTE = '「전문용어 포함」이어도 목록에는 일상 단어만 보입니다(개수는 전문용어 포함).';
 
   function renderLists(q, label){
     const test = label === 'end' ? r => r[0].endsWith(q) : r => r[0].startsWith(q);
@@ -237,7 +254,7 @@
     if (!hb.length && !near.length) box.innerHTML = `<p class="status">${esc(what)} 한방·준한방 단어는 없습니다.</p>`;
     if (hb.length) section(box, `${what} 한방단어`, hb, false);
     if (near.length) section(box, `${what} 준한방 단어`, near, true);
-    plainLists(box, [[`${what} 단어 (일상 단어 전체)`, label === 'end' ? w => w.endsWith(q) : w => w.startsWith(q)]], mode === 'all' ? ALL_NOTE : '');
+    plainLists(box, [[`${what} 단어 (${mode === 'all' ? '전문용어 포함 ' : ''}전체)`, label === 'end' ? w => w.endsWith(q) : w => w.startsWith(q)]]);
   }
 
   function check(word){
@@ -253,12 +270,17 @@
       extra = `<div class="esc">이어 갈 단어: ${escapes(last).map(e => link(e[0], e[1])).join(', ')}</div>`;
     } else { stamp = '<div class="stamp ok">이어짐</div>'; msg = '이어 갈 수 있는 단어가 있습니다.'; }
     $('result').innerHTML = `<div class="check">${stamp}
-        <div><div class="word">${esc(word)}</div>
+        <div><div class="word">${esc(word)}</div><div id="def"></div>
         <div class="detail">${msg} ${how}</div>${extra}</div>
       </div>`;
+    loadDefs(word).then(d => {   // 단어 뜻 (우리말샘)
+      const el = $('def'); if (!el || el.closest('.check').querySelector('.word').textContent !== word) return;
+      const ds = d[word];
+      el.innerHTML = ds ? `<ol class="defs">${ds.map(([t, code, cat]) => `<li>${cat ? `<span class="cat">[${esc(cat)}]</span> ` : ''}${esc(t)}<a href="${SENSE_URL}${code}" target="_blank" rel="noopener">사전</a></li>`).join('')}</ol>`
+                        : '<p class="note" style="margin:4px 0 6px">우리말샘 명사에 없는 단어입니다.</p>';
+    });
     if (total > data.meta.near_max)   // 이어지는 단어도 실제로 보여 준다
-      plainLists($('result'), [[`「${last}」${ro(last)} 시작하는 단어`, w => w[0] === last], ...(alt ? [[`두음법칙 「${alt}」${ro(alt)} 시작하는 단어`, w => w[0] === alt]] : [])],
-                 mode === 'all' ? ALL_NOTE : '');
+      plainLists($('result'), [[`「${last}」${ro(last)} 시작하는 단어`, w => w[0] === last], ...(alt ? [[`두음법칙 「${alt}」${ro(alt)} 시작하는 단어`, w => w[0] === alt]] : [])]);
   }
 
   function run(){
@@ -298,6 +320,13 @@
     $('result').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
   };
   $('ends').onclick = chipClick;
+  $('result').addEventListener('click', e => {   // 목록의 단어를 누르면 그 단어를 검사
+    const b = e.target.closest('button.w'); if (!b) return;
+    $('q').value = b.dataset.w;
+    document.querySelector('input[value="check"]').checked = true;
+    run();
+    $('result').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+  });
   $('nearEnds').onclick = chipClick;
 
   fetch('hanbang.json')
