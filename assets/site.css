@@ -29,6 +29,8 @@ a{color:var(--blue)}
 
 /* 브랜드 */
 .brand{display:inline-flex; align-items:center; gap:9px; font-weight:800; font-size:19px; letter-spacing:-0.02em; color:var(--ink); text-decoration:none; white-space:nowrap}
+.brand-domain{font-size:12px; font-weight:600; color:var(--muted); letter-spacing:0; margin-left:-3px; align-self:flex-end; padding-bottom:3px}
+.foot-copy{font-size:13px; color:var(--muted)}
 .brand-mark{display:grid; place-items:center; width:30px; height:30px; border-radius:9px; color:#fff;
   background:linear-gradient(135deg,#5B7CFA 0%,#3157E0 55%,#6A4FD8 100%); box-shadow:0 4px 10px rgba(49,87,224,.3)}
 .brand-mark .ic{width:17px; height:17px; fill:currentColor; stroke-width:1.5}

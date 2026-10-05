@@ -79,7 +79,7 @@ def head_block(url, info, og, crumbs, faq, is_home, category):
     ]
     graph = []
     if is_home:
-        graph.append({'@type': 'WebSite', 'name': SITE_NAME, 'url': BASE + '/', 'inLanguage': 'ko-KR', 'description': info['desc']})
+        graph.append({'@type': 'WebSite', 'name': SITE_NAME, 'alternateName': ['짱툴닷컴', 'jjangtool.com'], 'url': BASE + '/', 'inLanguage': 'ko-KR', 'description': info['desc']})
     else:
         graph.append({'@type': 'WebApplication', 'name': info['h1'], 'url': url, 'description': info['desc'], 'inLanguage': 'ko-KR',
                       'applicationCategory': category, 'operatingSystem': '모든 기기 (웹 브라우저)',

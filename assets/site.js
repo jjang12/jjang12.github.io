@@ -148,7 +148,7 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
   let curGroup = null, curItem = null;
   for (const g of SITE.groups) for (const it of g.items) if (it.p === path) { curGroup = g; curItem = it; }
-  const brand = `<a class="brand" href="/"><span class="brand-mark">${icon('zap')}</span>${SITE.name}</a>`;
+  const brand = `<a class="brand" href="/"><span class="brand-mark">${icon('zap')}</span>${SITE.name}<span class="brand-domain">jjangtool.com</span></a>`;
 
   /* 모바일 상단 바 */
   const head = document.createElement('header');
@@ -277,6 +277,7 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
   foot.className = 'site-foot';
   foot.innerHTML = `<p class="foot-brand">${brand}<span>설치·가입 없이 바로 쓰는 무료 생활 도구</span></p>
     <p class="foot-safe">${icon('shield-check')}모든 계산과 변환은 브라우저 안에서만 처리되며, 입력한 내용은 저장되거나 전송되지 않습니다.</p>
+    <p class="foot-copy">© ${new Date().getFullYear()} 짱툴닷컴(jjangtool.com) · 문의 ${SITE.contact.join('@')}</p>
     <p class="foot-links">${Object.values(SITE.blogs).map(b => `<a href="${b.url}" target="_blank" rel="noopener">${b.name}</a>`).join('')}</p>`;
   blogs.after(foot);
 
