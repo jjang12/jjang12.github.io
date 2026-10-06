@@ -61,6 +61,10 @@ def update():
     have = {d[0]: d for d in data['draws']}
     want = expected_latest()
     start = max(have) + 1 if have else 1
+    if have:   # 최근 10회는 매번 다시 받아 둔다(당첨금 정정 반영 + 연결 확인)
+        for x in fetch(max(have)):
+            if x.get('ltEpsd') and x.get('tm1WnNo'):
+                have[x['ltEpsd']] = row(x)
     n = start
     while n <= want:
         # center=c 이면 c+4 ~ c-5 회차. 아직 없는 회차를 center 로 주면 빈 목록이라, 최신 회차 근처에선 하나씩 낮춰 본다
