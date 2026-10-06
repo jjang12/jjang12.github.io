@@ -6,7 +6,56 @@
   <description>설치나 가입 없이 바로 쓰는 무료 생활 도구 모음</description>
   <language>ko</language>
   <atom:link href="https://jjangtool.com/rss.xml" rel="self" type="application/rss+xml"/>
-  <lastBuildDate>Tue, 06 Oct 2026 16:59:28 +0900</lastBuildDate>
+  <lastBuildDate>Tue, 06 Oct 2026 17:21:32 +0900</lastBuildDate>
+  <item>
+    <title>바코드 생성기 - CODE128·EAN-13 바코드 만들기, PNG·SVG 무료 다운로드</title>
+    <link>https://jjangtool.com/barcode/</link>
+    <guid isPermaLink="true">https://jjangtool.com/barcode/</guid>
+    <description>숫자나 영문을 넣으면 CODE128, EAN-13(상품 바코드), EAN-8, UPC, CODE39, ITF 바코드를 바로 만들고 PNG·SVG로 내려받습니다. 크기·글자 표시·색을 조절할 수 있고 여러 개를 한 번에 만들 수도 있습니다.</description>
+    <pubDate>Tue, 06 Oct 2026 17:21:32 +0900</pubDate>
+  </item>
+  <item>
+    <title>우편번호 찾기 · 영문주소 변환 - 도로명·지번 주소로 우편번호, 영어 주소 한 번에</title>
+    <link>https://jjangtool.com/zipcode/</link>
+    <guid isPermaLink="true">https://jjangtool.com/zipcode/</guid>
+    <description>도로명·지번·건물명으로 검색하면 우편번호(5자리)와 도로명·지번 주소, 영문주소를 한 번에 보여 줍니다. 동·호수까지 넣으면 해외직구·영문 서류용 영어 주소와 입력 칸별 값을 만들어 줍니다.</description>
+    <pubDate>Tue, 06 Oct 2026 17:21:32 +0900</pubDate>
+  </item>
+  <item>
+    <title>내 아이피 확인 - 내 IP 주소(IPv4·IPv6), 브라우저·기기 정보 조회</title>
+    <link>https://jjangtool.com/myip/</link>
+    <guid isPermaLink="true">https://jjangtool.com/myip/</guid>
+    <description>지금 인터넷에 연결된 내 공인 IP 주소(IPv4·IPv6)를 바로 보여 줍니다. 브라우저·운영체제·화면 크기·언어·시간대 같은 접속 환경도 함께 확인하고 복사할 수 있습니다.</description>
+    <pubDate>Tue, 06 Oct 2026 17:21:32 +0900</pubDate>
+  </item>
+  <item>
+    <title>제비뽑기 · 랜덤 뽑기 - 당첨·꽝 제비, 이름 뽑기, 숫자 뽑기, 순서 정하기, 팀 나누기</title>
+    <link>https://jjangtool.com/lots/</link>
+    <guid isPermaLink="true">https://jjangtool.com/lots/</guid>
+    <description>온라인 제비뽑기로 당첨·꽝 카드를 뒤집어 보고, 명단에서 랜덤으로 이름을 뽑거나 숫자를 추첨합니다. 발표 순서 정하기, 팀 나누기까지 한 곳에서 공정하게.</description>
+    <pubDate>Tue, 06 Oct 2026 17:21:32 +0900</pubDate>
+  </item>
+  <item>
+    <title>로또 번호 생성기 · 1,244회 로또 당첨번호 - 자동 번호 뽑기, 당첨 확인, 번호 통계</title>
+    <link>https://jjangtool.com/lotto/</link>
+    <guid isPermaLink="true">https://jjangtool.com/lotto/</guid>
+    <description>제1,244회 로또 당첨번호는 1, 13, 18, 26, 34, 38 보너스 25입니다. 로또 번호 자동 생성(고정수·제외수), 내 번호 당첨 확인, 역대 당첨번호와 번호별 출현 통계를 매주 갱신합니다.</description>
+    <pubDate>Tue, 06 Oct 2026 17:21:32 +0900</pubDate>
+  </item>
+  <item>
+    <title>인스타 글씨체 변환기 - 영어 폰트 바꾸기·꾸미기 (𝓘𝓷𝓼𝓽𝓪 𝐁𝐨𝐥𝐝 Ⓒⓘⓡⓒⓛⓔ)</title>
+    <link>https://jjangtool.com/fonts/</link>
+    <guid isPermaLink="true">https://jjangtool.com/fonts/</guid>
+    <description>영어를 입력하면 굵게 𝐁𝐨𝐥𝐝, 필기체 𝓢𝓬𝓻𝓲𝓹𝓽, 고딕 𝔊𝔬𝔱𝔥𝔦𝔠, 동그라미 Ⓒⓘⓡⓒⓛⓔ, 취소선 s̶t̶r̶i̶k̶e̶ 등 30가지 글씨체로 바꿔 줍니다. 인스타그램 프로필·닉네임·게시글에 복사해 붙여 넣으세요.</description>
+    <pubDate>Tue, 06 Oct 2026 17:21:31 +0900</pubDate>
+  </item>
+  <item>
+    <title>TTS 텍스트 음성 변환 - 글자를 소리 내어 읽어 주기 (한국어·영어 무료)</title>
+    <link>https://jjangtool.com/tts/</link>
+    <guid isPermaLink="true">https://jjangtool.com/tts/</guid>
+    <description>글자를 붙여 넣으면 한국어·영어 등 여러 목소리로 소리 내어 읽어 줍니다. 속도·높낮이 조절, 읽는 문장 표시, 긴 글 이어 읽기까지 설치 없이 무료로 쓰는 TTS(텍스트 음성 변환)입니다.</description>
+    <pubDate>Tue, 06 Oct 2026 17:21:31 +0900</pubDate>
+  </item>
   <item>
     <title>화살표 특수문자 모음 → ← ↑ ↓ ➜ - 누르면 복사</title>
     <link>https://jjangtool.com/symbols/arrow/</link>

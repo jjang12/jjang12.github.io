@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>제비뽑기 · 랜덤 뽑기 - 당첨·꽝 제비, 이름 뽑기, 숫자 뽑기, 순서 정하기, 팀 나누기 | 짱툴</title>
+<meta name="description" content="온라인 제비뽑기로 당첨·꽝 카드를 뒤집어 보고, 명단에서 랜덤으로 이름을 뽑거나 숫자를 추첨합니다. 발표 순서 정하기, 팀 나누기까지 한 곳에서 공정하게.">
+<meta name="keywords" content="제비뽑기, 랜덤 뽑기, 랜덤 이름 뽑기, 숫자 뽑기, 추첨기, 순서 정하기, 팀 나누기, 당첨 꽝">
+<meta property="og:title" content="제비뽑기 · 랜덤 뽑기 - 당첨·꽝, 이름·숫자 뽑기, 순서 정하기, 팀 나누기">
+<meta property="og:description" content="당첨·꽝 카드 뒤집기, 명단에서 이름 뽑기, 숫자 추첨, 순서 정하기, 팀 나누기를 한 곳에서.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjangtool.com/lots/">
+<link rel="canonical" href="https://jjangtool.com/lots/">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(84px,1fr)); gap:10px; margin:16px 0}
+.card{position:relative; aspect-ratio:3/4; border:0; padding:0; background:none; cursor:pointer; perspective:600px; font:inherit}
+.card i{position:absolute; inset:0; display:grid; place-items:center; border-radius:12px; backface-visibility:hidden; transition:transform .45s; font-style:normal; font-weight:800}
+.card .f{background:linear-gradient(140deg,var(--orange),color-mix(in srgb,var(--orange) 60%,var(--rose))); color:#fff; font-size:22px; box-shadow:0 4px 12px rgba(20,27,45,.15)}
+.card .b{background:var(--paper); border:2px solid var(--line); transform:rotateY(180deg); font-size:17px; padding:6px; text-align:center; overflow-wrap:anywhere}
+.card.win .b{border-color:var(--orange); color:var(--orange); background:color-mix(in srgb,var(--orange) 10%,var(--paper))}
+.card.open .f{transform:rotateY(180deg)} .card.open .b{transform:rotateY(360deg)}
+@media (prefers-reduced-motion:reduce){ .card i{transition:none} }
+.picked{display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 0; padding:0; list-style:none}
+.picked li{padding:10px 16px; border-radius:12px; background:color-mix(in srgb,var(--orange) 12%,var(--paper)); border:1px solid color-mix(in srgb,var(--orange) 40%,transparent); font-size:20px; font-weight:800}
+.picked li small{display:block; font-size:12px; font-weight:500; color:var(--muted)}
+.teams{display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; margin-top:10px}
+.teams div{padding:12px 14px; border:1px solid var(--line); border-radius:12px; background:var(--paper)}
+.teams b{display:block; margin-bottom:6px; color:var(--orange)}
+textarea{min-height:110px}
+</style>
+<!-- seo:head -->
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/img/icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+<meta name="theme-color" content="#3157E0">
+<link rel="alternate" type="application/rss+xml" title="짱툴" href="https://jjangtool.com/rss.xml">
+<meta property="og:site_name" content="짱툴">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://jjangtool.com/assets/og/lots.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="제비뽑기 · 랜덤 뽑기 - 당첨·꽝 제비, 이름 뽑기, 숫자 뽑기, 순서 정하기, 팀 나누기">
+<meta name="twitter:image" content="https://jjangtool.com/assets/og/lots.jpg">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"제비뽑기 · 랜덤 뽑기","url":"https://jjangtool.com/lots/","description":"온라인 제비뽑기로 당첨·꽝 카드를 뒤집어 보고, 명단에서 랜덤으로 이름을 뽑거나 숫자를 추첨합니다. 발표 순서 정하기, 팀 나누기까지 한 곳에서 공정하게.","inLanguage":"ko-KR","applicationCategory":"GameApplication","operatingSystem":"모든 기기 (웹 브라우저)","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"isPartOf":{"@type":"WebSite","name":"짱툴","url":"https://jjangtool.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"짱툴","item":"https://jjangtool.com/"},{"@type":"ListItem","position":2,"name":"제비뽑기 · 랜덤 뽑기","item":"https://jjangtool.com/lots/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"온라인 제비뽑기는 어떻게 하나요?","acceptedAnswer":{"@type":"Answer","text":"제비 개수와 당첨 개수를 정하고 「제비 섞기」를 누른 뒤, 한 사람씩 카드를 하나 골라 누르면 당첨·꽝이 나옵니다. 「모두 열기」로 전체 결과를 볼 수 있습니다."}},{"@type":"Question","name":"당첨 문구를 바꿀 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"네. 「당첨 문구」에 「커피 쏘기」, 「청소 당번」처럼 원하는 말을 넣으면 됩니다."}},{"@type":"Question","name":"명단은 몇 명까지 넣을 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"제한은 없습니다. 이름 뽑기·순서 정하기·팀 나누기는 수백 명도 바로 됩니다. 제비 카드는 화면에 보기 좋게 60장까지 만들 수 있습니다."}},{"@type":"Question","name":"같은 이름이 두 번 뽑히나요?","acceptedAnswer":{"@type":"Answer","text":"이름 뽑기는 한 번 뽑힌 사람을 다시 뽑지 않습니다. 숫자 뽑기는 「같은 숫자 다시 나와도 됨」을 켤 때만 중복이 나옵니다."}}]}]}</script>
+<!-- /seo:head -->
+</head>
+<body data-blog="kkultiplab">
+<main>
+<h1>제비뽑기 · 랜덤 뽑기</h1>
+<p class="lead">당첨·꽝 제비 뒤집기, 명단에서 이름 뽑기, 숫자 추첨, 순서 정하기, 팀 나누기를 공정한 무작위로 합니다.</p>
+<div class="seg" role="group" aria-label="뽑기 종류" id="mode">
+  <button type="button" data-v="card" aria-pressed="true">제비뽑기</button>
+  <button type="button" data-v="name" aria-pressed="false">이름 뽑기</button>
+  <button type="button" data-v="num" aria-pressed="false">숫자 뽑기</button>
+  <button type="button" data-v="order" aria-pressed="false">순서 정하기</button>
+  <button type="button" data-v="team" aria-pressed="false">팀 나누기</button>
+</div>
+
+<section data-p="card">
+  <div class="row">
+    <div class="field"><label for="cN">제비 개수</label><input id="cN" type="number" min="2" max="60" value="10" inputmode="numeric"></div>
+    <div class="field"><label for="cK">당첨 개수</label><input id="cK" type="number" min="1" max="59" value="2" inputmode="numeric"></div>
+    <div class="field"><label for="cWin">당첨 문구</label><input id="cWin" type="text" value="당첨"></div>
+    <div class="field"><label for="cLose">꽝 문구</label><input id="cLose" type="text" value="꽝"></div>
+  </div>
+  <div class="btns"><button type="button" class="btn" id="cMake">제비 섞기</button><button type="button" class="btn sub" id="cAll">모두 열기</button></div>
+  <p class="note" id="cInfo"></p>
+  <div class="cards" id="cards"></div>
+</section>
+
+<section data-p="name" hidden>
+  <div class="field"><label for="nList">명단 (줄바꿈이나 쉼표로 구분)</label><textarea id="nList">김민준, 이서연, 박도윤, 최하윤, 정시우, 강지아, 조은우, 윤서아</textarea></div>
+  <div class="row"><div class="field"><label for="nK">뽑을 인원</label><input id="nK" type="number" min="1" value="1" inputmode="numeric"></div></div>
+  <div class="btns"><button type="button" class="btn" id="nGo">뽑기</button></div>
+  <ul class="picked" id="nOut"></ul>
+</section>
+
+<section data-p="num" hidden>
+  <div class="row">
+    <div class="field"><label for="mMin">시작 숫자</label><input id="mMin" type="number" value="1" inputmode="numeric"></div>
+    <div class="field"><label for="mMax">끝 숫자</label><input id="mMax" type="number" value="100" inputmode="numeric"></div>
+    <div class="field"><label for="mK">뽑을 개수</label><input id="mK" type="number" min="1" value="3" inputmode="numeric"></div>
+  </div>
+  <label class="note"><input type="checkbox" id="mDup"> 같은 숫자 다시 나와도 됨</label>
+  <div class="btns"><button type="button" class="btn" id="mGo">숫자 뽑기</button></div>
+  <ul class="picked" id="mOut"></ul>
+</section>
+
+<section data-p="order" hidden>
+  <div class="field"><label for="oList">명단 (줄바꿈이나 쉼표로 구분)</label><textarea id="oList">1조, 2조, 3조, 4조, 5조</textarea></div>
+  <div class="btns"><button type="button" class="btn" id="oGo">순서 정하기</button></div>
+  <ul class="picked" id="oOut"></ul>
+</section>
+
+<section data-p="team" hidden>
+  <div class="field"><label for="tList">명단 (줄바꿈이나 쉼표로 구분)</label><textarea id="tList">민준, 서연, 도윤, 하윤, 시우, 지아, 은우, 서아, 지호, 하은</textarea></div>
+  <div class="row"><div class="field"><label for="tK">팀 수</label><input id="tK" type="number" min="2" value="2" inputmode="numeric"></div></div>
+  <div class="btns"><button type="button" class="btn" id="tGo">팀 나누기</button></div>
+  <div class="teams" id="tOut"></div>
+</section>
+
+<h2>공정한 뽑기인가요?</h2>
+<div class="note">
+  <p>모든 뽑기는 브라우저의 암호용 난수(<code>crypto.getRandomValues</code>)로 섞습니다. 일반 난수보다 예측이 어렵고, 결과는 누를 때마다 새로 정해집니다. 서버로 아무것도 보내지 않아서 누구도 결과를 미리 알 수 없습니다.</p>
+  <p>여러 사람이 볼 때는 화면을 함께 보면서 누르거나, 결과 화면을 캡처해 두면 좋습니다. 사다리 타기로 정하고 싶다면 <a href="/ladder/">사다리게임</a>을 쓰세요.</p>
+</div>
+<section class="faq">
+<h2>자주 묻는 질문</h2>
+<details><summary>온라인 제비뽑기는 어떻게 하나요?</summary><p>제비 개수와 당첨 개수를 정하고 「제비 섞기」를 누른 뒤, 한 사람씩 카드를 하나 골라 누르면 당첨·꽝이 나옵니다. 「모두 열기」로 전체 결과를 볼 수 있습니다.</p></details>
+<details><summary>당첨 문구를 바꿀 수 있나요?</summary><p>네. 「당첨 문구」에 「커피 쏘기」, 「청소 당번」처럼 원하는 말을 넣으면 됩니다.</p></details>
+<details><summary>명단은 몇 명까지 넣을 수 있나요?</summary><p>제한은 없습니다. 이름 뽑기·순서 정하기·팀 나누기는 수백 명도 바로 됩니다. 제비 카드는 화면에 보기 좋게 60장까지 만들 수 있습니다.</p></details>
+<details><summary>같은 이름이 두 번 뽑히나요?</summary><p>이름 뽑기는 한 번 뽑힌 사람을 다시 뽑지 않습니다. 숫자 뽑기는 「같은 숫자 다시 나와도 됨」을 켤 때만 중복이 나옵니다.</p></details>
+</section>
+</main>
+<!-- seo:nav -->
+<nav class="static-nav" id="static-nav" aria-label="짱툴 전체 도구"><p><a href="/">짱툴 전체 도구</a></p><h2>글자·단어</h2><ul><li><a href="/hanbang/">끝말잇기 한방단어 검색기</a></li><li><a href="/wordchain/">끝말잇기 컴퓨터 대결</a></li><li><a href="/symbols/">특수문자 모음</a></li><li><a href="/count/">글자수 세기</a></li><li><a href="/typo/">한영 타자 변환기</a></li><li><a href="/romanize/">여권 영문 이름 변환기</a></li><li><a href="/fonts/">인스타 글씨체 변환기</a></li><li><a href="/tts/">TTS 텍스트 음성 변환</a></li></ul><h2>이미지·PDF</h2><ul><li><a href="/image/">이미지 변환·압축·크기 조절</a></li><li><a href="/heic/">HEIC JPG 변환</a></li><li><a href="/img2pdf/">이미지 PDF 변환</a></li><li><a href="/pdf-merge/">PDF 합치기</a></li><li><a href="/pdf2img/">PDF JPG 변환</a></li><li><a href="/qr/">QR 코드 만들기</a></li><li><a href="/barcode/">바코드 생성기</a></li></ul><h2>날짜·시간</h2><ul><li><a href="/age/">만 나이 계산기</a></li><li><a href="/dday/">날짜 계산기 · D-day 계산기</a></li><li><a href="/lunar/">음력 양력 변환기</a></li><li><a href="/holidays/">공휴일 달력</a></li><li><a href="/timer/">타이머 · 스톱워치</a></li><li><a href="/time-calc/">시간 계산기</a></li></ul><h2>월급·세금</h2><ul><li><a href="/salary/">연봉 실수령액 계산기</a></li><li><a href="/severance/">퇴직금 계산기</a></li><li><a href="/hourly/">시급 · 주휴수당 계산기</a></li><li><a href="/unemployment/">실업급여 계산기</a></li><li><a href="/vat/">부가세 계산기</a></li></ul><h2>대출·금융</h2><ul><li><a href="/loan/">대출 이자 계산기</a></li><li><a href="/savings/">예금·적금 이자 계산기</a></li><li><a href="/dsr/">DSR·LTV 계산기</a></li><li><a href="/exchange/">환율 계산기</a></li><li><a href="/customs/">관세 계산기 (해외직구)</a></li><li><a href="/money/">금액 한글 변환기</a></li><li><a href="/liquidation/">청산가·펀딩비 계산기</a></li></ul><h2>생활</h2><ul><li><a href="/bmi/">BMI 계산기 · 비만도 계산기</a></li><li><a href="/ovulation/">배란일 계산기</a></li><li><a href="/pyeong/">평수 계산기</a></li><li><a href="/brokerage/">중개보수 계산기 (복비)</a></li><li><a href="/unit/">단위 변환기</a></li><li><a href="/power/">전기요금 계산기</a></li><li><a href="/parcel/">택배 조회 바로가기</a></li><li><a href="/discount/">할인율 · 퍼센트 계산기</a></li><li><a href="/gpa/">학점 계산기</a></li><li><a href="/zipcode/">우편번호 찾기 · 영문주소 변환</a></li><li><a href="/myip/">내 아이피 확인</a></li></ul><h2>랜덤·게임</h2><ul><li><a href="/ladder/">사다리게임</a></li><li><a href="/lots/" aria-current="page">제비뽑기 · 랜덤 뽑기</a></li><li><a href="/lotto/">로또 번호 생성기 · 로또 당첨번호</a></li></ul></nav>
+<!-- /seo:nav -->
+<script src="/assets/site.js"></script>
+<script>
+(() => {
+  /* 암호용 난수로 0 ≤ r < n 정수 (치우침 없이) */
+  const rnd = n => { const lim = Math.floor(0x100000000 / n) * n, a = new Uint32Array(1); let x; do { crypto.getRandomValues(a); x = a[0]; } while (x >= lim); return x % n; };
+  const shuffle = arr => { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+  const names = id => $(id).value.split(/[\n,，]/).map(s => s.trim()).filter(Boolean);
+  const int = (id, d) => { const v = parseInt($(id).value, 10); return isNaN(v) ? d : v; };
+
+  document.querySelectorAll('#mode button').forEach(b => b.onclick = () => {
+    document.querySelectorAll('#mode button').forEach(x => x.setAttribute('aria-pressed', x === b));
+    document.querySelectorAll('section[data-p]').forEach(s => s.hidden = s.dataset.p !== b.dataset.v);
+  });
+
+  /* 제비뽑기 */
+  let deck = [];
+  function makeCards(){
+    const n = Math.min(60, Math.max(2, int('cN', 10))), k = Math.min(n - 1, Math.max(1, int('cK', 1)));
+    const win = $('cWin').value.trim() || '당첨', lose = $('cLose').value.trim() || '꽝';
+    deck = shuffle([...Array(k).fill(true), ...Array(n - k).fill(false)]);
+    $('cards').innerHTML = deck.map((w, i) => `<button type="button" class="card${w ? ' win' : ''}" aria-label="${i + 1}번 제비"><i class="f">${i + 1}</i><i class="b">${esc(w ? win : lose)}</i></button>`).join('');
+    $('cInfo').textContent = `제비 ${n}개 중 당첨 ${k}개. 카드를 하나씩 눌러 뒤집어 보세요.`;
+  }
+  $('cards').addEventListener('click', e => {
+    const c = e.target.closest('.card'); if (!c || c.classList.contains('open')) return;
+    c.classList.add('open');
+    const left = [...$('cards').children].filter(x => !x.classList.contains('open') && x.classList.contains('win')).length;
+    toast(c.classList.contains('win') ? `🎉 ${$('cWin').value || '당첨'}! (남은 당첨 ${left}개)` : `${$('cLose').value || '꽝'} (남은 당첨 ${left}개)`);
+  });
+  $('cMake').onclick = makeCards;
+  $('cAll').onclick = () => $('cards').querySelectorAll('.card').forEach(c => c.classList.add('open'));
+  makeCards();
+
+  /* 결과 굴리기 연출: 짧게 섞이는 모습을 보여 준 뒤 결과 */
+  function roll(out, final, render){
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) { out.innerHTML = render(final); return; }
+    let t = 0;
+    const timer = setInterval(() => {
+      out.innerHTML = render(final.map(() => final[rnd(final.length)]));
+      if (++t >= 10) { clearInterval(timer); out.innerHTML = render(final); }
+    }, 60);
+  }
+  const chips = (list, label) => list.map((v, i) => `<li><small>${label ? label(i) : ''}</small>${esc(v)}</li>`).join('');
+
+  $('nGo').onclick = () => {
+    const L = names('nList'); if (!L.length) return toast('명단을 입력하세요.');
+    const k = Math.min(L.length, Math.max(1, int('nK', 1)));
+    roll($('nOut'), shuffle(L).slice(0, k), r => chips(r, i => `${i + 1}번째`));
+  };
+  $('mGo').onclick = () => {
+    let a = int('mMin', 1), b = int('mMax', 100); if (a > b) [a, b] = [b, a];
+    const range = b - a + 1, dup = $('mDup').checked;
+    let k = Math.max(1, int('mK', 1)); if (!dup) k = Math.min(k, range);
+    if (range > 1e7 && !dup) return toast('범위가 너무 넓으면 중복 허용을 켜 주세요.');
+    let r;
+    if (dup) r = Array.from({length: k}, () => a + rnd(range));
+    else { const s = new Set(); while (s.size < k) s.add(a + rnd(range)); r = [...s]; }
+    roll($('mOut'), r, x => chips(x.map(v => v.toLocaleString()), i => `${i + 1}`));
+  };
+  $('oGo').onclick = () => {
+    const L = names('oList'); if (!L.length) return toast('명단을 입력하세요.');
+    roll($('oOut'), shuffle(L), r => chips(r, i => `${i + 1}번`));
+  };
+  $('tGo').onclick = () => {
+    const L = shuffle(names('tList')); if (!L.length) return toast('명단을 입력하세요.');
+    const k = Math.min(L.length, Math.max(2, int('tK', 2)));
+    const teams = Array.from({length: k}, () => []);
+    L.forEach((v, i) => teams[i % k].push(v));
+    $('tOut').innerHTML = teams.map((t, i) => `<div><b>${String.fromCharCode(65 + (i % 26))}팀 · ${t.length}명</b>${t.map(esc).join(', ')}</div>`).join('');
+  };
+})();
+</script>
+</body>
+</html>

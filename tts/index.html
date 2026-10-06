@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TTS 텍스트 음성 변환 - 글자를 소리 내어 읽어 주기 (한국어·영어 무료) | 짱툴</title>
+<meta name="description" content="글자를 붙여 넣으면 한국어·영어 등 여러 목소리로 소리 내어 읽어 줍니다. 속도·높낮이 조절, 읽는 문장 표시, 긴 글 이어 읽기까지 설치 없이 무료로 쓰는 TTS(텍스트 음성 변환)입니다.">
+<meta name="keywords" content="TTS, 텍스트 음성 변환, 글자 읽어주기, 음성 변환, 한국어 TTS, 무료 TTS, 문장 읽어주기, 텍스트 읽기">
+<meta property="og:title" content="TTS 텍스트 음성 변환 - 글자를 소리 내어 읽어 주기">
+<meta property="og:description" content="글자를 붙여 넣으면 한국어·영어 목소리로 읽어 줍니다. 속도·높낮이 조절, 긴 글 이어 읽기.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjangtool.com/tts/">
+<link rel="canonical" href="https://jjangtool.com/tts/">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+textarea#text{min-height:180px; line-height:1.6}
+#reading{margin:12px 0 0; padding:12px 14px; border-radius:12px; background:var(--blue-soft); font-size:17px; line-height:1.6; min-height:1.6em}
+.row output{font-weight:700; color:var(--blue)}
+</style>
+<!-- seo:head -->
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/img/icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+<meta name="theme-color" content="#3157E0">
+<link rel="alternate" type="application/rss+xml" title="짱툴" href="https://jjangtool.com/rss.xml">
+<meta property="og:site_name" content="짱툴">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://jjangtool.com/assets/og/tts.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="TTS 텍스트 음성 변환 - 글자를 소리 내어 읽어 주기 (한국어·영어 무료)">
+<meta name="twitter:image" content="https://jjangtool.com/assets/og/tts.jpg">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"TTS 텍스트 음성 변환","url":"https://jjangtool.com/tts/","description":"글자를 붙여 넣으면 한국어·영어 등 여러 목소리로 소리 내어 읽어 줍니다. 속도·높낮이 조절, 읽는 문장 표시, 긴 글 이어 읽기까지 설치 없이 무료로 쓰는 TTS(텍스트 음성 변환)입니다.","inLanguage":"ko-KR","applicationCategory":"UtilitiesApplication","operatingSystem":"모든 기기 (웹 브라우저)","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"isPartOf":{"@type":"WebSite","name":"짱툴","url":"https://jjangtool.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"짱툴","item":"https://jjangtool.com/"},{"@type":"ListItem","position":2,"name":"TTS 텍스트 음성 변환","item":"https://jjangtool.com/tts/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"한국어 목소리가 목록에 없어요.","acceptedAnswer":{"@type":"Answer","text":"기기에 한국어 음성이 설치되어 있지 않으면 나오지 않습니다. 윈도우는 「설정 → 시간 및 언어 → 음성」, 안드로이드는 「설정 → 텍스트 음성 변환」에서 한국어 음성을 추가할 수 있습니다. 크롬 브라우저는 기본으로 Google 한국어 목소리가 있습니다."}},{"@type":"Question","name":"휴대폰에서 소리가 안 나요.","acceptedAnswer":{"@type":"Answer","text":"무음 모드(아이폰 옆 스위치)를 끄고 음량을 올린 뒤 다시 눌러 보세요. 일부 앱 안의 브라우저(카카오톡·인스타그램 등)는 음성 기능을 막아 두기도 하니, 크롬이나 사파리에서 열어 주세요."}},{"@type":"Question","name":"몇 글자까지 읽을 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"제한은 없습니다. 문장마다 나눠 읽기 때문에 긴 글도 끝까지 이어서 읽습니다."}}]}]}</script>
+<!-- /seo:head -->
+</head>
+<body data-blog="jisik_plus">
+<main>
+<h1>TTS 텍스트 음성 변환</h1>
+<p class="lead">글자를 넣고 「읽기」를 누르면 소리 내어 읽어 줍니다. 목소리와 속도, 높낮이를 고를 수 있습니다.</p>
+<div class="field"><label for="text">읽을 글</label><textarea id="text">안녕하세요. 짱툴 텍스트 음성 변환입니다. 원하는 글을 붙여 넣고 읽기 버튼을 눌러 보세요. 속도와 목소리도 바꿀 수 있습니다.</textarea></div>
+<p class="note" id="count"></p>
+<div class="row">
+  <div class="field"><label for="voice">목소리</label><select id="voice"></select></div>
+  <div class="field"><label for="rate">속도 <output id="rateV">1.0</output>배</label><input id="rate" type="range" min="0.5" max="2" step="0.1" value="1"></div>
+  <div class="field"><label for="pitch">높낮이 <output id="pitchV">1.0</output></label><input id="pitch" type="range" min="0.5" max="1.5" step="0.1" value="1"></div>
+</div>
+<div class="btns">
+  <button type="button" class="btn" id="play">▶ 읽기</button>
+  <button type="button" class="btn sub" id="pause">일시 정지</button>
+  <button type="button" class="btn sub" id="stop">■ 멈춤</button>
+</div>
+<div id="reading" aria-live="polite"></div>
+<p class="note" id="support"></p>
+
+<h2>사용 안내</h2>
+<div class="note">
+  <p>소리는 기기에 들어 있는 음성(윈도우·맥·안드로이드·아이폰 기본 목소리)으로 만듭니다. 그래서 기기마다 목소리 종류가 다르고, 인터넷이 느려도 바로 읽습니다. 글은 어디에도 보내지 않습니다.</p>
+  <p>긴 글은 문장 단위로 나눠 차례로 읽고, 지금 읽는 문장을 아래에 보여 줍니다. 크롬에서는 「Google 한국의」 목소리가, 아이폰·맥에서는 「유나」 목소리가 자연스럽습니다.</p>
+  <p>브라우저 기본 기능이라 <b>MP3 파일로 저장하는 기능은 없습니다</b>. 녹음이 필요하면 화면 녹화나 녹음 앱으로 소리를 녹음하세요.</p>
+</div>
+<section class="faq">
+<h2>자주 묻는 질문</h2>
+<details><summary>한국어 목소리가 목록에 없어요.</summary><p>기기에 한국어 음성이 설치되어 있지 않으면 나오지 않습니다. 윈도우는 「설정 → 시간 및 언어 → 음성」, 안드로이드는 「설정 → 텍스트 음성 변환」에서 한국어 음성을 추가할 수 있습니다. 크롬 브라우저는 기본으로 Google 한국어 목소리가 있습니다.</p></details>
+<details><summary>휴대폰에서 소리가 안 나요.</summary><p>무음 모드(아이폰 옆 스위치)를 끄고 음량을 올린 뒤 다시 눌러 보세요. 일부 앱 안의 브라우저(카카오톡·인스타그램 등)는 음성 기능을 막아 두기도 하니, 크롬이나 사파리에서 열어 주세요.</p></details>
+<details><summary>몇 글자까지 읽을 수 있나요?</summary><p>제한은 없습니다. 문장마다 나눠 읽기 때문에 긴 글도 끝까지 이어서 읽습니다.</p></details>
+</section>
+</main>
+<!-- seo:nav -->
+<nav class="static-nav" id="static-nav" aria-label="짱툴 전체 도구"><p><a href="/">짱툴 전체 도구</a></p><h2>글자·단어</h2><ul><li><a href="/hanbang/">끝말잇기 한방단어 검색기</a></li><li><a href="/wordchain/">끝말잇기 컴퓨터 대결</a></li><li><a href="/symbols/">특수문자 모음</a></li><li><a href="/count/">글자수 세기</a></li><li><a href="/typo/">한영 타자 변환기</a></li><li><a href="/romanize/">여권 영문 이름 변환기</a></li><li><a href="/fonts/">인스타 글씨체 변환기</a></li><li><a href="/tts/" aria-current="page">TTS 텍스트 음성 변환</a></li></ul><h2>이미지·PDF</h2><ul><li><a href="/image/">이미지 변환·압축·크기 조절</a></li><li><a href="/heic/">HEIC JPG 변환</a></li><li><a href="/img2pdf/">이미지 PDF 변환</a></li><li><a href="/pdf-merge/">PDF 합치기</a></li><li><a href="/pdf2img/">PDF JPG 변환</a></li><li><a href="/qr/">QR 코드 만들기</a></li><li><a href="/barcode/">바코드 생성기</a></li></ul><h2>날짜·시간</h2><ul><li><a href="/age/">만 나이 계산기</a></li><li><a href="/dday/">날짜 계산기 · D-day 계산기</a></li><li><a href="/lunar/">음력 양력 변환기</a></li><li><a href="/holidays/">공휴일 달력</a></li><li><a href="/timer/">타이머 · 스톱워치</a></li><li><a href="/time-calc/">시간 계산기</a></li></ul><h2>월급·세금</h2><ul><li><a href="/salary/">연봉 실수령액 계산기</a></li><li><a href="/severance/">퇴직금 계산기</a></li><li><a href="/hourly/">시급 · 주휴수당 계산기</a></li><li><a href="/unemployment/">실업급여 계산기</a></li><li><a href="/vat/">부가세 계산기</a></li></ul><h2>대출·금융</h2><ul><li><a href="/loan/">대출 이자 계산기</a></li><li><a href="/savings/">예금·적금 이자 계산기</a></li><li><a href="/dsr/">DSR·LTV 계산기</a></li><li><a href="/exchange/">환율 계산기</a></li><li><a href="/customs/">관세 계산기 (해외직구)</a></li><li><a href="/money/">금액 한글 변환기</a></li><li><a href="/liquidation/">청산가·펀딩비 계산기</a></li></ul><h2>생활</h2><ul><li><a href="/bmi/">BMI 계산기 · 비만도 계산기</a></li><li><a href="/ovulation/">배란일 계산기</a></li><li><a href="/pyeong/">평수 계산기</a></li><li><a href="/brokerage/">중개보수 계산기 (복비)</a></li><li><a href="/unit/">단위 변환기</a></li><li><a href="/power/">전기요금 계산기</a></li><li><a href="/parcel/">택배 조회 바로가기</a></li><li><a href="/discount/">할인율 · 퍼센트 계산기</a></li><li><a href="/gpa/">학점 계산기</a></li><li><a href="/zipcode/">우편번호 찾기 · 영문주소 변환</a></li><li><a href="/myip/">내 아이피 확인</a></li></ul><h2>랜덤·게임</h2><ul><li><a href="/ladder/">사다리게임</a></li><li><a href="/lots/">제비뽑기 · 랜덤 뽑기</a></li><li><a href="/lotto/">로또 번호 생성기 · 로또 당첨번호</a></li></ul></nav>
+<!-- /seo:nav -->
+<script src="/assets/site.js"></script>
+<script>
+(() => {
+  const S = window.speechSynthesis;
+  if (!S) { $('support').textContent = '이 브라우저는 음성 읽기를 지원하지 않습니다. 크롬·엣지·사파리 최신 버전에서 열어 주세요.'; ['play', 'pause', 'stop'].forEach(id => $(id).disabled = true); return; }
+  let voices = [], queue = [], idx = 0, alive = false;
+  function loadVoices(){
+    voices = S.getVoices();
+    if (!voices.length) return;
+    const ko = voices.filter(v => v.lang.toLowerCase().startsWith('ko')), rest = voices.filter(v => !v.lang.toLowerCase().startsWith('ko'));
+    const opt = v => `<option value="${voices.indexOf(v)}">${v.name} (${v.lang})${v.default ? ' · 기본' : ''}</option>`;
+    $('voice').innerHTML = (ko.length ? `<optgroup label="한국어">${ko.map(opt).join('')}</optgroup>` : '') + `<optgroup label="다른 언어">${rest.map(opt).join('')}</optgroup>`;
+    const best = ko.find(v => /Google|Yuna|유나|Heami|SunHi/i.test(v.name)) || ko[0];
+    if (best) $('voice').value = voices.indexOf(best);
+    $('support').textContent = ko.length ? `한국어 목소리 ${ko.length}개를 찾았습니다.` : '이 기기에는 한국어 목소리가 없습니다. 아래 안내를 참고해 추가하세요.';
+  }
+  loadVoices();
+  S.onvoiceschanged = loadVoices;
+  const split = t => t.replace(/\s+/g, ' ').match(/[^.!?。！？\n]+[.!?。！？]*|[\n]/g)?.map(s => s.trim()).filter(Boolean) || [];
+  function speakNext(){
+    if (!alive || idx >= queue.length) { alive = false; $('reading').textContent = queue.length ? '다 읽었습니다.' : ''; return; }
+    const u = new SpeechSynthesisUtterance(queue[idx]);
+    const v = voices[+$('voice').value]; if (v) { u.voice = v; u.lang = v.lang; } else u.lang = 'ko-KR';
+    u.rate = +$('rate').value; u.pitch = +$('pitch').value;
+    u.onend = () => { idx++; speakNext(); };
+    u.onerror = e => { if (e.error !== 'interrupted' && e.error !== 'canceled') { alive = false; $('reading').textContent = '읽는 중 문제가 생겼습니다. 다른 목소리로 바꿔 보세요.'; } };
+    $('reading').textContent = queue[idx];
+    S.speak(u);
+  }
+  $('play').onclick = () => {
+    if (S.paused) { S.resume(); return; }
+    S.cancel();
+    queue = split($('text').value); idx = 0; alive = true;
+    if (!queue.length) return toast('읽을 글을 넣어 주세요.');
+    speakNext();
+  };
+  $('pause').onclick = () => { if (S.speaking && !S.paused) S.pause(); else if (S.paused) S.resume(); };
+  $('stop').onclick = () => { alive = false; S.cancel(); $('reading').textContent = ''; };
+  const sync = () => { $('rateV').textContent = (+$('rate').value).toFixed(1); $('pitchV').textContent = (+$('pitch').value).toFixed(1);
+    const t = $('text').value; $('count').textContent = `${t.replace(/\s/g, '').length.toLocaleString()}자 · 약 ${Math.max(1, Math.round(t.replace(/\s/g, '').length / 330 / +$('rate').value))}분`; };
+  ['rate', 'pitch', 'text'].forEach(id => $(id).addEventListener('input', sync));
+  sync();
+  /* 크롬은 15초 넘게 말하면 멈추는 문제가 있어, 말하는 동안 주기적으로 깨운다 */
+  setInterval(() => { if (alive && S.speaking && !S.paused) { S.pause(); S.resume(); } }, 10000);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>우편번호 찾기 · 영문주소 변환 - 도로명·지번 주소로 우편번호, 영어 주소 한 번에 | 짱툴</title>
+<meta name="description" content="도로명·지번·건물명으로 검색하면 우편번호(5자리)와 도로명·지번 주소, 영문주소를 한 번에 보여 줍니다. 동·호수까지 넣으면 해외직구·영문 서류용 영어 주소와 입력 칸별 값을 만들어 줍니다.">
+<meta name="keywords" content="우편번호 찾기, 우편번호 검색, 우편번호 조회, 영문주소 변환, 영문주소, 영어 주소 변환, 해외직구 영문주소, 도로명주소 영문">
+<meta property="og:title" content="우편번호 찾기 · 영문주소 변환 - 우편번호와 영어 주소 한 번에">
+<meta property="og:description" content="도로명·지번·건물명으로 검색하면 우편번호와 영문주소를 한 번에. 동·호수 넣으면 해외직구용 영어 주소까지.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjangtool.com/zipcode/">
+<link rel="canonical" href="https://jjangtool.com/zipcode/">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+#pc{height:470px; border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--paper)}
+.res .kv th{width:34%; color:var(--muted)}
+.res .kv td{text-align:left; word-break:keep-all; overflow-wrap:anywhere}
+.res .kv td button{margin-left:6px; font:inherit; font-size:12px; padding:3px 9px; border-radius:7px; border:1px solid var(--line); background:var(--soft); color:var(--ink); cursor:pointer}
+.zip{font-size:30px; font-weight:800; letter-spacing:.02em}
+</style>
+<!-- seo:head -->
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/img/icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+<meta name="theme-color" content="#3157E0">
+<link rel="alternate" type="application/rss+xml" title="짱툴" href="https://jjangtool.com/rss.xml">
+<meta property="og:site_name" content="짱툴">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://jjangtool.com/assets/og/zipcode.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="우편번호 찾기 · 영문주소 변환 - 도로명·지번 주소로 우편번호, 영어 주소 한 번에">
+<meta name="twitter:image" content="https://jjangtool.com/assets/og/zipcode.jpg">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"우편번호 찾기 · 영문주소 변환","url":"https://jjangtool.com/zipcode/","description":"도로명·지번·건물명으로 검색하면 우편번호(5자리)와 도로명·지번 주소, 영문주소를 한 번에 보여 줍니다. 동·호수까지 넣으면 해외직구·영문 서류용 영어 주소와 입력 칸별 값을 만들어 줍니다.","inLanguage":"ko-KR","applicationCategory":"LifestyleApplication","operatingSystem":"모든 기기 (웹 브라우저)","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"isPartOf":{"@type":"WebSite","name":"짱툴","url":"https://jjangtool.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"짱툴","item":"https://jjangtool.com/"},{"@type":"ListItem","position":2,"name":"우편번호 찾기 · 영문주소 변환","item":"https://jjangtool.com/zipcode/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"우편번호는 몇 자리인가요?","acceptedAnswer":{"@type":"Answer","text":"2015년 8월부터 5자리 새 우편번호(국가기초구역번호)를 씁니다. 예전 6자리(123-456) 우편번호는 더 이상 쓰지 않습니다."}},{"@type":"Question","name":"영문주소는 어디 기준인가요?","acceptedAnswer":{"@type":"Answer","text":"행정안전부 도로명주소의 공식 영문 표기를 그대로 보여 줍니다(카카오 우편번호 서비스 제공). 해외직구, 여권·비자 서류, 해외 송금에 그대로 쓸 수 있습니다."}},{"@type":"Question","name":"해외직구 주소에 동·호수는 어디에 쓰나요?","acceptedAnswer":{"@type":"Answer","text":"Address Line 2(Apartment, suite 등)에 「101-1203」처럼 넣으면 됩니다. 칸이 하나뿐이면 맨 앞에 붙여 「101-1203, 152 Teheran-ro …」처럼 씁니다."}},{"@type":"Question","name":"State / Province 칸에는 뭘 쓰나요?","acceptedAnswer":{"@type":"Answer","text":"시·도 이름을 씁니다. 서울은 Seoul, 경기도는 Gyeonggi-do, 부산은 Busan처럼 씁니다. City 칸에는 시·군·구를 씁니다."}}]}]}</script>
+<!-- /seo:head -->
+</head>
+<body data-blog="kkultiplab" data-ext="주소 검색은 카카오(다음) 우편번호 서비스로 처리됩니다. 검색어 외에 입력한 동·호수 등은 이 브라우저 안에서만 쓰이고 어디에도 저장되지 않습니다.">
+<main>
+<h1>우편번호 찾기 · 영문주소 변환</h1>
+<p class="lead">도로명, 지번, 건물명으로 검색해 주소를 고르면 우편번호와 영문주소가 바로 나옵니다. 동·호수를 넣으면 해외직구·영문 서류에 쓸 영어 주소를 만들어 줍니다.</p>
+<div id="pc" aria-label="주소 검색"></div>
+<p class="note">예: 테헤란로 152, 판교역로 235, 반포동 20-43, 롯데월드타워. 검색창은 카카오(다음) 우편번호 서비스입니다.</p>
+
+<section class="res" id="res" hidden>
+  <div class="panel"><div class="note">우편번호 (새 우편번호 5자리)</div><div class="zip" id="zip"></div></div>
+  <table class="kv" id="kv"></table>
+  <h2>상세 주소 → 영문주소 만들기</h2>
+  <div class="row">
+    <div class="field"><label for="dong">동 (아파트·건물 동, 없으면 비움)</label><input id="dong" type="text" inputmode="numeric" placeholder="예: 101"></div>
+    <div class="field"><label for="ho">호수·층 (예: 1203, B101)</label><input id="ho" type="text" placeholder="예: 1203"></div>
+  </div>
+  <div class="panel"><div class="note">영문주소 (한 줄)</div><div class="big" id="full" style="font-size:20px; line-height:1.5"></div>
+    <div class="btns"><button type="button" class="btn" id="copyFull">영문주소 복사</button></div></div>
+  <h2>해외직구·영문 서류 입력 칸</h2>
+  <table class="kv" id="form"></table>
+  <p class="note">해외 쇼핑몰은 보통 Address Line 1에 번지·도로, Line 2에 동·호수를 넣습니다. 칸 이름 옆 값을 눌러 하나씩 복사하세요.</p>
+</section>
+
+<h2>영문주소 쓰는 법</h2>
+<div class="note">
+  <p>영문주소는 한글 주소와 순서가 <b>반대</b>입니다. 작은 단위(호수 → 동 → 건물 번호 → 도로명)부터 쓰고 마지막에 시·도, 나라, 우편번호를 붙입니다.</p>
+  <p>예) 서울특별시 강남구 테헤란로 152, 101동 1203호 → <b>101-1203, 152 Teheran-ro, Gangnam-gu, Seoul, Republic of Korea 06236</b></p>
+  <p>도로명은 「-ro(로)」, 「-gil(길)」, 「-daero(대로)」로, 구·군은 「-gu」, 「-gun」으로 씁니다. 아파트 동·호수는 「101-1203」처럼 줄여 쓰거나 「Apt 101-1203」으로 씁니다.</p>
+</div>
+<section class="faq">
+<h2>자주 묻는 질문</h2>
+<details><summary>우편번호는 몇 자리인가요?</summary><p>2015년 8월부터 5자리 새 우편번호(국가기초구역번호)를 씁니다. 예전 6자리(123-456) 우편번호는 더 이상 쓰지 않습니다.</p></details>
+<details><summary>영문주소는 어디 기준인가요?</summary><p>행정안전부 도로명주소의 공식 영문 표기를 그대로 보여 줍니다(카카오 우편번호 서비스 제공). 해외직구, 여권·비자 서류, 해외 송금에 그대로 쓸 수 있습니다.</p></details>
+<details><summary>해외직구 주소에 동·호수는 어디에 쓰나요?</summary><p>Address Line 2(Apartment, suite 등)에 「101-1203」처럼 넣으면 됩니다. 칸이 하나뿐이면 맨 앞에 붙여 「101-1203, 152 Teheran-ro …」처럼 씁니다.</p></details>
+<details><summary>State / Province 칸에는 뭘 쓰나요?</summary><p>시·도 이름을 씁니다. 서울은 Seoul, 경기도는 Gyeonggi-do, 부산은 Busan처럼 씁니다. City 칸에는 시·군·구를 씁니다.</p></details>
+</section>
+</main>
+<!-- seo:nav -->
+<nav class="static-nav" id="static-nav" aria-label="짱툴 전체 도구"><p><a href="/">짱툴 전체 도구</a></p><h2>글자·단어</h2><ul><li><a href="/hanbang/">끝말잇기 한방단어 검색기</a></li><li><a href="/wordchain/">끝말잇기 컴퓨터 대결</a></li><li><a href="/symbols/">특수문자 모음</a></li><li><a href="/count/">글자수 세기</a></li><li><a href="/typo/">한영 타자 변환기</a></li><li><a href="/romanize/">여권 영문 이름 변환기</a></li><li><a href="/fonts/">인스타 글씨체 변환기</a></li><li><a href="/tts/">TTS 텍스트 음성 변환</a></li></ul><h2>이미지·PDF</h2><ul><li><a href="/image/">이미지 변환·압축·크기 조절</a></li><li><a href="/heic/">HEIC JPG 변환</a></li><li><a href="/img2pdf/">이미지 PDF 변환</a></li><li><a href="/pdf-merge/">PDF 합치기</a></li><li><a href="/pdf2img/">PDF JPG 변환</a></li><li><a href="/qr/">QR 코드 만들기</a></li><li><a href="/barcode/">바코드 생성기</a></li></ul><h2>날짜·시간</h2><ul><li><a href="/age/">만 나이 계산기</a></li><li><a href="/dday/">날짜 계산기 · D-day 계산기</a></li><li><a href="/lunar/">음력 양력 변환기</a></li><li><a href="/holidays/">공휴일 달력</a></li><li><a href="/timer/">타이머 · 스톱워치</a></li><li><a href="/time-calc/">시간 계산기</a></li></ul><h2>월급·세금</h2><ul><li><a href="/salary/">연봉 실수령액 계산기</a></li><li><a href="/severance/">퇴직금 계산기</a></li><li><a href="/hourly/">시급 · 주휴수당 계산기</a></li><li><a href="/unemployment/">실업급여 계산기</a></li><li><a href="/vat/">부가세 계산기</a></li></ul><h2>대출·금융</h2><ul><li><a href="/loan/">대출 이자 계산기</a></li><li><a href="/savings/">예금·적금 이자 계산기</a></li><li><a href="/dsr/">DSR·LTV 계산기</a></li><li><a href="/exchange/">환율 계산기</a></li><li><a href="/customs/">관세 계산기 (해외직구)</a></li><li><a href="/money/">금액 한글 변환기</a></li><li><a href="/liquidation/">청산가·펀딩비 계산기</a></li></ul><h2>생활</h2><ul><li><a href="/bmi/">BMI 계산기 · 비만도 계산기</a></li><li><a href="/ovulation/">배란일 계산기</a></li><li><a href="/pyeong/">평수 계산기</a></li><li><a href="/brokerage/">중개보수 계산기 (복비)</a></li><li><a href="/unit/">단위 변환기</a></li><li><a href="/power/">전기요금 계산기</a></li><li><a href="/parcel/">택배 조회 바로가기</a></li><li><a href="/discount/">할인율 · 퍼센트 계산기</a></li><li><a href="/gpa/">학점 계산기</a></li><li><a href="/zipcode/" aria-current="page">우편번호 찾기 · 영문주소 변환</a></li><li><a href="/myip/">내 아이피 확인</a></li></ul><h2>랜덤·게임</h2><ul><li><a href="/ladder/">사다리게임</a></li><li><a href="/lots/">제비뽑기 · 랜덤 뽑기</a></li><li><a href="/lotto/">로또 번호 생성기 · 로또 당첨번호</a></li></ul></nav>
+<!-- /seo:nav -->
+<script src="/assets/site.js"></script>
+<script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+(() => {
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+  let D = null;
+  const copyBtn = v => v ? `<button type="button" data-copy="${esc(v)}">복사</button>` : '';
+  const row = (k, v) => `<tr><th>${k}</th><td>${esc(v)}${copyBtn(v)}</td></tr>`;
+
+  const stripKr = s => String(s || '').replace(/,?\s*(Republic of )?Korea$/i, '').trim();
+  function enParts(){
+    // roadAddressEnglish 예: "152 Teheran-ro, Gangnam-gu, Seoul, Republic of Korea" / "235 Pangyoyeok-ro, Bundang-gu, Seongnam-si, Gyeonggi-do, Republic of Korea"
+    const base = stripKr(D.roadAddressEnglish || D.addressEnglish);
+    const parts = base.split(',').map(s => s.trim()).filter(Boolean);
+    const last = parts.at(-1) || '';
+    if (/-do$/.test(last) && parts.length >= 3)   // 도: City = 시·군, State = 도
+      return {base, sido: last, city: parts.at(-2), street: parts.slice(0, -2).join(', ')};
+    return {base, sido: last, city: last, street: parts.slice(0, -1).join(', ')};   // 특별·광역시: City = State = 시
+  }
+  function render(){
+    if (!D) return;
+    const dong = $('dong').value.trim().replace(/동$/, ''), ho = $('ho').value.trim().replace(/호$/, '');
+    const unit = dong && ho ? `${dong}-${ho}` : dong ? `Bldg ${dong}` : ho ? `#${ho}` : '';
+    const p = enParts();
+    const full = [unit, p.base, 'Republic of Korea'].filter(Boolean).join(', ') + ` ${D.zonecode}`;
+    $('full').textContent = full;
+    $('form').innerHTML = row('Address Line 1', p.street) + row('Address Line 2', unit ? (dong && ho ? `Apt ${unit}` : unit) : '')
+      + row('City', p.city) + row('State / Province', p.sido) + row('ZIP / Postal code', D.zonecode) + row('Country', 'South Korea (Republic of Korea)');
+  }
+  function show(d){
+    D = d;
+    $('res').hidden = false;
+    $('zip').textContent = d.zonecode;
+    const bld = d.buildingName ? ` (${d.buildingName})` : '';
+    $('kv').innerHTML = row('도로명 주소', d.roadAddress + bld) + row('지번 주소', d.jibunAddress || d.autoJibunAddress || '')
+      + row('영문 도로명', stripKr(d.roadAddressEnglish)) + row('영문 지번', stripKr(d.jibunAddressEnglish || d.autoJibunAddressEnglish))
+      + row('시·도 / 시·군·구', `${d.sido} ${d.sigungu}`) + row('법정동', d.bname || '');
+    render();
+    $('res').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+  }
+  document.addEventListener('click', async e => {
+    const b = e.target.closest('[data-copy]'); if (!b) return;
+    toast(await copyText(b.dataset.copy) ? `복사했습니다: ${b.dataset.copy}` : '복사하지 못했습니다.');
+  });
+  $('copyFull').onclick = async () => toast(await copyText($('full').textContent) ? '영문주소를 복사했습니다.' : '복사하지 못했습니다.');
+  ['dong', 'ho'].forEach(id => $(id).addEventListener('input', render));
+  function start(){
+    if (!window.daum || !daum.Postcode) { $('pc').innerHTML = '<p class="status" style="padding:16px">주소 검색 서비스를 불러오지 못했습니다. 잠시 뒤 새로고침해 주세요.</p>'; return; }
+    new daum.Postcode({oncomplete: show, width: '100%', height: '100%', animation: false, hideMapBtn: true}).embed($('pc'), {autoClose: false});
+  }
+  if (document.readyState === 'complete') start(); else window.addEventListener('load', start);
+})();
+</script>
+</body>
+</html>

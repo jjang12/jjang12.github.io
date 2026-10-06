@@ -116,7 +116,7 @@ def nav_block(groups, names, current):
 
 
 CATEGORY = {'글자·단어': 'UtilitiesApplication', '이미지·PDF': 'MultimediaApplication', '날짜·시간': 'UtilitiesApplication',
-            '월급·세금': 'FinanceApplication', '대출·금융': 'FinanceApplication', '생활': 'LifestyleApplication'}
+            '월급·세금': 'FinanceApplication', '대출·금융': 'FinanceApplication', '생활': 'LifestyleApplication', '랜덤·게임': 'GameApplication'}
 
 OG_HTML = """<!doctype html><html><head><meta charset="utf-8">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
@@ -135,7 +135,7 @@ h1{{margin:0;font-size:{size}px;line-height:1.18;letter-spacing:-0.03em;font-wei
 <div class="brand"><span class="mark"><svg viewBox="0 0 24 24">{zap}</svg></span>{site}</div>
 <div class="row"><span class="ic"><svg viewBox="0 0 24 24">{icon}</svg></span><div><div class="g">{group}</div><h1>{title}</h1></div></div>
 <div class="foot">무료 · 설치·가입 없이 바로 · jjangtool.com</div></body></html>"""
-TONES = {'violet': '#A894FF', 'sky': '#5BB8EE', 'amber': '#F0A54A', 'green': '#4FCB94', 'teal': '#4CC9C9', 'rose': '#F07A98'}
+TONES = {'violet': '#A894FF', 'sky': '#5BB8EE', 'amber': '#F0A54A', 'green': '#4FCB94', 'teal': '#4CC9C9', 'rose': '#F07A98', 'orange': '#FF9550'}
 
 
 def chrome_shot(html_text: str, out: Path, w: int, h: int, transparent=False):

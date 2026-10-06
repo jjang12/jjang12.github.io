@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>인스타 글씨체 변환기 - 영어 폰트 바꾸기·꾸미기 (𝓘𝓷𝓼𝓽𝓪 𝐁𝐨𝐥𝐝 Ⓒⓘⓡⓒⓛⓔ) | 짱툴</title>
+<meta name="description" content="영어를 입력하면 굵게 𝐁𝐨𝐥𝐝, 필기체 𝓢𝓬𝓻𝓲𝓹𝓽, 고딕 𝔊𝔬𝔱𝔥𝔦𝔠, 동그라미 Ⓒⓘⓡⓒⓛⓔ, 취소선 s̶t̶r̶i̶k̶e̶ 등 30가지 글씨체로 바꿔 줍니다. 인스타그램 프로필·닉네임·게시글에 복사해 붙여 넣으세요.">
+<meta name="keywords" content="인스타 글씨체, 인스타 폰트, 글씨체 변환, 폰트 변환, 영어 폰트 변환, 인스타 글꼴, 필기체 변환, 닉네임 꾸미기">
+<meta property="og:title" content="인스타 글씨체 변환기 - 영어 폰트 바꾸기·꾸미기">
+<meta property="og:description" content="영어를 입력하면 굵게·필기체·고딕·동그라미·취소선 등 30가지 글씨체로 바꿔 줍니다. 인스타그램 프로필·닉네임에 복사해 붙여 넣으세요.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjangtool.com/fonts/">
+<link rel="canonical" href="https://jjangtool.com/fonts/">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.fonts{list-style:none; margin:14px 0 0; padding:0; display:grid; gap:8px}
+.fonts li{display:grid; grid-template-columns:1fr auto; align-items:center; gap:4px 12px; padding:12px 14px; border:1px solid var(--line); border-radius:12px; background:var(--paper); cursor:pointer}
+.fonts li:hover{border-color:var(--blue)}
+.fonts small{grid-column:1 / -1; color:var(--muted); font-size:12px}
+.fonts output{font-size:20px; line-height:1.4; overflow-wrap:anywhere; font-family:"Apple SD Gothic Neo","Malgun Gothic","Segoe UI Symbol","Noto Sans Symbols 2","Noto Sans Math","Cambria Math",sans-serif}
+.fonts button{font:inherit; font-size:13px; padding:6px 12px; border-radius:8px; border:1px solid var(--line); background:var(--soft); color:var(--ink); cursor:pointer}
+textarea#src{min-height:70px}
+</style>
+<!-- seo:head -->
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/img/icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+<meta name="theme-color" content="#3157E0">
+<link rel="alternate" type="application/rss+xml" title="짱툴" href="https://jjangtool.com/rss.xml">
+<meta property="og:site_name" content="짱툴">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://jjangtool.com/assets/og/fonts.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="인스타 글씨체 변환기 - 영어 폰트 바꾸기·꾸미기 (𝓘𝓷𝓼𝓽𝓪 𝐁𝐨𝐥𝐝 Ⓒⓘⓡⓒⓛⓔ)">
+<meta name="twitter:image" content="https://jjangtool.com/assets/og/fonts.jpg">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"인스타 글씨체 변환기","url":"https://jjangtool.com/fonts/","description":"영어를 입력하면 굵게 𝐁𝐨𝐥𝐝, 필기체 𝓢𝓬𝓻𝓲𝓹𝓽, 고딕 𝔊𝔬𝔱𝔥𝔦𝔠, 동그라미 Ⓒⓘⓡⓒⓛⓔ, 취소선 s̶t̶r̶i̶k̶e̶ 등 30가지 글씨체로 바꿔 줍니다. 인스타그램 프로필·닉네임·게시글에 복사해 붙여 넣으세요.","inLanguage":"ko-KR","applicationCategory":"UtilitiesApplication","operatingSystem":"모든 기기 (웹 브라우저)","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"isPartOf":{"@type":"WebSite","name":"짱툴","url":"https://jjangtool.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"짱툴","item":"https://jjangtool.com/"},{"@type":"ListItem","position":2,"name":"인스타 글씨체 변환기","item":"https://jjangtool.com/fonts/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"인스타그램 글씨체는 어떻게 바꾸나요?","acceptedAnswer":{"@type":"Answer","text":"이 페이지에 영어를 입력하고 마음에 드는 글씨체 줄을 눌러 복사한 뒤, 인스타그램 프로필 편집의 이름·소개란이나 게시글에 붙여 넣으면 됩니다."}},{"@type":"Question","name":"한글 글씨체도 바뀌나요?","acceptedAnswer":{"@type":"Answer","text":"한글은 유니코드에 이런 변형 글자가 없어서 모양은 그대로입니다. 취소선(̶), 밑줄, 글자 사이 하트·별 넣기 같은 꾸밈은 한글에도 적용됩니다."}},{"@type":"Question","name":"붙여 넣었더니 네모(□)로 보여요.","acceptedAnswer":{"@type":"Answer","text":"보는 기기나 앱에 그 글자를 그릴 글꼴이 없으면 네모로 보입니다. 굵게·기울임·필기체·동그라미는 대부분의 휴대폰에서 보이고, 몇몇 특이한 글씨체는 오래된 기기에서 안 보일 수 있습니다."}},{"@type":"Question","name":"인스타 아이디(사용자 이름)에도 쓸 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"아이디는 영문·숫자·밑줄·마침표만 허용돼서 쓸 수 없습니다. 프로필의 「이름」과 소개란에는 쓸 수 있습니다."}}]}]}</script>
+<!-- /seo:head -->
+</head>
+<body data-blog="jisik_plus">
+<main>
+<h1>인스타 글씨체 변환기</h1>
+<p class="lead">영어를 입력하면 30가지 글씨체로 바뀝니다. 원하는 줄을 누르면 복사되니 인스타그램 프로필·닉네임·게시글에 붙여 넣으세요.</p>
+<div class="field"><label for="src">바꿀 글자 (영어·숫자)</label><textarea id="src" rows="2">Instagram Font 2026</textarea></div>
+<p class="note">한글은 모양이 그대로이고, 취소선·밑줄·사이 꾸미기처럼 줄을 긋는 꾸밈만 적용됩니다.</p>
+<ul class="fonts" id="out"></ul>
+
+<h2>사용 안내</h2>
+<div class="note">
+  <p>여기서 바꾼 글자는 그림이 아니라 유니코드에 들어 있는 <b>수학용 영문자·동그라미 문자</b> 같은 별도의 글자입니다. 그래서 인스타그램, 카카오톡, 유튜브 댓글처럼 글꼴을 고를 수 없는 곳에도 그대로 붙여 넣을 수 있습니다.</p>
+  <p>다만 다른 글자로 바뀌는 것이라 <b>검색에는 잘 걸리지 않고</b>, 화면 읽기 프로그램은 엉뚱하게 읽을 수 있습니다. 아이디·해시태그보다 프로필 소개나 꾸밈용으로 쓰는 것이 좋습니다.</p>
+</div>
+<section class="faq">
+<h2>자주 묻는 질문</h2>
+<details><summary>인스타그램 글씨체는 어떻게 바꾸나요?</summary><p>이 페이지에 영어를 입력하고 마음에 드는 글씨체 줄을 눌러 복사한 뒤, 인스타그램 프로필 편집의 이름·소개란이나 게시글에 붙여 넣으면 됩니다.</p></details>
+<details><summary>한글 글씨체도 바뀌나요?</summary><p>한글은 유니코드에 이런 변형 글자가 없어서 모양은 그대로입니다. 취소선(̶), 밑줄, 글자 사이 하트·별 넣기 같은 꾸밈은 한글에도 적용됩니다.</p></details>
+<details><summary>붙여 넣었더니 네모(□)로 보여요.</summary><p>보는 기기나 앱에 그 글자를 그릴 글꼴이 없으면 네모로 보입니다. 굵게·기울임·필기체·동그라미는 대부분의 휴대폰에서 보이고, 몇몇 특이한 글씨체는 오래된 기기에서 안 보일 수 있습니다.</p></details>
+<details><summary>인스타 아이디(사용자 이름)에도 쓸 수 있나요?</summary><p>아이디는 영문·숫자·밑줄·마침표만 허용돼서 쓸 수 없습니다. 프로필의 「이름」과 소개란에는 쓸 수 있습니다.</p></details>
+</section>
+</main>
+<!-- seo:nav -->
+<nav class="static-nav" id="static-nav" aria-label="짱툴 전체 도구"><p><a href="/">짱툴 전체 도구</a></p><h2>글자·단어</h2><ul><li><a href="/hanbang/">끝말잇기 한방단어 검색기</a></li><li><a href="/wordchain/">끝말잇기 컴퓨터 대결</a></li><li><a href="/symbols/">특수문자 모음</a></li><li><a href="/count/">글자수 세기</a></li><li><a href="/typo/">한영 타자 변환기</a></li><li><a href="/romanize/">여권 영문 이름 변환기</a></li><li><a href="/fonts/" aria-current="page">인스타 글씨체 변환기</a></li><li><a href="/tts/">TTS 텍스트 음성 변환</a></li></ul><h2>이미지·PDF</h2><ul><li><a href="/image/">이미지 변환·압축·크기 조절</a></li><li><a href="/heic/">HEIC JPG 변환</a></li><li><a href="/img2pdf/">이미지 PDF 변환</a></li><li><a href="/pdf-merge/">PDF 합치기</a></li><li><a href="/pdf2img/">PDF JPG 변환</a></li><li><a href="/qr/">QR 코드 만들기</a></li><li><a href="/barcode/">바코드 생성기</a></li></ul><h2>날짜·시간</h2><ul><li><a href="/age/">만 나이 계산기</a></li><li><a href="/dday/">날짜 계산기 · D-day 계산기</a></li><li><a href="/lunar/">음력 양력 변환기</a></li><li><a href="/holidays/">공휴일 달력</a></li><li><a href="/timer/">타이머 · 스톱워치</a></li><li><a href="/time-calc/">시간 계산기</a></li></ul><h2>월급·세금</h2><ul><li><a href="/salary/">연봉 실수령액 계산기</a></li><li><a href="/severance/">퇴직금 계산기</a></li><li><a href="/hourly/">시급 · 주휴수당 계산기</a></li><li><a href="/unemployment/">실업급여 계산기</a></li><li><a href="/vat/">부가세 계산기</a></li></ul><h2>대출·금융</h2><ul><li><a href="/loan/">대출 이자 계산기</a></li><li><a href="/savings/">예금·적금 이자 계산기</a></li><li><a href="/dsr/">DSR·LTV 계산기</a></li><li><a href="/exchange/">환율 계산기</a></li><li><a href="/customs/">관세 계산기 (해외직구)</a></li><li><a href="/money/">금액 한글 변환기</a></li><li><a href="/liquidation/">청산가·펀딩비 계산기</a></li></ul><h2>생활</h2><ul><li><a href="/bmi/">BMI 계산기 · 비만도 계산기</a></li><li><a href="/ovulation/">배란일 계산기</a></li><li><a href="/pyeong/">평수 계산기</a></li><li><a href="/brokerage/">중개보수 계산기 (복비)</a></li><li><a href="/unit/">단위 변환기</a></li><li><a href="/power/">전기요금 계산기</a></li><li><a href="/parcel/">택배 조회 바로가기</a></li><li><a href="/discount/">할인율 · 퍼센트 계산기</a></li><li><a href="/gpa/">학점 계산기</a></li><li><a href="/zipcode/">우편번호 찾기 · 영문주소 변환</a></li><li><a href="/myip/">내 아이피 확인</a></li></ul><h2>랜덤·게임</h2><ul><li><a href="/ladder/">사다리게임</a></li><li><a href="/lots/">제비뽑기 · 랜덤 뽑기</a></li><li><a href="/lotto/">로또 번호 생성기 · 로또 당첨번호</a></li></ul></nav>
+<!-- /seo:nav -->
+<script src="/assets/site.js"></script>
+<script>
+(() => {
+  const cp = n => String.fromCodePoint(n);
+  /* 수학용 영문자: 대문자 시작, 소문자 시작, 숫자 시작(없으면 null), 빈 칸 대신 쓰는 문자 */
+  const math = (U, l, d, exc = {}) => ch => {
+    if (exc[ch]) return exc[ch];
+    const c = ch.charCodeAt(0);
+    if (c >= 65 && c <= 90) return cp(U + c - 65);
+    if (c >= 97 && c <= 122) return cp(l + c - 97);
+    if (d && c >= 48 && c <= 57) return cp(d + c - 48);
+    return ch;
+  };
+  const table = (from, to) => { const m = {}; [...from].forEach((c, i) => m[c] = [...to][i]); return ch => m[ch] ?? ch; };
+  const comb = mark => ch => /\s/.test(ch) ? ch : ch + mark;
+  const SMALL = table('abcdefghijklmnopqrstuvwxyz', 'ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘǫʀꜱᴛᴜᴠᴡxʏᴢ');
+  const SUP = table('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPRTUVW0123456789+-=()', 'ᵃᵇᶜᵈᵉᶠᵍʰⁱʲᵏˡᵐⁿᵒᵖᑫʳˢᵗᵘᵛʷˣʸᶻᴬᴮᶜᴰᴱᶠᴳᴴᴵᴶᴷᴸᴹᴺᴼᴾᴿᵀᵁⱽᵂ⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼⁽⁾');
+  const FLIP = table('abcdefghijklmnopqrstuvwxyzABCDEFGJKLMPQRTUVWY1234567.,\'?!()[]{}<>_',
+                     'ɐqɔpǝɟƃɥᴉɾʞlɯuodbɹsʇnʌʍxʎz∀ᗺƆᗡƎℲ⅁ſʞ˥WԀΌᴚ⊥∩ΛM⅄ƖᄅƐㄣϛ9ㄥ˙\'„¿¡)(][}{><‾');
+  const circled = ch => { const c = ch.charCodeAt(0);
+    if (c >= 65 && c <= 90) return cp(0x24B6 + c - 65); if (c >= 97 && c <= 122) return cp(0x24D0 + c - 97);
+    if (c === 48) return '⓪'; if (c >= 49 && c <= 57) return cp(0x2460 + c - 49); return ch; };
+  const upperOnly = base => ch => { const c = ch.toUpperCase().charCodeAt(0); return c >= 65 && c <= 90 ? cp(base + c - 65) : ch; };
+  const paren = ch => { const c = ch.toLowerCase().charCodeAt(0);
+    if (c >= 97 && c <= 122) return cp(0x249C + c - 97); if (ch >= '1' && ch <= '9') return cp(0x2474 + ch.charCodeAt(0) - 49); return ch; };
+  const wide = ch => { const c = ch.charCodeAt(0); if (c === 32) return '　'; if (c > 32 && c < 127) return cp(0xFF00 + c - 32); return ch; };
+  const flags = ch => { const c = ch.toUpperCase().charCodeAt(0); return c >= 65 && c <= 90 ? cp(0x1F1E6 + c - 65) + '‌' : ch; };
+
+  const per = f => s => [...s].map(f).join('');
+  const between = sep => s => [...s].filter(c => c !== ' ').join(sep);
+  const STYLES = [
+    ['굵게 (Bold)', per(math(0x1D400, 0x1D41A, 0x1D7CE))],
+    ['기울임 (Italic)', per(math(0x1D434, 0x1D44E, null, {h: 'ℎ'}))],
+    ['굵은 기울임', per(math(0x1D468, 0x1D482))],
+    ['필기체 (Script)', per(math(0x1D49C, 0x1D4B6, null, {B: 'ℬ', E: 'ℰ', F: 'ℱ', H: 'ℋ', I: 'ℐ', L: 'ℒ', M: 'ℳ', R: 'ℛ', e: 'ℯ', g: 'ℊ', o: 'ℴ'}))],
+    ['굵은 필기체', per(math(0x1D4D0, 0x1D4EA))],
+    ['고딕 (Fraktur)', per(math(0x1D504, 0x1D51E, null, {C: 'ℭ', H: 'ℌ', I: 'ℑ', R: 'ℜ', Z: 'ℨ'}))],
+    ['굵은 고딕', per(math(0x1D56C, 0x1D586))],
+    ['이중선 (Double)', per(math(0x1D538, 0x1D552, 0x1D7D8, {C: 'ℂ', H: 'ℍ', N: 'ℕ', P: 'ℙ', Q: 'ℚ', R: 'ℝ', Z: 'ℤ'}))],
+    ['산세리프', per(math(0x1D5A0, 0x1D5BA, 0x1D7E2))],
+    ['산세리프 굵게', per(math(0x1D5D4, 0x1D5EE, 0x1D7EC))],
+    ['산세리프 기울임', per(math(0x1D608, 0x1D622))],
+    ['산세리프 굵은 기울임', per(math(0x1D63C, 0x1D656))],
+    ['타자기 (Mono)', per(math(0x1D670, 0x1D68A, 0x1D7F6))],
+    ['동그라미', per(circled)],
+    ['검은 동그라미', per(upperOnly(0x1F150))],
+    ['네모', per(upperOnly(0x1F130))],
+    ['검은 네모', per(upperOnly(0x1F170))],
+    ['괄호', per(paren)],
+    ['전각 (넓은 글자)', per(wide)],
+    ['작은 대문자', s => per(SMALL)(s.toLowerCase())],
+    ['위첨자', per(SUP)],
+    ['거꾸로', s => [...per(FLIP)(s)].reverse().join('')],
+    ['국기 문자', per(flags)],
+    ['취소선', per(comb('̶'))],
+    ['밑줄', per(comb('̲'))],
+    ['이중 밑줄', per(comb('̳'))],
+    ['빗금', per(comb('̸'))],
+    ['물결 밑줄', per(comb('̰'))],
+    ['글자 사이 하트', between('♡')],
+    ['글자 사이 별', between('✦')],
+    ['넓게 띄우기', s => [...s].join(' ')],
+  ];
+  const src = $('src'), out = $('out');
+  const esc = s => s.replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+  function render(){
+    const v = src.value || 'Instagram Font';
+    out.innerHTML = STYLES.map(([n, f], i) => `<li data-i="${i}"><small>${n}</small><output>${esc(f(v))}</output><button type="button">복사</button></li>`).join('');
+  }
+  out.addEventListener('click', async e => {
+    const li = e.target.closest('li'); if (!li) return;
+    const t = li.querySelector('output').textContent;
+    toast(await copyText(t) ? '복사했습니다.' : '복사하지 못했습니다. 길게 눌러 직접 복사하세요.');
+  });
+  src.addEventListener('input', render);
+  render();
+})();
+</script>
+</body>
+</html>

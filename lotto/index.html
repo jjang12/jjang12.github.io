@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>로또 번호 생성기 · 1,244회 로또 당첨번호 - 자동 번호 뽑기, 당첨 확인, 번호 통계 | 짱툴</title>
+<meta name="description" content="제1,244회 로또 당첨번호는 1, 13, 18, 26, 34, 38 보너스 25입니다. 로또 번호 자동 생성(고정수·제외수), 내 번호 당첨 확인, 역대 당첨번호와 번호별 출현 통계를 매주 갱신합니다.">
+<meta name="keywords" content="로또 번호 생성기, 로또 당첨번호, 로또 번호, 로또 자동 번호, 로또 번호 추출기, 로또 당첨 확인, 로또 번호 통계, 이번주 로또">
+<meta property="og:title" content="로또 번호 생성기 · 1,244회 로또 당첨번호 - 자동 번호 뽑기, 당첨 확인, 번호 통계">
+<meta property="og:description" content="제1,244회 로또 당첨번호는 1, 13, 18, 26, 34, 38 보너스 25입니다. 로또 번호 자동 생성(고정수·제외수), 내 번호 당첨 확인, 역대 당첨번호와 번호별 출현 통계를 매주 갱신합니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjangtool.com/lotto/">
+<link rel="canonical" href="https://jjangtool.com/lotto/">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.ball{display:inline-grid; place-items:center; width:34px; height:34px; border-radius:50%; color:#fff; font-weight:800; font-size:15px; margin:2px; font-variant-numeric:tabular-nums; text-shadow:0 1px 1px rgba(0,0,0,.25); box-shadow:inset -3px -4px 8px rgba(0,0,0,.18)}
+.ball.y{background:#F2B200} .ball.b{background:#3B82D6} .ball.r{background:#E5484D} .ball.g{background:#8B93A1} .ball.n{background:#2FA35B}
+.ball.dim{opacity:.28}
+.balls{display:inline-flex; flex-wrap:wrap; align-items:center}
+.balls.big .ball{width:48px; height:48px; font-size:20px; margin:3px}
+.plus{margin:0 4px; color:var(--muted); font-weight:800}
+.lt-latest{text-align:center}
+.lt-latest .balls{justify-content:center}
+.lt-table td{white-space:nowrap} .lt-table .ball{width:28px; height:28px; font-size:13px; margin:1px}
+.games{list-style:none; margin:12px 0 0; padding:0; display:grid; gap:8px}
+.games li{display:flex; align-items:center; gap:10px; padding:8px 12px; border:1px solid var(--line); border-radius:12px; background:var(--paper)}
+.games li b{width:22px; color:var(--muted)}
+.pick{display:grid; grid-template-columns:repeat(9,1fr); gap:4px; max-width:420px}
+.pick button{aspect-ratio:1; border:1px solid var(--line); border-radius:8px; background:var(--paper); color:var(--ink); font:inherit; font-size:14px; cursor:pointer}
+.pick button.fix{background:var(--blue); color:#fff; border-color:var(--blue)}
+.pick button.ex{background:var(--soft); color:var(--muted); text-decoration:line-through}
+p small{color:var(--muted); margin:0 6px 0 1px}
+</style>
+<!-- seo:head -->
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/img/icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+<meta name="theme-color" content="#3157E0">
+<link rel="alternate" type="application/rss+xml" title="짱툴" href="https://jjangtool.com/rss.xml">
+<meta property="og:site_name" content="짱툴">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://jjangtool.com/assets/og/lotto.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="로또 번호 생성기 · 1,244회 로또 당첨번호 - 자동 번호 뽑기, 당첨 확인, 번호 통계">
+<meta name="twitter:image" content="https://jjangtool.com/assets/og/lotto.jpg">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"로또 번호 생성기 · 로또 당첨번호","url":"https://jjangtool.com/lotto/","description":"제1,244회 로또 당첨번호는 1, 13, 18, 26, 34, 38 보너스 25입니다. 로또 번호 자동 생성(고정수·제외수), 내 번호 당첨 확인, 역대 당첨번호와 번호별 출현 통계를 매주 갱신합니다.","inLanguage":"ko-KR","applicationCategory":"GameApplication","operatingSystem":"모든 기기 (웹 브라우저)","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"isPartOf":{"@type":"WebSite","name":"짱툴","url":"https://jjangtool.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"짱툴","item":"https://jjangtool.com/"},{"@type":"ListItem","position":2,"name":"로또 번호 생성기 · 로또 당첨번호","item":"https://jjangtool.com/lotto/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"로또 번호 생성기는 어떻게 번호를 뽑나요?","acceptedAnswer":{"@type":"Answer","text":"브라우저의 암호용 난수로 1~45 중 6개를 겹치지 않게 뽑습니다. 고정수는 항상 넣고, 제외수는 빼고 나머지 자리를 무작위로 채웁니다. 어떤 방법도 당첨 확률을 높이지는 못합니다."}},{"@type":"Question","name":"로또 당첨금은 언제까지 받을 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"지급 개시일부터 1년 안에 받아야 합니다. 5등은 판매점, 4·5등은 판매점이나 은행, 1등은 농협은행 본점에서 받습니다."}},{"@type":"Question","name":"로또 당첨금에 세금이 있나요?","acceptedAnswer":{"@type":"Answer","text":"200만 원 이하는 비과세이고, 200만 원 초과 3억 원 이하는 22%, 3억 원 초과분은 33%(지방세 포함)를 뗍니다."}}]}]}</script>
+<!-- /seo:head -->
+</head>
+<body data-blog="aicoinlab" data-built="2026-10-03">
+<main>
+<h1>로또 번호 생성기 · 로또 당첨번호</h1>
+<p class="lead">이번 주 로또 당첨번호를 확인하고, 자동으로 번호를 뽑거나 내 번호가 지금까지 몇 등에 맞았는지 확인합니다. 당첨번호는 매주 토요일 추첨 뒤 자동으로 갱신됩니다.</p>
+
+<!-- lotto:data -->
+<div class="panel lt-latest"><p class="dd-label">제1,244회 로또 당첨번호 · 2026년 10월 3일 추첨</p><div class="balls big"><span class="ball y">1</span><span class="ball b">13</span><span class="ball b">18</span><span class="ball r">26</span><span class="ball g">34</span><span class="ball g">38</span><span class="plus">+</span><span class="ball r">25</span></div><p class="note">1등 18명 · 1인당 <b>16억 469만 원</b> · 2등 80명 · 60,175,749원</p></div><h2>최근 10회 당첨번호</h2><div class="tbl-wrap"><table class="list lt-table"><thead><tr><th>회차</th><th>추첨일</th><th>당첨번호</th><th>1등 당첨금</th></tr></thead><tbody><tr><td>1,244회</td><td>26.10.03</td><td><span class="balls"><span class="ball y">1</span><span class="ball b">13</span><span class="ball b">18</span><span class="ball r">26</span><span class="ball g">34</span><span class="ball g">38</span><span class="plus">+</span><span class="ball r">25</span></span></td><td>16억 469만 원<small> · 18명</small></td></tr><tr><td>1,243회</td><td>26.09.26</td><td><span class="balls"><span class="ball y">9</span><span class="ball b">18</span><span class="ball r">24</span><span class="ball g">38</span><span class="ball n">43</span><span class="ball n">44</span><span class="plus">+</span><span class="ball g">35</span></span></td><td>25억 9,253만 원<small> · 12명</small></td></tr><tr><td>1,242회</td><td>26.09.19</td><td><span class="balls"><span class="ball y">2</span><span class="ball y">4</span><span class="ball y">10</span><span class="ball b">16</span><span class="ball g">31</span><span class="ball n">41</span><span class="plus">+</span><span class="ball y">9</span></span></td><td>32억 8,103만 원<small> · 9명</small></td></tr><tr><td>1,241회</td><td>26.09.12</td><td><span class="balls"><span class="ball y">7</span><span class="ball b">13</span><span class="ball b">16</span><span class="ball r">23</span><span class="ball r">24</span><span class="ball n">43</span><span class="plus">+</span><span class="ball y">9</span></span></td><td>16억 2,839만 원<small> · 18명</small></td></tr><tr><td>1,240회</td><td>26.09.05</td><td><span class="balls"><span class="ball b">11</span><span class="ball b">13</span><span class="ball b">19</span><span class="ball b">20</span><span class="ball g">31</span><span class="ball n">44</span><span class="plus">+</span><span class="ball r">27</span></span></td><td>17억 9,182만 원<small> · 16명</small></td></tr><tr><td>1,239회</td><td>26.08.29</td><td><span class="balls"><span class="ball b">11</span><span class="ball b">13</span><span class="ball r">22</span><span class="ball g">32</span><span class="ball g">33</span><span class="ball g">36</span><span class="plus">+</span><span class="ball y">8</span></span></td><td>22억 1,479만 원<small> · 13명</small></td></tr><tr><td>1,238회</td><td>26.08.22</td><td><span class="balls"><span class="ball y">2</span><span class="ball b">13</span><span class="ball b">18</span><span class="ball g">32</span><span class="ball g">38</span><span class="ball n">42</span><span class="plus">+</span><span class="ball r">22</span></span></td><td>11억 9,726만 원<small> · 23명</small></td></tr><tr><td>1,237회</td><td>26.08.15</td><td><span class="balls"><span class="ball y">10</span><span class="ball b">20</span><span class="ball r">23</span><span class="ball g">34</span><span class="ball g">37</span><span class="ball g">40</span><span class="plus">+</span><span class="ball g">36</span></span></td><td>12억 1,493만 원<small> · 23명</small></td></tr><tr><td>1,236회</td><td>26.08.08</td><td><span class="balls"><span class="ball b">12</span><span class="ball b">18</span><span class="ball r">21</span><span class="ball r">29</span><span class="ball g">34</span><span class="ball g">38</span><span class="plus">+</span><span class="ball y">10</span></span></td><td>24억 4,192만 원<small> · 11명</small></td></tr><tr><td>1,235회</td><td>26.08.01</td><td><span class="balls"><span class="ball y">6</span><span class="ball y">7</span><span class="ball b">11</span><span class="ball b">15</span><span class="ball g">39</span><span class="ball n">43</span><span class="plus">+</span><span class="ball b">20</span></span></td><td>30억 9,096만 원<small> · 9명</small></td></tr></tbody></table></div><h2>번호별 통계 (1~1,244회)</h2><p>가장 많이 나온 번호: <span class="ball g">34</span><span class="ball b">13</span><span class="ball r">27</span><span class="ball b">12</span><span class="ball b">18</span><span class="ball g">33</span><span class="ball n">45</span><span class="ball g">37</span><span class="ball g">40</span><span class="ball g">38</span></p><div class="tbl-wrap"><table class="list"><thead><tr><th>번호</th><th>나온 횟수</th><th>비율</th></tr></thead><tbody><tr><td><span class="ball g">34</span></td><td>187번</td><td>15.0%</td></tr><tr><td><span class="ball b">13</span></td><td>184번</td><td>14.8%</td></tr><tr><td><span class="ball r">27</span></td><td>181번</td><td>14.5%</td></tr><tr><td><span class="ball b">12</span></td><td>180번</td><td>14.5%</td></tr><tr><td><span class="ball b">18</span></td><td>180번</td><td>14.5%</td></tr><tr><td><span class="ball g">33</span></td><td>175번</td><td>14.1%</td></tr><tr><td><span class="ball n">45</span></td><td>175번</td><td>14.1%</td></tr><tr><td><span class="ball g">37</span></td><td>174번</td><td>14.0%</td></tr><tr><td><span class="ball g">40</span></td><td>174번</td><td>14.0%</td></tr><tr><td><span class="ball g">38</span></td><td>174번</td><td>14.0%</td></tr></tbody></table></div><p>가장 적게 나온 번호: <span class="ball y">9</span><small>137번</small> <span class="ball r">22</span><small>146번</small> <span class="ball g">32</span><small>146번</small> <span class="ball r">23</span><small>149번</small> <span class="ball n">41</span><small>151번</small> <span class="ball y">5</span><small>153번</small></p><p>오래 안 나온 번호: <span class="ball y">5</span><small>31회째</small> <span class="ball r">27</span><small>20회째</small> <span class="ball n">45</span><small>20회째</small> <span class="ball b">17</span><small>18회째</small> <span class="ball r">30</span><small>16회째</small> <span class="ball y">3</span><small>14회째</small></p><p class="note">로또는 회차마다 번호가 새로 뽑혀서 지난 통계가 다음 결과를 바꾸지 않습니다. 재미로만 참고하세요.</p>
+<!-- /lotto:data -->
+
+<h2 id="gen">로또 번호 자동 생성</h2>
+<p class="note">번호판을 한 번 누르면 <b>고정수</b>(꼭 넣을 번호), 두 번 누르면 <b>제외수</b>, 세 번 누르면 원래대로 돌아갑니다.</p>
+<div class="pick" id="pick"></div>
+<div class="row" style="margin-top:12px"><div class="field"><label for="games">게임 수</label><input id="games" type="number" min="1" max="10" value="5" inputmode="numeric"></div></div>
+<div class="btns"><button type="button" class="btn" id="gen1">번호 뽑기</button><button type="button" class="btn sub" id="reset">번호판 초기화</button><button type="button" class="btn sub" id="copy">복사</button></div>
+<ul class="games" id="out"></ul>
+
+<h2 id="check">내 번호 당첨 확인</h2>
+<div class="field"><label for="mine">내 번호 6개 (띄어쓰기·쉼표로)</label><input id="mine" type="text" inputmode="numeric" placeholder="예: 3 11 19 27 33 42"></div>
+<div class="btns"><button type="button" class="btn" id="chk">역대 당첨 확인</button></div>
+<div id="chkOut"></div>
+
+<h2>로또 6/45 안내</h2>
+<div class="note">
+  <p>1~45 가운데 6개를 고르고, 추첨된 6개 번호와 보너스 번호 1개로 등수가 정해집니다. 추첨은 매주 <b>토요일 오후 8시 35분</b>이고, 판매는 추첨 당일 오후 8시에 마감됩니다.</p>
+  <p>1등 6개 일치 · 2등 5개 + 보너스 · 3등 5개 · 4등 4개(5만 원) · 5등 3개(5천 원). 1등이 될 확률은 8,145,060분의 1입니다.</p>
+  <p>당첨번호 출처는 동행복권 추첨 결과이고, 정확한 지급 여부는 동행복권 공식 홈페이지에서 확인하세요. 만 19세 미만은 복권을 살 수 없습니다.</p>
+</div>
+<section class="faq">
+<h2>자주 묻는 질문</h2>
+<details data-latest><summary>이번 주 로또 당첨번호는?</summary><p>제1,244회(2026-10-03) 당첨번호는 1, 13, 18, 26, 34, 38, 보너스 번호 25입니다. 1등은 18명이 1인당 16억 469만 원을 받았습니다.</p></details>
+<details><summary>로또 번호 생성기는 어떻게 번호를 뽑나요?</summary><p>브라우저의 암호용 난수로 1~45 중 6개를 겹치지 않게 뽑습니다. 고정수는 항상 넣고, 제외수는 빼고 나머지 자리를 무작위로 채웁니다. 어떤 방법도 당첨 확률을 높이지는 못합니다.</p></details>
+<details><summary>로또 당첨금은 언제까지 받을 수 있나요?</summary><p>지급 개시일부터 1년 안에 받아야 합니다. 5등은 판매점, 4·5등은 판매점이나 은행, 1등은 농협은행 본점에서 받습니다.</p></details>
+<details><summary>로또 당첨금에 세금이 있나요?</summary><p>200만 원 이하는 비과세이고, 200만 원 초과 3억 원 이하는 22%, 3억 원 초과분은 33%(지방세 포함)를 뗍니다.</p></details>
+</section>
+</main>
+<!-- seo:nav -->
+<nav class="static-nav" id="static-nav" aria-label="짱툴 전체 도구"><p><a href="/">짱툴 전체 도구</a></p><h2>글자·단어</h2><ul><li><a href="/hanbang/">끝말잇기 한방단어 검색기</a></li><li><a href="/wordchain/">끝말잇기 컴퓨터 대결</a></li><li><a href="/symbols/">특수문자 모음</a></li><li><a href="/count/">글자수 세기</a></li><li><a href="/typo/">한영 타자 변환기</a></li><li><a href="/romanize/">여권 영문 이름 변환기</a></li><li><a href="/fonts/">인스타 글씨체 변환기</a></li><li><a href="/tts/">TTS 텍스트 음성 변환</a></li></ul><h2>이미지·PDF</h2><ul><li><a href="/image/">이미지 변환·압축·크기 조절</a></li><li><a href="/heic/">HEIC JPG 변환</a></li><li><a href="/img2pdf/">이미지 PDF 변환</a></li><li><a href="/pdf-merge/">PDF 합치기</a></li><li><a href="/pdf2img/">PDF JPG 변환</a></li><li><a href="/qr/">QR 코드 만들기</a></li><li><a href="/barcode/">바코드 생성기</a></li></ul><h2>날짜·시간</h2><ul><li><a href="/age/">만 나이 계산기</a></li><li><a href="/dday/">날짜 계산기 · D-day 계산기</a></li><li><a href="/lunar/">음력 양력 변환기</a></li><li><a href="/holidays/">공휴일 달력</a></li><li><a href="/timer/">타이머 · 스톱워치</a></li><li><a href="/time-calc/">시간 계산기</a></li></ul><h2>월급·세금</h2><ul><li><a href="/salary/">연봉 실수령액 계산기</a></li><li><a href="/severance/">퇴직금 계산기</a></li><li><a href="/hourly/">시급 · 주휴수당 계산기</a></li><li><a href="/unemployment/">실업급여 계산기</a></li><li><a href="/vat/">부가세 계산기</a></li></ul><h2>대출·금융</h2><ul><li><a href="/loan/">대출 이자 계산기</a></li><li><a href="/savings/">예금·적금 이자 계산기</a></li><li><a href="/dsr/">DSR·LTV 계산기</a></li><li><a href="/exchange/">환율 계산기</a></li><li><a href="/customs/">관세 계산기 (해외직구)</a></li><li><a href="/money/">금액 한글 변환기</a></li><li><a href="/liquidation/">청산가·펀딩비 계산기</a></li></ul><h2>생활</h2><ul><li><a href="/bmi/">BMI 계산기 · 비만도 계산기</a></li><li><a href="/ovulation/">배란일 계산기</a></li><li><a href="/pyeong/">평수 계산기</a></li><li><a href="/brokerage/">중개보수 계산기 (복비)</a></li><li><a href="/unit/">단위 변환기</a></li><li><a href="/power/">전기요금 계산기</a></li><li><a href="/parcel/">택배 조회 바로가기</a></li><li><a href="/discount/">할인율 · 퍼센트 계산기</a></li><li><a href="/gpa/">학점 계산기</a></li><li><a href="/zipcode/">우편번호 찾기 · 영문주소 변환</a></li><li><a href="/myip/">내 아이피 확인</a></li></ul><h2>랜덤·게임</h2><ul><li><a href="/ladder/">사다리게임</a></li><li><a href="/lots/">제비뽑기 · 랜덤 뽑기</a></li><li><a href="/lotto/" aria-current="page">로또 번호 생성기 · 로또 당첨번호</a></li></ul></nav>
+<!-- /seo:nav -->
+<script src="/assets/site.js"></script>
+<script>
+(() => {
+  const rnd = n => { const lim = Math.floor(0x100000000 / n) * n, a = new Uint32Array(1); let x; do { crypto.getRandomValues(a); x = a[0]; } while (x >= lim); return x % n; };
+  const tone = n => n <= 10 ? 'y' : n <= 20 ? 'b' : n <= 30 ? 'r' : n <= 40 ? 'g' : 'n';
+  const ball = (n, cls = '') => `<span class="ball ${tone(n)}${cls}">${n}</span>`;
+  const state = new Array(46).fill(0);   // 0 보통, 1 고정, 2 제외
+  const pick = $('pick');
+  pick.innerHTML = Array.from({length: 45}, (_, i) => `<button type="button" data-n="${i + 1}">${i + 1}</button>`).join('');
+  pick.onclick = e => {
+    const b = e.target.closest('button'); if (!b) return;
+    const n = +b.dataset.n, fixed = state.filter(v => v === 1).length;
+    let s = (state[n] + 1) % 3;
+    if (s === 1 && fixed >= 5) s = 2;   // 고정수는 5개까지
+    state[n] = s;
+    b.className = s === 1 ? 'fix' : s === 2 ? 'ex' : '';
+  };
+  $('reset').onclick = () => { state.fill(0); pick.querySelectorAll('button').forEach(b => b.className = ''); };
+  let games = [];
+  function gen(){
+    const fix = [], pool = [];
+    for (let n = 1; n <= 45; n++) { if (state[n] === 1) fix.push(n); else if (state[n] === 0) pool.push(n); }
+    if (fix.length + pool.length < 6) return toast('제외수가 너무 많습니다.');
+    const k = Math.min(10, Math.max(1, parseInt($('games').value, 10) || 5));
+    games = Array.from({length: k}, () => {
+      const p = [...pool], g = [...fix];
+      while (g.length < 6) g.push(p.splice(rnd(p.length), 1)[0]);
+      return g.sort((a, b) => a - b);
+    });
+    $('out').innerHTML = games.map((g, i) => `<li><b>${String.fromCharCode(65 + i)}</b><span class="balls">${g.map(n => ball(n)).join('')}</span></li>`).join('');
+  }
+  $('gen1').onclick = gen;
+  $('copy').onclick = async () => { if (!games.length) gen();
+    const t = games.map((g, i) => `${String.fromCharCode(65 + i)}: ${g.join(' ')}`).join('\n');
+    toast(await copyText(t) ? '번호를 복사했습니다.' : '복사하지 못했습니다.'); };
+  gen();
+
+  /* 내 번호 역대 당첨 확인 */
+  let draws = null;
+  const load = () => draws ? Promise.resolve(draws) : fetch('/assets/lotto.json').then(r => r.json()).then(d => draws = d.draws);
+  $('chk').onclick = async () => {
+    const mine = [...new Set(($('mine').value.match(/\d+/g) || []).map(Number).filter(n => n >= 1 && n <= 45))];
+    if (mine.length !== 6) return toast('1~45 사이 번호 6개를 넣어 주세요.');
+    let ds; try { ds = await load(); } catch { return toast('당첨번호를 불러오지 못했습니다.'); }
+    const set = new Set(mine), rank = {1: [], 2: [], 3: [], 4: [], 5: []};
+    for (const d of ds) {
+      const hit = d.slice(2, 8).filter(n => set.has(n)).length, bonus = set.has(d[8]);
+      const r = hit === 6 ? 1 : hit === 5 && bonus ? 2 : hit === 5 ? 3 : hit === 4 ? 4 : hit === 3 ? 5 : 0;
+      if (r) rank[r].push(d);
+    }
+    const best = [1, 2, 3, 4].flatMap(r => rank[r].map(d => [r, d])).sort((a, b) => a[0] - b[0] || b[1][0] - a[1][0]).slice(0, 8);
+    $('chkOut').innerHTML = `<table class="kv">${[1, 2, 3, 4, 5].map(r => `<tr><th>${r}등</th><td>${rank[r].length.toLocaleString()}번</td></tr>`).join('')}</table>
+      <p class="note">1회부터 ${ds.at(-1)[0].toLocaleString()}회까지 ${ds.length.toLocaleString()}번의 추첨에 이 번호를 넣었다면 이렇게 맞았습니다.</p>`
+      + (best.length ? `<h3>가장 좋았던 회차</h3><div class="tbl-wrap"><table class="list lt-table"><tbody>${best.map(([r, d]) =>
+          `<tr><td>${r}등</td><td>${d[0].toLocaleString()}회 (${d[1]})</td><td><span class="balls">${d.slice(2, 8).map(n => ball(n, set.has(n) ? '' : ' dim')).join('')}<span class="plus">+</span>${ball(d[8], set.has(d[8]) ? '' : ' dim')}</span></td></tr>`).join('')}</tbody></table></div>` : '');
+  };
+})();
+</script>
+</body>
+</html>

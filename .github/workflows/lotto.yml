@@ -1,0 +1,38 @@
+name: 로또 당첨번호 갱신
+
+# 토요일 20:35(KST) 추첨 결과를 받아 assets/lotto.json 과 lotto/index.html 당첨번호 표를 갱신한다.
+on:
+  schedule:
+    - cron: '45 12 * * 6'   # 토 21:45 KST
+    - cron: '40 13 * * 6'   # 토 22:40 KST (늦게 올라올 때)
+    - cron: '0 0 * * 0'     # 일 09:00 KST
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: seo
+  cancel-in-progress: false
+
+jobs:
+  lotto:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 .github/scripts/build_lotto.py
+      - run: python3 .github/scripts/build_seo.py
+      - name: 바뀐 경우에만 커밋
+        run: |
+          git add -A assets/lotto.json lotto sitemap.xml rss.xml
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Update lotto results'
+          git pull --rebase
+          git push

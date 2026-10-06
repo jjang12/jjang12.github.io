@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>바코드 생성기 - CODE128·EAN-13 바코드 만들기, PNG·SVG 무료 다운로드 | 짱툴</title>
+<meta name="description" content="숫자나 영문을 넣으면 CODE128, EAN-13(상품 바코드), EAN-8, UPC, CODE39, ITF 바코드를 바로 만들고 PNG·SVG로 내려받습니다. 크기·글자 표시·색을 조절할 수 있고 여러 개를 한 번에 만들 수도 있습니다.">
+<meta name="keywords" content="바코드 생성기, 바코드 만들기, 바코드 생성, 바코드 무료, EAN-13 바코드, CODE128 바코드, 상품 바코드 만들기, 바코드 이미지">
+<meta property="og:title" content="바코드 생성기 - CODE128·EAN-13 바코드 만들기">
+<meta property="og:description" content="숫자·영문으로 CODE128, EAN-13, UPC, CODE39 바코드를 만들고 PNG·SVG로 내려받습니다.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jjangtool.com/barcode/">
+<link rel="canonical" href="https://jjangtool.com/barcode/">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.bc-view{display:grid; place-items:center; min-height:180px; padding:20px; border:1px solid var(--line); border-radius:12px; background:#fff; overflow:auto}
+.bc-view svg{max-width:100%; height:auto}
+.bc-list{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin-top:12px}
+.bc-list figure{margin:0; padding:10px; border:1px solid var(--line); border-radius:12px; background:#fff; text-align:center}
+.bc-list svg{max-width:100%; height:auto}
+textarea{min-height:100px}
+</style>
+<!-- seo:head -->
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/img/icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+<meta name="theme-color" content="#3157E0">
+<link rel="alternate" type="application/rss+xml" title="짱툴" href="https://jjangtool.com/rss.xml">
+<meta property="og:site_name" content="짱툴">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:image" content="https://jjangtool.com/assets/og/barcode.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="바코드 생성기 - CODE128·EAN-13 바코드 만들기, PNG·SVG 무료 다운로드">
+<meta name="twitter:image" content="https://jjangtool.com/assets/og/barcode.jpg">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"바코드 생성기","url":"https://jjangtool.com/barcode/","description":"숫자나 영문을 넣으면 CODE128, EAN-13(상품 바코드), EAN-8, UPC, CODE39, ITF 바코드를 바로 만들고 PNG·SVG로 내려받습니다. 크기·글자 표시·색을 조절할 수 있고 여러 개를 한 번에 만들 수도 있습니다.","inLanguage":"ko-KR","applicationCategory":"MultimediaApplication","operatingSystem":"모든 기기 (웹 브라우저)","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"},"isPartOf":{"@type":"WebSite","name":"짱툴","url":"https://jjangtool.com/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"짱툴","item":"https://jjangtool.com/"},{"@type":"ListItem","position":2,"name":"바코드 생성기","item":"https://jjangtool.com/barcode/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"여기서 만든 바코드를 상품에 붙여 팔아도 되나요?","acceptedAnswer":{"@type":"Answer","text":"바코드 그림은 자유롭게 쓸 수 있지만, 마트·온라인몰에 상품을 등록하려면 GS1 Korea(대한상공회의소 유통물류진흥원) 에서 발급받은 정식 상품 번호(880…)가 있어야 합니다. 번호를 받은 뒤 이 생성기로 이미지를 만들면 됩니다."}},{"@type":"Question","name":"EAN-13 마지막 자리는 뭔가요?","acceptedAnswer":{"@type":"Answer","text":"앞 12자리로 계산하는 검증 숫자입니다. 12자리만 넣으면 자동으로 붙여 주고, 13자리를 넣었는데 검증 숫자가 틀리면 알려 줍니다."}},{"@type":"Question","name":"한글도 바코드로 만들 수 있나요?","acceptedAnswer":{"@type":"Answer","text":"1차원 바코드는 한글을 담을 수 없습니다. 한글이나 긴 주소·링크는 QR 코드 로 만드세요."}},{"@type":"Question","name":"인쇄할 때 크기는 어떻게 하나요?","acceptedAnswer":{"@type":"Answer","text":"SVG로 내려받으면 크기를 키워도 깨지지 않습니다. 스캐너가 잘 읽도록 막대 색은 검정, 배경은 흰색으로 두고, 양옆 여백을 지우지 마세요."}}]}]}</script>
+<!-- /seo:head -->
+</head>
+<body data-blog="jisik_plus">
+<main>
+<h1>바코드 생성기</h1>
+<p class="lead">숫자나 영문을 넣으면 바코드가 바로 만들어집니다. 상품용 EAN-13부터 물류·재고용 CODE128까지, PNG·SVG로 내려받을 수 있습니다.</p>
+<div class="seg" role="group" aria-label="만들기 방식" id="mode">
+  <button type="button" data-v="one" aria-pressed="true">하나 만들기</button>
+  <button type="button" data-v="many" aria-pressed="false">여러 개 한 번에</button>
+</div>
+<div class="row">
+  <div class="field" id="fOne"><label for="val">바코드 내용</label><input id="val" type="text" value="8801234567893" autocomplete="off"></div>
+  <div class="field"><label for="fmt">종류</label>
+    <select id="fmt">
+      <option value="CODE128">CODE128 (영문·숫자, 가장 흔함)</option>
+      <option value="EAN13" selected>EAN-13 (상품 바코드 13자리)</option>
+      <option value="EAN8">EAN-8 (8자리)</option>
+      <option value="UPC">UPC-A (미국 상품 12자리)</option>
+      <option value="CODE39">CODE39 (대문자·숫자)</option>
+      <option value="ITF14">ITF-14 (물류 박스 14자리)</option>
+      <option value="codabar">Codabar (도서관·택배)</option>
+    </select></div>
+</div>
+<div class="field" id="fMany" hidden><label for="vals">바코드 내용 (한 줄에 하나, 최대 100개)</label><textarea id="vals">ITEM-0001
+ITEM-0002
+ITEM-0003</textarea></div>
+<div class="row">
+  <div class="field"><label for="w">막대 굵기</label><input id="w" type="range" min="1" max="4" step="0.5" value="2"></div>
+  <div class="field"><label for="h">높이</label><input id="h" type="range" min="40" max="200" step="10" value="100"></div>
+  <div class="field"><label for="col">막대 색</label><input id="col" type="color" value="#000000"></div>
+</div>
+<label class="note"><input type="checkbox" id="txt" checked> 바코드 아래에 숫자·글자 표시</label>
+<p class="note" id="msg"></p>
+<div class="bc-view" id="viewOne"><svg id="bc"></svg></div>
+<div class="bc-list" id="viewMany" hidden></div>
+<div class="btns"><button type="button" class="btn" id="png">PNG 내려받기</button><button type="button" class="btn sub" id="svg">SVG 내려받기</button></div>
+
+<h2>바코드 종류 고르기</h2>
+<div class="tbl-wrap"><table class="list"><thead><tr><th>종류</th><th>넣을 수 있는 것</th><th>주로 쓰는 곳</th></tr></thead><tbody>
+<tr><td>EAN-13</td><td>숫자 12~13자리 (마지막은 검증 숫자)</td><td>국내·해외 상품 포장 (880으로 시작하면 한국)</td></tr>
+<tr><td>CODE128</td><td>영문·숫자·기호 전부</td><td>재고·자산 관리, 송장, 사내 라벨</td></tr>
+<tr><td>CODE39</td><td>대문자·숫자·일부 기호</td><td>공장·산업용 라벨</td></tr>
+<tr><td>UPC-A</td><td>숫자 11~12자리</td><td>미국·캐나다 상품</td></tr>
+<tr><td>ITF-14</td><td>숫자 13~14자리</td><td>물류 박스(외박스)</td></tr>
+<tr><td>Codabar</td><td>숫자와 - $ : / . +</td><td>도서관, 혈액은행, 택배</td></tr>
+</tbody></table></div>
+<section class="faq">
+<h2>자주 묻는 질문</h2>
+<details><summary>여기서 만든 바코드를 상품에 붙여 팔아도 되나요?</summary><p>바코드 그림은 자유롭게 쓸 수 있지만, 마트·온라인몰에 상품을 등록하려면 <b>GS1 Korea(대한상공회의소 유통물류진흥원)</b>에서 발급받은 정식 상품 번호(880…)가 있어야 합니다. 번호를 받은 뒤 이 생성기로 이미지를 만들면 됩니다.</p></details>
+<details><summary>EAN-13 마지막 자리는 뭔가요?</summary><p>앞 12자리로 계산하는 검증 숫자입니다. 12자리만 넣으면 자동으로 붙여 주고, 13자리를 넣었는데 검증 숫자가 틀리면 알려 줍니다.</p></details>
+<details><summary>한글도 바코드로 만들 수 있나요?</summary><p>1차원 바코드는 한글을 담을 수 없습니다. 한글이나 긴 주소·링크는 <a href="/qr/">QR 코드</a>로 만드세요.</p></details>
+<details><summary>인쇄할 때 크기는 어떻게 하나요?</summary><p>SVG로 내려받으면 크기를 키워도 깨지지 않습니다. 스캐너가 잘 읽도록 막대 색은 검정, 배경은 흰색으로 두고, 양옆 여백을 지우지 마세요.</p></details>
+</section>
+</main>
+<!-- seo:nav -->
+<nav class="static-nav" id="static-nav" aria-label="짱툴 전체 도구"><p><a href="/">짱툴 전체 도구</a></p><h2>글자·단어</h2><ul><li><a href="/hanbang/">끝말잇기 한방단어 검색기</a></li><li><a href="/wordchain/">끝말잇기 컴퓨터 대결</a></li><li><a href="/symbols/">특수문자 모음</a></li><li><a href="/count/">글자수 세기</a></li><li><a href="/typo/">한영 타자 변환기</a></li><li><a href="/romanize/">여권 영문 이름 변환기</a></li><li><a href="/fonts/">인스타 글씨체 변환기</a></li><li><a href="/tts/">TTS 텍스트 음성 변환</a></li></ul><h2>이미지·PDF</h2><ul><li><a href="/image/">이미지 변환·압축·크기 조절</a></li><li><a href="/heic/">HEIC JPG 변환</a></li><li><a href="/img2pdf/">이미지 PDF 변환</a></li><li><a href="/pdf-merge/">PDF 합치기</a></li><li><a href="/pdf2img/">PDF JPG 변환</a></li><li><a href="/qr/">QR 코드 만들기</a></li><li><a href="/barcode/" aria-current="page">바코드 생성기</a></li></ul><h2>날짜·시간</h2><ul><li><a href="/age/">만 나이 계산기</a></li><li><a href="/dday/">날짜 계산기 · D-day 계산기</a></li><li><a href="/lunar/">음력 양력 변환기</a></li><li><a href="/holidays/">공휴일 달력</a></li><li><a href="/timer/">타이머 · 스톱워치</a></li><li><a href="/time-calc/">시간 계산기</a></li></ul><h2>월급·세금</h2><ul><li><a href="/salary/">연봉 실수령액 계산기</a></li><li><a href="/severance/">퇴직금 계산기</a></li><li><a href="/hourly/">시급 · 주휴수당 계산기</a></li><li><a href="/unemployment/">실업급여 계산기</a></li><li><a href="/vat/">부가세 계산기</a></li></ul><h2>대출·금융</h2><ul><li><a href="/loan/">대출 이자 계산기</a></li><li><a href="/savings/">예금·적금 이자 계산기</a></li><li><a href="/dsr/">DSR·LTV 계산기</a></li><li><a href="/exchange/">환율 계산기</a></li><li><a href="/customs/">관세 계산기 (해외직구)</a></li><li><a href="/money/">금액 한글 변환기</a></li><li><a href="/liquidation/">청산가·펀딩비 계산기</a></li></ul><h2>생활</h2><ul><li><a href="/bmi/">BMI 계산기 · 비만도 계산기</a></li><li><a href="/ovulation/">배란일 계산기</a></li><li><a href="/pyeong/">평수 계산기</a></li><li><a href="/brokerage/">중개보수 계산기 (복비)</a></li><li><a href="/unit/">단위 변환기</a></li><li><a href="/power/">전기요금 계산기</a></li><li><a href="/parcel/">택배 조회 바로가기</a></li><li><a href="/discount/">할인율 · 퍼센트 계산기</a></li><li><a href="/gpa/">학점 계산기</a></li><li><a href="/zipcode/">우편번호 찾기 · 영문주소 변환</a></li><li><a href="/myip/">내 아이피 확인</a></li></ul><h2>랜덤·게임</h2><ul><li><a href="/ladder/">사다리게임</a></li><li><a href="/lots/">제비뽑기 · 랜덤 뽑기</a></li><li><a href="/lotto/">로또 번호 생성기 · 로또 당첨번호</a></li></ul></nav>
+<!-- /seo:nav -->
+<script src="/assets/site.js"></script>
+<script src="/assets/vendor/jsbarcode.min.js"></script>
+<script>
+(() => {
+  let mode = 'one';
+  const opts = () => ({format: $('fmt').value, width: +$('w').value, height: +$('h').value, displayValue: $('txt').checked,
+    lineColor: $('col').value, background: '#ffffff', margin: 12, font: 'Pretendard, sans-serif', fontSize: 18});
+  const ean13Check = s => { const d = s.split('').map(Number); const sum = d.reduce((a, n, i) => a + n * (i % 2 ? 3 : 1), 0); return (10 - sum % 10) % 10; };
+  function fix(v, f){   // EAN-13 12자리면 검증 숫자 붙이기
+    v = v.trim();
+    if (f === 'EAN13' && /^\d{12}$/.test(v)) return v + ean13Check(v);
+    return v;
+  }
+  function draw(el, v){
+    const f = $('fmt').value;
+    v = fix(v, f);
+    if (f === 'EAN13' && /^\d{13}$/.test(v) && ean13Check(v.slice(0, 12)) !== +v[12])
+      return `EAN-13 검증 숫자가 맞지 않습니다. 마지막 자리는 ${ean13Check(v.slice(0, 12))}이어야 합니다.`;
+    try { JsBarcode(el, v, opts()); return ''; }
+    catch { return `「${v}」은(는) ${$('fmt').selectedOptions[0].text.split(' ')[0]} 형식에 맞지 않습니다.`; }
+  }
+  function render(){
+    if (mode === 'one') { const err = draw($('bc'), $('val').value || ' '); $('msg').textContent = err; $('bc').style.visibility = err ? 'hidden' : ''; return; }
+    const vs = $('vals').value.split('\n').map(s => s.trim()).filter(Boolean).slice(0, 100);
+    const box = $('viewMany'); box.innerHTML = ''; let bad = 0;
+    for (const v of vs) {
+      const fig = document.createElement('figure'), s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      fig.append(s); box.append(fig);
+      if (draw(s, v)) { bad++; fig.innerHTML = `<p class="note">형식 오류: ${v.replace(/[&<>]/g, '')}</p>`; }
+    }
+    $('msg').textContent = `${vs.length}개 중 ${vs.length - bad}개 만들었습니다.` + (bad ? ` (${bad}개는 형식 오류)` : '');
+  }
+  const svgs = () => mode === 'one' ? [$('bc')] : [...$('viewMany').querySelectorAll('svg')];
+  const svgText = s => new XMLSerializer().serializeToString(s);
+  async function toPng(s){
+    const blob = new Blob([svgText(s)], {type: 'image/svg+xml'}), url = URL.createObjectURL(blob), img = new Image();
+    await new Promise((ok, no) => { img.onload = ok; img.onerror = no; img.src = url; });
+    const k = 3, c = document.createElement('canvas'); c.width = img.width * k; c.height = img.height * k;
+    const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, 0, 0, c.width, c.height);
+    URL.revokeObjectURL(url);
+    return new Promise(r => c.toBlob(r, 'image/png'));
+  }
+  const name = (i, ext) => `barcode${svgs().length > 1 ? '-' + String(i + 1).padStart(3, '0') : ''}.${ext}`;
+  $('png').onclick = async () => { const list = svgs(); for (let i = 0; i < list.length; i++) saveBlob(await toPng(list[i]), name(i, 'png')); };
+  $('svg').onclick = () => svgs().forEach((s, i) => saveBlob(new Blob([svgText(s)], {type: 'image/svg+xml'}), name(i, 'svg')));
+  document.querySelectorAll('#mode button').forEach(b => b.onclick = () => {
+    mode = b.dataset.v;
+    document.querySelectorAll('#mode button').forEach(x => x.setAttribute('aria-pressed', x === b));
+    $('fOne').hidden = mode !== 'one'; $('fMany').hidden = mode !== 'many';
+    $('viewOne').hidden = mode !== 'one'; $('viewMany').hidden = mode !== 'many';
+    if (mode === 'many' && $('fmt').value === 'EAN13') $('fmt').value = 'CODE128';
+    render();
+  });
+  ['val', 'vals', 'fmt', 'w', 'h', 'col', 'txt'].forEach(id => $(id).addEventListener('input', render));
+  render();
+})();
+</script>
+</body>
+</html>
