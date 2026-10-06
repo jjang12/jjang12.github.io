@@ -70,6 +70,7 @@ def head_block(url, info, og, crumbs, faq, is_home, category):
     lines = [
         '<link rel="icon" href="/favicon.ico" sizes="48x48">',
         '<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">',
+        '<link rel="icon" href="/assets/img/icon-192.png" sizes="192x192" type="image/png">',   # 구글 검색 결과 아이콘(48의 배수 PNG 권장)
         '<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">',
         '<meta name="theme-color" content="#3157E0">',
         f'<link rel="alternate" type="application/rss+xml" title="{SITE_NAME}" href="{BASE}/rss.xml">',
