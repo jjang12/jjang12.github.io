@@ -82,7 +82,7 @@ const SITE = {
     right: 'POSTS',
   },
   coupang: false,
-  contact: ['kchi1114', 'naver.com'],  // 문의하기 메일 (아이디, 도메인)
+  contact: ['jjang1275', 'gmail.com'],  // 문의하기 메일 (아이디, 도메인)
 };
 
 /* 아이콘: Lucide (ISC License, https://lucide.dev) */
