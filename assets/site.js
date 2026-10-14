@@ -297,7 +297,8 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
   foot.innerHTML = `<p class="foot-brand">${brand}<span>설치·가입 없이 바로 쓰는 무료 생활 도구</span></p>
     <p class="foot-safe">${icon('shield-check')}${esc(document.body.dataset.ext || '모든 계산과 변환은 브라우저 안에서만 처리되며, 입력한 내용은 저장되거나 전송되지 않습니다.')}</p>
     <p class="foot-copy">© ${new Date().getFullYear()} 짱툴닷컴(jjangtool.com) · 문의 ${SITE.contact.join('@')}</p>
-    <p class="foot-links">${Object.values(SITE.blogs).map(b => `<a href="${b.url}" target="_blank" rel="noopener">${b.name}</a>`).join('')}</p>`;
+    <p class="foot-links">${Object.values(SITE.blogs).map(b => `<a href="${b.url}" target="_blank" rel="noopener">${b.name}</a>`).join('')}</p>
+    <p class="foot-links foot-legal"><a href="/privacy/">개인정보처리방침</a><a href="/data-deletion/">데이터 삭제 안내</a></p>`;
   blogs.after(foot);
 
   /* D-day 숫자: 페이지를 만든 날(data-built)과 오늘이 다르면 다시 센다 */

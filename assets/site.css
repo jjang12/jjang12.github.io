@@ -244,17 +244,20 @@ table.list thead th{color:var(--muted); font-weight:600}
 }
 .rail-title{margin:0 0 8px 8px; font-size:13px; font-weight:700; color:var(--muted)}
 
-footer.site-foot{padding:28px 20px 40px; font-size:14px; color:var(--muted); background:var(--bg); border-top:1px solid var(--line)}
+footer.site-foot{padding:28px 20px 40px; font-size:14px; color:var(--muted); background:var(--bg); border-top:1px solid var(--line); text-align:center}
 footer.site-foot > *{max-width:1000px; margin-left:auto; margin-right:auto}
 footer.site-foot p{margin:0 0 10px}
-.foot-brand{display:flex; flex-wrap:wrap; align-items:center; gap:4px 14px}
+.foot-brand{display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:4px 14px}
 .foot-brand .brand{font-size:16px}
 .foot-brand .brand-mark{width:24px; height:24px; border-radius:7px}
 .foot-brand .brand-mark .ic{width:14px; height:14px}
-.foot-safe{display:flex; align-items:flex-start; gap:6px}
+.foot-safe{display:flex; align-items:flex-start; justify-content:center; gap:6px}
 .foot-safe .ic{width:16px; height:16px; margin-top:2px; color:var(--good)}
-.foot-links{display:flex; flex-wrap:wrap; gap:6px 16px}
+.foot-links{display:flex; flex-wrap:wrap; justify-content:center; gap:6px 16px}
 .foot-links a{color:var(--muted)}
+.foot-legal{font-size:12.5px}
+.foot-legal a{text-decoration:none}
+.foot-legal a:hover{text-decoration:underline}
 @media (max-width:480px){ h1{font-size:26px} .hero h1{font-size:28px} .big{font-size:28px} .blogs h2{font-size:20px} }
 
 /* 버튼·파일 도구 */
