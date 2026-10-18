@@ -104,6 +104,17 @@ def head_block(url, info, og, crumbs, faq, is_home, category):
     return '\n'.join(lines)
 
 
+def news_pages():
+    """짱툴 뉴스픽 정적 페이지(build_news.py 가 만듦) — (주소, 파일, 이름). /news/ 가 맨 앞."""
+    out = []
+    top = ROOT / 'news' / 'index.html'
+    if top.exists():
+        out.append(('/news/', top, '인기 뉴스 TOP 20'))
+        for sub in sorted((ROOT / 'news').glob('*/index.html')):
+            out.append((f'/news/{sub.parent.name}/', sub, page_info(sub)[1]['h1'] or sub.parent.name))
+    return out
+
+
 def nav_block(groups, names, current):
     """자바스크립트 없이도 읽히는 전체 도구 링크(검색 로봇용). site.js 가 화면에서는 지우고 좌측 메뉴로 대신한다."""
     parts = ['<nav class="static-nav" id="static-nav" aria-label="짱툴 전체 도구">', f'<p><a href="/">{SITE_NAME} 전체 도구</a></p>']
@@ -111,6 +122,9 @@ def nav_block(groups, names, current):
         cur = ' aria-current="page"'
         links = ''.join(f'<li><a href="{it["p"]}"{cur if it["p"] == current else ""}>{html.escape(names.get(it["p"], it["t"]))}</a></li>' for it in g['items'])
         parts.append(f'<h2>{html.escape(g["name"])}</h2><ul>{links}</ul>')
+    news = news_pages()
+    if news:   # 2026-10-19 짱툴 뉴스픽
+        parts.append('<h2>짱툴 뉴스픽</h2><ul>' + ''.join(f'<li><a href="{p}">{html.escape(n)}</a></li>' for p, _, n in news) + '</ul>')
     parts.append('</nav>')
     return ''.join(parts)
 
@@ -272,7 +286,8 @@ def main():
         if s2 != s:
             f.write_text(s2, encoding='utf-8')
             changed += 1
-    urls = ''.join(f'  <url><loc>{BASE}{p}</loc><lastmod>{git_date(str(f.relative_to(ROOT)))}</lastmod></url>\n' for p, f, _ in pages if f.exists())
+    urls = ''.join(f'  <url><loc>{BASE}{p}</loc><lastmod>{git_date(str(f.relative_to(ROOT)))}</lastmod></url>\n'
+                   for p, f, _ in pages + [(p, f, None) for p, f, _ in news_pages()] if f.exists())
     sm = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{urls}</urlset>\n'
     if (ROOT / 'sitemap.xml').read_text(encoding='utf-8') != sm:
         (ROOT / 'sitemap.xml').write_text(sm, encoding='utf-8')

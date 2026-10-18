@@ -378,3 +378,31 @@ ul.chips a:hover{border-color:var(--blue); color:var(--blue)}
 @media (prefers-reduced-motion:reduce){ .syms button:active{transform:none} }
 .sym-my .syms{display:flex; flex-wrap:wrap}
 .sym-my .syms button{min-width:46px; padding:6px 12px; font-size:20px}
+
+/* 짱툴 뉴스픽(2026-10-19): 좌측 메뉴 「전체 도구」와 같은 높이 + 분야 펼치기, 오른쪽 인기 뉴스, 뉴스 페이지 */
+.side-news{margin-top:6px; padding-top:6px; border-top:1px solid var(--line); --tone:var(--rose)}
+.side-news-row{display:flex; align-items:center; gap:2px}
+.side-news-row .side-news-link{flex:1; --tone:var(--rose)}
+.side-news-tog{display:grid; place-items:center; width:34px; height:34px; border:0; border-radius:9px; background:transparent; color:var(--muted); cursor:pointer}
+.side-news-tog:hover{background:var(--soft)}
+.side-news-tog .chev{width:16px; height:16px; transition:transform .18s}
+.side-news.open .side-news-tog .chev{transform:rotate(180deg)}
+.side-news.open .side-items{display:block}
+.news-tag{background:var(--rose)}
+.rail-title{display:flex; align-items:center; gap:6px}
+.rail-title .ic{width:15px; height:15px; color:var(--rose)}
+.rail-more{display:flex; align-items:center; justify-content:center; gap:4px; margin:8px; padding:9px; border:1px solid var(--line); border-radius:10px; font-size:13px; font-weight:600; color:var(--muted); text-decoration:none}
+.rail-more:hover{color:var(--ink); border-color:var(--rose)}
+.rail-more .ic{width:14px; height:14px}
+.news-h .ic{color:var(--rose)}
+.news-rec{padding:4px 0 0}
+.home-news{margin-top:40px}
+.news-crumb{margin-bottom:10px}
+.news-chips{margin:0 0 14px; --tone:var(--rose)}
+.news-chips a{padding:7px 12px; font-size:13.5px}
+.news-chips a[aria-current="page"]{border-color:var(--rose); color:var(--rose); background:color-mix(in srgb,var(--rose) 8%,var(--card))}
+.news-upd{margin:0 0 10px}
+ol.news-list{list-style:none; margin:0; padding:0}
+ol.news-list li{min-width:0}
+.news-empty{padding:24px 0; color:var(--muted)}
+.news-disc{margin-top:22px; font-size:12.5px; line-height:1.6}

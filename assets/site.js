@@ -66,6 +66,20 @@ const SITE = {
       {p: '/lotto/', t: '로또 번호·당첨번호', i: 'clover'},
     ]},
   ],
+  /* 짱툴 뉴스픽(좌측 메뉴 맨 아래, 「전체 도구」와 같은 높이). 기사 목록은 assets/news.json(맥이 4시간마다 갱신),
+     정적 페이지는 .github/scripts/build_news.py 가 만든다. 분야 주소(p)는 build_news.py·news.json 의 slug 와 같아야 한다. */
+  news: {title: '짱툴 뉴스픽', p: '/news/', cats: [
+    {p: '/news/', t: '인기 뉴스 TOP 20'},
+    {p: '/news/humor/', t: '유머/이슈'},
+    {p: '/news/story/', t: '스토리'},
+    {p: '/news/entertain/', t: '연예가화제'},
+    {p: '/news/tv/', t: 'TV연예'},
+    {p: '/news/kmusic/', t: 'K-뮤직'},
+    {p: '/news/world-star/', t: '해외연예'},
+    {p: '/news/society/', t: '사회'},
+    {p: '/news/incident/', t: '사건사고'},
+    {p: '/news/life/', t: '생활픽'},
+  ]},
   blogs: {
     kkultiplab: {url: 'https://blog.naver.com/kkultiplab', name: '생활의 꿀팁정보', tags: ['생활·건강', '정부지원', '여행·축제'],
       desc: '건강, 생활, 정부 지원 제도처럼 일상에 바로 쓰는 정보를 직접 확인해서 정리합니다.'},
@@ -75,11 +89,11 @@ const SITE = {
       desc: '코인·주식·부동산에 직접 투자하며 공부한 시장 이야기와 금리·재테크 정보를 기록합니다.'},
   },
   /* 배너 HTML. 비워 두면('') 그 위치에는 배너가 나오지 않습니다.
-     'POSTS' 는 블로그 최신 글 목록(넓은 화면 오른쪽)입니다.
+     'POSTS' 는 블로그 최신 글 목록, 'NEWS' 는 인기 뉴스 TOP 20(넓은 화면 오른쪽, news.json 이 없으면 블로그 최신 글)입니다.
      쿠팡 파트너스 코드를 넣을 때는 아래 coupang 을 true 로 바꾸면 고지 문구가 함께 표시됩니다. */
   banners: {
     top: '',
-    right: 'POSTS',
+    right: 'NEWS',
   },
   coupang: false,
   contact: ['jjang1275', 'gmail.com'],  // 문의하기 메일 (아이디, 도메인)
@@ -130,6 +144,8 @@ const ICONS = {
   'mailbox': '<path d="M22 17a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9.5C2 7 4 5 6.5 5H18c2.2 0 4 1.8 4 4v8Z"/><polyline points="15,9 18,9 18,11"/><path d="M6.5 5C9 5 11 7 11 9.5V17a2 2 0 0 1-2 2"/><line x1="6" x2="7" y1="10" y2="10"/>',
   'menu': '<path d="M4 5h16"/><path d="M4 12h16"/><path d="M4 19h16"/>',
   'moon': '<path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/>',
+  'newspaper': '<path d="M15 18h-5"/><path d="M18 14h-8"/><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-4 0v-9a2 2 0 0 1 2-2h2"/><rect width="8" height="4" x="10" y="6" rx="1"/>',
+  'flame': '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
   'omega': '<path d="M3 20h4.5a.5.5 0 0 0 .5-.5v-.282a.52.52 0 0 0-.247-.437 8 8 0 1 1 8.494-.001.52.52 0 0 0-.247.438v.282a.5.5 0 0 0 .5.5H21"/>',
   'package': '<path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><polyline points="3.29 7 12 12 20.71 7"/><path d="m7.5 4.27 9 5.15"/>',
   'percent': '<line x1="19" x2="5" y1="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/>',
@@ -184,6 +200,11 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
       <button type="button" class="side-label" aria-expanded="false" aria-controls="sg${gi}">${icon(g.icon)}<span>${g.name}</span><small>${g.items.length}</small>${icon('chevron-down', 'ic chev')}</button>
       <div class="side-items" id="sg${gi}">${g.items.map(it => `<a href="${it.p}"${it === curItem ? ' aria-current="page"' : ''}>${icon(it.i)}<span>${it.t}</span></a>`).join('')}</div>
     </div>`).join('')}
+    <div class="side-news${path.startsWith(SITE.news.p) ? ' open' : ''}">
+      <div class="side-news-row"><a class="side-home side-news-link" href="${SITE.news.p}"${path === SITE.news.p ? ' aria-current="page"' : ''}>${icon('newspaper')}<span>${SITE.news.title}</span></a>
+        <button type="button" class="side-news-tog" aria-expanded="${path.startsWith(SITE.news.p)}" aria-controls="sg-news" aria-label="뉴스 분야 펼치기">${icon('chevron-down', 'ic chev')}</button></div>
+      <div class="side-items" id="sg-news">${SITE.news.cats.map(c => `<a href="${c.p}"${c.p === path ? ' aria-current="page"' : ''}>${icon(c.p === SITE.news.p ? 'flame' : 'newspaper')}<span>${c.t}</span></a>`).join('')}</div>
+    </div>
     <div class="side-blogs"><p class="side-label">추천 블로그</p>${Object.entries(SITE.blogs).map(([k, b]) =>
       `<a href="${b.url}" target="_blank" rel="noopener"><img src="/assets/img/profile-${k}.png" alt="" width="28" height="28"><span>${b.name}</span></a>`).join('')}</div>
     <div class="side-contact"><p class="side-label">문의하기</p><a href="mailto:${SITE.contact.join('@')}?subject=${encodeURIComponent('[짱툴] 문의')}">${icon('mail')}<span>${SITE.contact.join('@')}</span></a>
@@ -202,14 +223,14 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
   nav.querySelector('.nav-close').onclick = () => setOpen(false);
   dim.onclick = () => setOpen(false);
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.documentElement.classList.contains('nav-open')) setOpen(false); });
-  /* 묶음 접기·펼치기: 지금 페이지의 묶음은 항상 펼치고, 나머지는 사용자가 펼쳐 둔 것만 기억(이 브라우저에만) */
+  /* 묶음 접기·펼치기: 처음엔 모두 닫힘(2026-10-19). 지금 페이지의 묶음만 펼치고, 나머지는 사용자가 펼쳐 둔 것만 기억(이 브라우저에만) */
   const groupsEl = [...nav.querySelectorAll('.side-group')];
   let opened = [];
   try { opened = JSON.parse(localStorage.getItem('jt-open') || '[]'); } catch {}
   const setGroup = (el, open) => { el.classList.toggle('open', open); el.querySelector('.side-label').setAttribute('aria-expanded', open); };
   groupsEl.forEach((el, gi) => {
     const g = SITE.groups[gi];
-    setGroup(el, path === '/' || g === curGroup || opened.includes(g.name));
+    setGroup(el, g === curGroup || opened.includes(g.name));
     el.querySelector('.side-label').onclick = () => {
       const open = !el.classList.contains('open');
       setGroup(el, open);
@@ -217,6 +238,14 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
       try { localStorage.setItem('jt-open', JSON.stringify(opened)); } catch {}
     };
   });
+  const newsEl = nav.querySelector('.side-news'), newsTog = newsEl.querySelector('.side-news-tog');
+  if (!path.startsWith(SITE.news.p) && opened.includes(SITE.news.title)) { newsEl.classList.add('open'); newsTog.setAttribute('aria-expanded', true); }
+  newsTog.onclick = () => {
+    const open = !newsEl.classList.contains('open');
+    newsEl.classList.toggle('open', open); newsTog.setAttribute('aria-expanded', open);
+    opened = opened.filter(n => n !== SITE.news.title); if (open) opened.push(SITE.news.title);
+    try { localStorage.setItem('jt-open', JSON.stringify(opened)); } catch {}
+  };
   /* 메뉴 검색: 맞는 도구만 남기고 그 묶음을 펼침. 비우면 원래대로 */
   const findIn = nav.querySelector('.side-find input');
   const before = new Map();
@@ -254,8 +283,8 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
     if (!html) return null;
     const d = document.createElement('aside');
     d.className = `bn bn-${pos}`;
-    d.setAttribute('aria-label', html === 'POSTS' ? '블로그 최신 글' : '배너');
-    if (html !== 'POSTS') d.innerHTML = html + disclosure;
+    d.setAttribute('aria-label', html === 'POSTS' ? '블로그 최신 글' : html === 'NEWS' ? '인기 뉴스' : '배너');
+    if (html !== 'POSTS' && html !== 'NEWS') d.innerHTML = html + disclosure;
     return d;
   };
   const bTop = make('top', SITE.banners.top); if (bTop) main.before(bTop);
@@ -269,6 +298,7 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
     const sib = curGroup.items.filter(it => it !== curItem);
     rel.innerHTML = `<div class="rel-posts" hidden><h2 class="rel-h">${icon('target')}이 도구와 관련된 글</h2><p class="rel-sub">도구 주제와 직접 연결된 추천 블로그 글입니다.</p><div class="post-list"></div></div>
       <div class="new-posts" hidden><h2 class="new-h">${icon('sparkles')}추천 블로그 최신 글</h2><p class="rel-sub"></p><div class="post-list"></div></div>
+      <div class="news-rec" hidden><h2 class="news-h">${icon('newspaper')}추천 뉴스</h2><p class="rel-sub">지금 많이 보는 뉴스입니다. <a href="${SITE.news.p}">인기 뉴스 더 보기</a></p><div class="post-list"></div></div>
       ${sib.length ? `<h2>${curGroup.name} 도구 더 보기</h2><div class="chips tone-${curGroup.tone}">${sib.map(it => `<a href="${it.p}">${icon(it.i)}${it.t}</a>`).join('')}</div>` : ''}`;
     main.append(rel);
   }
@@ -315,8 +345,34 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
     }
   }
 
-  /* 블로그 글 불러오기 (assets/posts.json 은 GitHub Actions 가 4시간마다 갱신) */
+  /* 뉴스 불러오기 (assets/news.json 은 맥이 4시간마다 갱신 — 블로그 글 갱신과 같은 주기) */
   const home = document.getElementById('home-posts');
+  const railNews = SITE.banners.right === 'NEWS';
+  const fmtD = d => (d || '').slice(5, 16).replace('-', '.');
+  /* 뉴스 한 줄: 링크는 뉴스픽 파트너스 제휴 링크라 새 창 + nofollow sponsored */
+  const ncard = (n, cls = 'post') => `<a class="${cls}" href="${esc(n.u)}" target="_blank" rel="nofollow sponsored noopener">
+    <span class="post-body"><b>${esc(n.t)}</b><small>${n.c && !cls.includes('mini') ? `<em class="post-tag news-tag">${esc(n.c)}</em>` : ''}${esc(n.src || '')} · ${fmtD(n.d)}</small></span>
+    <span class="thumb">${n.img ? `<img src="${esc(n.img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ''}</span></a>`;
+  let homeNews = null;
+  if (home) {
+    homeNews = document.createElement('section'); homeNews.hidden = true; homeNews.className = 'home-news';
+    homeNews.innerHTML = `<h2>추천 뉴스</h2><p class="rel-sub">지금 많이 보는 뉴스입니다. <a href="${SITE.news.p}">인기 뉴스 더 보기</a></p><div class="post-list"></div>`;
+    home.closest('section').after(homeNews);
+  }
+  const newsReady = (rel || (bRight && railNews) || homeNews) ? fetch('/assets/news.json').then(r => r.ok ? r.json() : Promise.reject(r.status)).then(d => {
+    const top = d.top || [];
+    if (!top.length) return false;
+    /* 추천 뉴스 5개: 페이지마다 다른 5개가 보이게 주소로 시작 위치를 정한다 */
+    const pick5 = () => { let h = 0; for (const ch of path) h = (h * 31 + ch.charCodeAt(0)) >>> 0; const s = h % top.length; return [...top.slice(s), ...top.slice(0, s)].slice(0, 5); };
+    if (rel) { const box = rel.querySelector('.news-rec'); box.querySelector('.post-list').innerHTML = pick5().map(n => ncard(n)).join(''); box.hidden = false; }
+    if (homeNews) { homeNews.querySelector('.post-list').innerHTML = pick5().map(n => ncard(n)).join(''); homeNews.hidden = false; }
+    if (bRight && railNews) {
+      bRight.innerHTML = `<p class="rail-title">${icon('flame')}인기 뉴스 TOP 20</p>${top.slice(0, 20).map(n => ncard(n, 'post mini')).join('')}<a class="rail-more" href="${SITE.news.p}">분야별 뉴스 더 보기${icon('chevron-right')}</a>`;
+    }
+    return true;
+  }).catch(() => false) : Promise.resolve(false);
+
+  /* 블로그 글 불러오기 (assets/posts.json 은 GitHub Actions 가 4시간마다 갱신) */
   if (!rel && !bRight && !home) return;
   /* 글 한 줄: 제목·요약·블로그(왼쪽) + 작은 썸네일(오른쪽). mini(우측 영역)는 썸네일이 왼쪽, 요약 없음 */
   const card = (p, cls = 'post', tag = '') => `<a class="${cls}" href="${esc(p.u)}" target="_blank" rel="noopener">
@@ -346,7 +402,8 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
     }
     if (bRight) {
       const latest = order.flatMap(k => posts.filter(p => p.b === k).slice(0, 4));
-      bRight.innerHTML = `<p class="rail-title">블로그 최신 글</p>${latest.map(p => card(p, 'post mini')).join('')}`;
+      const fill = () => { bRight.innerHTML = `<p class="rail-title">블로그 최신 글</p>${latest.map(p => card(p, 'post mini')).join('')}`; };
+      if (railNews) newsReady.then(ok => { if (!ok) fill(); }); else fill();
     }
     if (home) {
       home.innerHTML = Object.keys(SITE.blogs).flatMap(k => posts.filter(p => p.b === k).slice(0, 4)).map(p => card(p)).join('');
