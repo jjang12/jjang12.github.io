@@ -328,6 +328,7 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
     <p class="foot-safe">${icon('shield-check')}${esc(document.body.dataset.ext || '모든 계산과 변환은 브라우저 안에서만 처리되며, 입력한 내용은 저장되거나 전송되지 않습니다.')}</p>
     <p class="foot-copy">© ${new Date().getFullYear()} 짱툴닷컴(jjangtool.com) · 운영 라이프큐브 · 문의 ${SITE.contact.join('@')}</p>
     <p class="foot-links">${Object.values(SITE.blogs).map(b => `<a href="${b.url}" target="_blank" rel="noopener">${b.name}</a>`).join('')}</p>
+    <p class="foot-links foot-family">패밀리 사이트 <a href="https://jjangbot.com/" target="_blank" rel="noopener"><img src="https://jjangbot.com/favicon.svg" alt="" width="18" height="18" style="vertical-align:-4px;margin-right:4px;border-radius:4px">짱봇 - 오늘의 할인 상품·여행 특가</a></p>
     <p class="foot-links foot-legal"><a href="/privacy/">개인정보처리방침</a><a href="/data-deletion/">데이터 삭제 안내</a></p>`;
   blogs.after(foot);
 
