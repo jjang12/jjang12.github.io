@@ -89,7 +89,7 @@ const SITE = {
       desc: '코인·주식·부동산에 직접 투자하며 공부한 시장 이야기와 금리·재테크 정보를 기록합니다.'},
   },
   /* 배너 HTML. 비워 두면('') 그 위치에는 배너가 나오지 않습니다.
-     'POSTS' 는 블로그 최신 글 목록, 'NEWS' 는 인기 뉴스 TOP 20(넓은 화면 오른쪽, news.json 이 없으면 블로그 최신 글)입니다.
+     'NEWS' 는 인기 뉴스 TOP 20(넓은 화면 오른쪽, news.json 이 없으면 안 보임)입니다. 블로그 글 목록('POSTS')은 2026-10-31 없앴습니다.
      쿠팡 파트너스 코드를 넣을 때는 아래 coupang 을 true 로 바꾸면 고지 문구가 함께 표시됩니다. */
   banners: {
     top: '',
@@ -283,22 +283,20 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
     if (!html) return null;
     const d = document.createElement('aside');
     d.className = `bn bn-${pos}`;
-    d.setAttribute('aria-label', html === 'POSTS' ? '블로그 최신 글' : html === 'NEWS' ? '인기 뉴스' : '배너');
-    if (html !== 'POSTS' && html !== 'NEWS') d.innerHTML = html + disclosure;
+    d.setAttribute('aria-label', html === 'NEWS' ? '인기 뉴스' : '배너');
+    if (html !== 'NEWS') d.innerHTML = html + disclosure;
     return d;
   };
   const bTop = make('top', SITE.banners.top); if (bTop) main.before(bTop);
   const bRight = make('right', SITE.banners.right); if (bRight) document.body.append(bRight);
 
-  /* 관련 블로그 글 + 같은 묶음 도구 (도구 페이지) */
+  /* 추천 뉴스 + 같은 묶음 도구 (도구 페이지). 블로그 글 목록은 2026-10-31 뺐다(블로그 본문 요약·썸네일을 다른 도메인에 싣지 않으려고) */
   let rel = null;
   if (curItem) {
     rel = document.createElement('section');
     rel.className = 'rel';
     const sib = curGroup.items.filter(it => it !== curItem);
-    rel.innerHTML = `<div class="rel-posts" hidden><h2 class="rel-h">${icon('target')}이 도구와 관련된 글</h2><p class="rel-sub">도구 주제와 직접 연결된 추천 블로그 글입니다.</p><div class="post-list"></div></div>
-      <div class="new-posts" hidden><h2 class="new-h">${icon('sparkles')}추천 블로그 최신 글</h2><p class="rel-sub"></p><div class="post-list"></div></div>
-      <div class="news-rec" hidden><h2 class="news-h">${icon('newspaper')}추천 뉴스</h2><p class="rel-sub">지금 많이 보는 뉴스입니다. <a href="${SITE.news.p}">인기 뉴스 더 보기</a></p><div class="post-list"></div></div>
+    rel.innerHTML = `<div class="news-rec" hidden><h2 class="news-h">${icon('newspaper')}추천 뉴스</h2><p class="rel-sub">지금 많이 보는 뉴스입니다. <a href="${SITE.news.p}">인기 뉴스 더 보기</a></p><div class="post-list"></div></div>
       ${sib.length ? `<h2>${curGroup.name} 도구 더 보기</h2><div class="chips tone-${curGroup.tone}">${sib.map(it => `<a href="${it.p}">${icon(it.i)}${it.t}</a>`).join('')}</div>` : ''}`;
     main.append(rel);
   }
@@ -346,7 +344,7 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
     }
   }
 
-  /* 뉴스 불러오기 (assets/news.json 은 맥이 4시간마다 갱신 — 블로그 글 갱신과 같은 주기) */
+  /* 뉴스 불러오기 (assets/news.json 은 맥이 4시간마다 갱신) */
   const home = document.getElementById('home-posts');
   const railNews = SITE.banners.right === 'NEWS';
   const fmtD = d => (d || '').slice(5, 16).replace('-', '.');
@@ -358,7 +356,7 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
   if (home) {
     homeNews = document.createElement('section'); homeNews.hidden = true; homeNews.className = 'home-news';
     homeNews.innerHTML = `<h2>추천 뉴스</h2><p class="rel-sub">지금 많이 보는 뉴스입니다. <a href="${SITE.news.p}">인기 뉴스 더 보기</a></p><div class="post-list"></div>`;
-    home.closest('section').after(homeNews);
+    home.after(homeNews);
   }
   const newsReady = (rel || (bRight && railNews) || homeNews) ? fetch('/assets/news.json').then(r => r.ok ? r.json() : Promise.reject(r.status)).then(d => {
     const top = d.top || [];
@@ -373,44 +371,8 @@ const icon = (name, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" fill
     return true;
   }).catch(() => false) : Promise.resolve(false);
 
-  /* 블로그 글 불러오기 (assets/posts.json 은 GitHub Actions 가 4시간마다 갱신) */
-  if (!rel && !bRight && !home) return;
-  /* 글 한 줄: 제목·요약·블로그(왼쪽) + 작은 썸네일(오른쪽). mini(우측 영역)는 썸네일이 왼쪽, 요약 없음 */
-  const card = (p, cls = 'post', tag = '') => `<a class="${cls}" href="${esc(p.u)}" target="_blank" rel="noopener">
-    <span class="post-body"><b>${esc(p.t)}</b>${p.s && !cls.includes('mini') ? `<span class="ex">${esc(p.s)}</span>` : ''}
-      <small>${tag ? `<em class="post-tag">${tag}</em>` : ''}<img src="/assets/img/profile-${p.b}.png" alt="" width="16" height="16">${(SITE.blogs[p.b] || {}).name || ''} · ${p.d.slice(5).replace('-', '.')}</small></span>
-    <span class="thumb">${p.img ? `<img src="${esc(p.img)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ''}</span></a>`;
-  fetch('/assets/posts.json').then(r => r.ok ? r.json() : Promise.reject(r.status)).then(d => {
-    const posts = d.posts || [];
-    if (!posts.length) return;
-    if (rel) {
-      const related = ((d.related || {})[curItem.p] || []).slice(0, 4);
-      if (related.length) {
-        const box = rel.querySelector('.rel-posts');
-        box.querySelector('.post-list').innerHTML = related.map(p => card(p, 'post is-rel', '관련 글')).join('');
-        box.hidden = false;
-      }
-      if (related.length < 4) {
-        const urls = new Set(related.map(p => p.u));
-        const fill = posts.filter(p => p.b === blogKey && !urls.has(p.u)).slice(0, Math.max(2, 4 - related.length));
-        const box = rel.querySelector('.new-posts');
-        box.querySelector('.rel-sub').textContent = related.length
-          ? '관련 글 외에 함께 둘러보기 좋은 최근 글입니다.'
-          : '이 도구와 직접 관련된 글은 아직 없어서, 추천 블로그의 최근 글을 보여 드립니다.';
-        box.querySelector('.post-list').innerHTML = fill.map(p => card(p)).join('');
-        box.hidden = false;
-      }
-    }
-    if (bRight) {
-      const latest = order.flatMap(k => posts.filter(p => p.b === k).slice(0, 4));
-      const fill = () => { bRight.innerHTML = `<p class="rail-title">블로그 최신 글</p>${latest.map(p => card(p, 'post mini')).join('')}`; };
-      if (railNews) newsReady.then(ok => { if (!ok) fill(); }); else fill();
-    }
-    if (home) {
-      home.innerHTML = Object.keys(SITE.blogs).flatMap(k => posts.filter(p => p.b === k).slice(0, 4)).map(p => card(p)).join('');
-      home.closest('section').hidden = false;
-    }
-  }).catch(() => {});
+  /* 뉴스가 없으면 오른쪽 영역은 비워 둔다 */
+  if (bRight && railNews) newsReady.then(ok => { if (!ok) bRight.remove(); });
 })();
 
 /* data-icon 속성이 있는 요소에 아이콘 넣기 (index.html 카드 등) */

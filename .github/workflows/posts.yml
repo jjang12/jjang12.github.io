@@ -1,8 +1,7 @@
 name: 블로그 최근 글 갱신
 
+# 2026-10-31: 짱툴에 블로그 글 목록을 더는 싣지 않아 자동 실행을 껐다(수동 실행만 남김).
 on:
-  schedule:
-    - cron: '17 */4 * * *'   # 4시간마다 (UTC 기준)
   workflow_dispatch:
 
 permissions:
