@@ -95,6 +95,7 @@ def page(slug: str, name: str, items: list, cats: list, updated: str) -> str:
 <html lang="ko">
 <head>
 <meta charset="utf-8">
+<meta name="google-adsense-account" content="ca-pub-3888057764486686">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{esc(title)} | {SITE_NAME}</title>
 <meta name="description" content="{esc(desc)}">

@@ -68,6 +68,7 @@ def replace_block(s: str, tag: str, content: str, before: str) -> str:
 def head_block(url, info, og, crumbs, faq, is_home, category):
     title = html.escape(info['title'], quote=True)
     lines = [
+        '<meta name="google-adsense-account" content="ca-pub-3888057764486686">',   # 애드센스 사이트 확인(11-13, 계정 하나 — 팁KR·라이프큐브·짱봇과 같은 게시자 ID)
         '<link rel="icon" href="/favicon.ico" sizes="48x48">',
         '<link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">',
         '<link rel="icon" href="/assets/img/icon-192.png" sizes="192x192" type="image/png">',   # 구글 검색 결과 아이콘(48의 배수 PNG 권장)
